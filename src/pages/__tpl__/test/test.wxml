@@ -1,0 +1,23 @@
+<import src="../../components/toast/toast.wxml" />
+<template is="toast" data="{{$toast}}"/>
+
+
+
+
+<view class="g-flex-cc g-fd-c g-lh-80" style="height:100vh">
+	<view>{{title}}</view>
+	<view class="g-flex" hidden="{{!isFetching}}">
+		<view class="g-btn" bindtap="handleClick" id="minus">点击 -</view>
+		<view class="g-btn" bindtap="handleClick" id="plus">点击 +</view>
+	</view>
+	<view>当前count值：{{count}}</view>
+
+	<view class="g-flex" hidden="{{count<3}}">
+		<view class="g-btn" bindtap="handleAsyncClick" id="minus">异步点击 -</view>
+		<view class="g-btn" bindtap="handleAsyncClick" id="plus">异步点击 +</view>
+	</view>
+
+	<view class="g-flex g-m-t" hidden="{{count<6}}">
+		<view class="g-btn" bindtap="handlePopup" id="{{count}}">弹出层</view>
+	</view>
+</view>

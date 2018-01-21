@@ -1,0 +1,436 @@
+@import "./iconfont.wxss";
+@import "./ui.wxss";
+/*@import "./components/diy/diy.wxss";*/
+@import "./components/toast/toast.wxss";
+page {
+	font-size: 26rpx;
+	background: #EFEFF4;
+}
+
+image {
+	width: auto;
+	height: auto;
+}
+
+
+/**
+ * g-disabled 
+ * 禁用事件
+ */
+
+.g-disabled {
+	pointer-events: none;
+}
+
+
+/**
+ * g-noanimate 
+ * 禁用动画
+ */
+
+.g-noanimate {
+	animation: 0;
+}
+
+
+/**
+ * g-oneline 
+ * 一行文字
+ */
+
+.g-oneline {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+
+
+/**
+ * g-twoline 
+ * 两行文字
+ */
+
+.g-twoline {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+
+
+/**
+ * g-two-lh 
+ * 两行文字 限高
+ */
+
+.g-two-lh {
+	height: 63rpx;
+	line-height: 32rpx;
+}
+
+
+/**
+ * g-two-lh 
+ * 一行文字 限高
+ */
+
+.g-one-lh {
+	height: 32rpx;
+	line-height: 32rpx;
+}
+
+
+/**
+ * g-nowrap 
+ * 一行文字 强制不换行
+ */
+
+.g-nowrap {
+	white-space: nowrap;
+}
+
+
+/**
+ * g-tc 
+ * 文本居中
+ */
+
+.g-tc {
+	text-align: center;
+}
+
+
+/**
+ * g-tl 
+ * 文本居左
+ */
+
+.g-tl {
+	text-align: left;
+}
+
+
+/**
+ * g-tr 
+ * 文本居右
+ */
+
+.g-tr {
+	text-align: right;
+}
+
+
+/**
+ * g-td-lh 
+ * 文本删除线
+ */
+
+.g-td-lh {
+	text-decoration: line-through;
+}
+
+
+/**
+ * g-td-ul 
+ * 文本下划线
+ */
+
+.g-td-ul {
+	text-decoration: underline;
+}
+
+
+/**
+ * line-height
+ */
+
+.g-lh-44 {
+	line-height: 44rpx;
+}
+
+.g-lh-60 {
+	line-height: 60rpx;
+}
+
+.g-lh-72 {
+	line-height: 72rpx;
+}
+
+.g-lh-80 {
+	line-height: 80rpx;
+}
+
+.g-lh-88 {
+	line-height: 88rpx;
+}
+
+.g-lh-120 {
+	line-height: 120rpx;
+}
+
+
+/**
+ * font-size
+ */
+
+.g-fs-10 {
+	font-size: 10rpx!important;
+}
+
+.g-fs-20 {
+	font-size: 20rpx!important;
+}
+
+.g-fs-22 {
+	font-size: 22rpx!important;
+}
+
+.g-fs-24 {
+	font-size: 24rpx!important;
+}
+
+.g-fs-26 {
+	font-size: 26rpx!important;
+}
+
+.g-fs-28 {
+	font-size: 28rpx!important;
+}
+
+.g-fs-34 {
+	font-size: 34rpx!important;
+}
+
+.g-fs-40 {
+	font-size: 40rpx!important;
+}
+
+.g-fs-50 {
+	font-size: 50rpx!important;
+}
+
+.g-fs-100 {
+	font-size: 100rpx!important;
+}
+
+
+/*layout*/
+
+.g-flex {
+	display: flex;
+	box-sizing: border-box;
+}
+
+.g-fd-c {
+	flex-direction: column;
+}
+
+.g-fd-re {
+	flex-direction: row-reverse;
+}
+
+.g-jc-sb {
+	justify-content: space-between;
+}
+
+.g-jc-c {
+	justify-content: center;
+}
+
+.g-jc-fe {
+	justify-content: flex-end;
+}
+
+.g-ai-c {
+	align-items: center;
+}
+
+.g-ai-fe {
+	align-items: flex-end;
+}
+
+.g-fw-w {
+	flex-wrap: wrap;
+}
+
+.g-ac-fs {
+	align-content: flex-start;
+}
+
+
+/*gird*/
+
+.g-col {
+	flex: 1
+}
+
+.g-col-2 {
+	flex: 2
+}
+
+.g-full {
+	flex: 0 0 100%;
+}
+
+.g-1of2 {
+	flex: 0 0 50%;
+}
+
+.g-1of3 {
+	flex: 0 0 33.3333%;
+}
+
+.g-1of4 {
+	flex: 0 0 25%;
+}
+
+
+/*圣杯布局*/
+
+.g-flex-holy {
+	display: flex;
+	box-sizing: border-box;
+	min-height: 100vh;
+	flex-direction: column;
+}
+
+
+/*水平垂直对齐*/
+
+.g-flex-cc {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.g-flex-ac {
+	display: flex;
+	box-sizing: border-box;
+	align-items: center;
+}
+
+
+/**
+ * 布局辅助
+ */
+
+.g-pd {
+	padding: 20rpx;
+}
+
+.g-pd-btn {
+	padding: 10rpx 15rpx;
+}
+
+.g-pd-l {
+	padding-left: 20rpx;
+}
+
+.g-pd-r {
+	padding-right: 20rpx;
+}
+
+.g-pd-lr {
+	padding-left: 15rpx;
+	padding-right: 15rpx;
+}
+
+.g-pd-t {
+	padding-top: 20rpx;
+}
+
+.g-pd-b {
+	padding-bottom: 20rpx;
+}
+
+.g-pd-tb {
+	padding-top: 10rpx;
+	padding-bottom: 10rpx;
+}
+
+.g-pd-t-15 {
+	padding-top: 15rpx;
+}
+
+.g-m-t {
+	margin-top: 10rpx;
+}
+
+.g-m-l {
+	margin-left: 20rpx;
+}
+
+.g-m-b {
+	margin-bottom: 10rpx;
+}
+
+.g-m-tb {
+	margin-top: 10rpx;
+	margin-bottom: 10rpx;
+}
+
+.g-m-t-20 {
+	margin-top: 20rpx;
+}
+
+.g-m-b-20 {
+	margin-bottom: 20rpx;
+}
+
+.g-pdr-15 {
+	padding-right: 15rpx;
+}
+
+.g-h-600 {
+	height: 600rpx;
+	box-sizing: border-box;
+}
+
+.g-h-300 {
+	height: 300rpx;
+	box-sizing: border-box;
+}
+
+.g-h-full {
+	height: 100vh
+}
+
+.g-h-5 {
+	height: 5vh
+}
+
+.g-h-91 {
+	height: 91.35vh;
+}
+
+.g-h-95 {
+	height: 93vh;
+}
+
+
+/**
+ * bd 辅助线
+ */
+
+.g-br {
+	border-radius: 8rpx;
+}
+
+.g-br-circle {
+	border-radius: 100%;
+}
+
+.g-bb {
+	border-bottom: 1rpx solid #d9d9d9;
+}
+
+.g-bt {
+	border-top: 1rpx solid #d9d9d9;
+}
+
+.g-b-r {
+	border-right: 1rpx solid #E1E1E1;
+}

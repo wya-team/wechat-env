@@ -1,0 +1,95 @@
+<view class="v-tpl">
+	<view class="g-bg-white g-pd-l g-pd-r g-pd-t g-m-t-20 g-flex g-ai-c g-jc-sb">
+		<text>商品评价<text>({{info[curId]._count}})</text></text>
+		<text class="g-pink">好评率：<text>{{info[curId].good_percent}}</text></text>
+	</view>
+	<view class="g-pd-l g-pd-r g-pd-t g-bg-white">
+		<view class="g-flex g-ai-c g-jc-sb">
+			<view class="g-flex g-ai-c">
+				<image src="{{list[curId].itemObj[1].head-img}}" class="_image" />
+				<text>{{list[curId].itemObj[1].user}}</text>
+			</view>
+			<view class="g-flex g-ai-c">
+				<view class="_stars iconfont icon-ds {{list[curId].itemObj[1].star>=1? '_on': ''}}"></view>
+				<view class="_stars iconfont icon-ds {{list[curId].itemObj[1].star>=2? '_on': ''}}"></view>
+				<view class="_stars iconfont icon-ds {{list[curId].itemObj[1].star>=3? '_on': ''}}"></view>
+				<view class="_stars iconfont icon-ds {{list[curId].itemObj[1].star>=4? '_on': ''}}"></view>
+				<view class="_stars iconfont icon-ds {{list[curId].itemObj[1].star>=5? '_on': ''}}"></view>
+			</view>
+		</view>
+		<view class="g-flex g-ai-c g-ac-fs g-gray g-pd-tb">
+			<text>{{list[curId].itemObj[1].time}}</text>
+			<text class="g-pd-l">{{list[curId].itemObj[1].format}}</text>
+		</view>
+		<view class="g-flex g-ai-c g-jc-sb g-pd-tb">
+			<text>{{list[curId].itemObj[1].content}}</text>
+		</view>
+		<block wx:for="{{list[curId].itemObj[1].imgs}}"  wx:for-index="dt" wx:for-item="itemImage" wx:key="{{dd}}" class="g-bg-white g-m-t g-flex g-ai-c g-ac-fs g-fw-w">
+			<image src="{{itemImage}}" id="{{itemImage}}--{{list[curId].itemObj[1].id}}--{{dt}}" class="_com-image" bindtap="handleClick"/>
+		</block>
+		<view  wx:if="{{list[curId].itemObj[1].reply.length >0}}" class="g-pd-l g-pd-r g-pd-tb g-gray">
+			<text>掌柜回复：</text>
+		</view>
+		<block wx:for="{{list[curId].itemObj[1].reply}}"  wx:for-index="dt" wx:for-item="reply" wx:key="{{index}}" class="g-bg-white g-m-t g-flex g-ai-c g-ac-fs g-fw-w">
+			<view class="g-pd-l g-pd-r g-pd-tb g-gray">
+				<text>{{reply}}</text>
+			</view>
+		</block>
+		<view class="g-flex g-ai-c g-jc-c">
+			<navigator class="_look" url="/pages/test/test">
+				查看全部
+			</navigator>
+		</view>
+	</view>
+	<view class="g-bg-white g-bb g-pd g-flex g-ai-c g-jc-sb">
+		<text>小伙伴评价<text>({{info[curId]._count}})</text></text>
+		<view class="g-flex g-ai-c">
+			<view class="g-flex g-ai-c">
+				<view class="_stars iconfont icon-ds {{info.star>=1? '_on': ''}}"></view>
+				<view class="_stars iconfont icon-ds {{info.star>=2? '_on': ''}}"></view>
+				<view class="_stars iconfont icon-ds {{info.star>=3? '_on': ''}}"></view>
+				<view class="_stars iconfont icon-ds {{info.star>=4? '_on': ''}}"></view>
+				<view class="_stars iconfont icon-ds {{info.star>=5? '_on': ''}}"></view>
+			</view>
+			<text class="g-pink g-pd-l"> {{info[curId].good_percent}} 好评</text>
+		</view>
+			
+	</view>
+	<view>
+		<block wx:for="{{list[curId].itemArr}}" class="g-bg-white g-pd g-m-t-20 g-flex g-ai-c g-jc-sb" wx:key="{{index-1}}" wx:for-item="item" wx:for-index="i">
+			<view class="g-bb g-pd g-bg-white">
+				<view class="g-flex g-ai-c g-jc-sb">
+					<view class="g-flex g-ai-c">
+						<image src="{{list[curId].itemObj[item].head-img}}" class="_image" />
+						<text>{{list[curId].itemObj[item].user}}</text>
+					</view>
+					<view class="g-flex g-ai-c">
+						<view class="_stars iconfont icon-ds {{list[curId].itemObj[item].star>=1? '_on': ''}}"></view>
+						<view class="_stars iconfont icon-ds {{list[curId].itemObj[item].star>=2? '_on': ''}}"></view>
+						<view class="_stars iconfont icon-ds {{list[curId].itemObj[item].star>=3? '_on': ''}}"></view>
+						<view class="_stars iconfont icon-ds {{list[curId].itemObj[item].star>=4? '_on': ''}}"></view>
+						<view class="_stars iconfont icon-ds {{list[curId].itemObj[item].star>=5? '_on': ''}}"></view>
+					</view>
+				</view>
+				<view class="g-flex g-ai-c g-ac-fs g-gray g-pd-tb">
+					<text>{{list[curId].itemObj[item].time}}</text>
+					<text class="g-pd-l">{{list[curId].itemObj[item].format}}</text>
+				</view>
+				<view class="g-flex g-ai-c g-jc-sb g-pd-tb">
+					<text>{{list[curId].itemObj[item].content}}</text>
+				</view>
+				<block wx:for="{{list[curId].itemObj[item].imgs}}"  wx:for-index="dt" wx:for-item="itemImage" wx:key="{{index}}" class="g-bg-white g-m-t g-flex g-ai-c g-ac-fs g-fw-w">
+					<image src="{{itemImage}}" id="{{itemImage}}--{{list[curId].itemObj[item].id}}--{{dt}}" class="_com-image" bindtap="handleClick"/>
+				</block>
+				<view  wx:if="{{list[curId].itemObj[item].reply.length >0}}" class="g-pd-l g-pd-r g-pd-tb g-gray">
+					<text>掌柜回复：</text>
+				</view>
+				<block wx:for="{{list[curId].itemObj[item].reply}}"  wx:for-index="dt" wx:for-item="reply" wx:key="{{index}}" class="g-bg-white g-m-t g-flex g-ai-c g-ac-fs g-fw-w">
+					<view class="g-pd-l g-pd-r g-pd-tb g-gray">
+						<text>{{reply}}</text>
+					</view>
+				</block>
+			</view>
+		</block>
+	</view>
+</view>

@@ -1,0 +1,315 @@
+/**
+ * UI库
+ * 表单
+ * 搜索框
+ * 链接跳转（一行显示）
+ * Tab
+ * 弹出层
+ */
+
+.g-item {
+	background: #fff;
+	display: flex;
+	align-items: center;
+}
+
+.g-fixed {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	line-height: 30rpx;
+}
+
+.g-popup-bg {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+	background: rgba(0, 0, 0, 0.4);
+	top: 0
+}
+
+.g-popup {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: flex-end;
+	z-index: 1999;
+	background: rgba(0, 0, 0, 0);
+	top: 100vh
+}
+
+.g-popup.__index_add {
+	z-index: 2000;
+}
+
+.g-popup .__title {
+	display: flex;
+	line-height: 60rpx;
+	padding-right: 10rpx;
+}
+
+.g-popup .__title text {
+	flex: 1;
+	text-align: center;
+}
+
+.g-popup .__title view {
+	flex: 0 0 40rpx;
+}
+
+
+/**
+ * 背景颜色
+ */
+
+[class*="g-bg-"] {
+	color: white;
+}
+
+[class*="g-bg-"] input {
+	color: black;
+}
+
+.g-bg-white {
+	background: #fff;
+	color: inherit;
+}
+
+.g-bg-pink {
+	background: #F5374D;
+}
+
+.g-bg-gray {
+	background: #EBEBEB;
+	color: inherit;
+}
+
+.g-bg-deep {
+	background: #9C9C9C;
+}
+
+.g-bg-green {
+	background: #28c192;
+}
+
+.g-bg-blue {
+	background: #10aeff;
+}
+
+.g-bg-orange {
+	background: #f60;
+}
+
+
+/**
+ * 文字颜色
+ */
+
+.g-gray {
+	color: #9C9C9C;
+}
+
+.g-pink {
+	color: #F5374D;
+}
+
+.g-white {
+	color: #fff;
+}
+
+.g-orange {
+	color: #f60;
+}
+
+.g-green {
+	color: #06bf04;
+}
+
+.g-blue {
+	color: #10aeff;
+}
+
+
+/**
+ * 搜索框
+ */
+
+.g-search input,
+.diy-search input {
+	background: #fff;
+	color: #000;
+	height: 70rpx;
+	border-radius: 10rpx;
+	flex: 1;
+	padding: 0 80rpx;
+}
+
+.g-search>view,
+.diy-search>view {
+	position: relative;
+}
+
+.g-search .icon-search,
+.diy-search .icon-search {
+	position: absolute;
+	left: 20rpx;
+	top: 15rpx;
+}
+
+
+/**
+ * 按钮
+ */
+
+.g-step {
+	display: flex;
+}
+
+.g-step text {
+	width: 70rpx;
+	height: 54rpx;
+	line-height: 54rpx;
+	border-radius: 6rpx;
+	border: 2rpx solid #e6e9ed;
+	text-align: center;
+	color: #333;
+	margin: 0 2rpx
+}
+
+.g-step input {
+	width: 100rpx;
+	height: 54rpx;
+	text-align: center;
+	border: 2rpx solid #e6e9ed;
+}
+
+
+/**
+ * 表单
+ */
+
+.g-form {
+	width: 100%;
+	display: block;
+	/*hack*/
+	background: white;
+}
+
+.g-form ._colum {
+	display: flex;
+	background: white;
+	align-items: center;
+	margin: 0 20rpx;
+	padding: 20rpx 0;
+	border-bottom: 1rpx solid #d9d9d9;
+}
+
+.g-form ._colum:last-child {
+	border-bottom: none;
+}
+
+.g-form ._none {
+	margin: 0;
+}
+
+.g-form button {
+	padding: 0;
+	margin: 0;
+	color: white;
+	background: #F5374D;
+	justify-content: center;
+	line-height: 80rpx;
+	border-radius: 0rpx;
+	font-size: 26rpx;
+}
+
+.g-form input {
+	flex: 1;
+	color: #9c9c9c;
+}
+
+.g-form text {
+	flex: 0 0 160rpx;
+}
+
+
+/**
+ * 其他
+ */
+
+.g-form ._picker {
+	padding: 10rpx;
+	color: #9c9c9c;
+}
+
+.g-form ._left {
+	padding-left: 0;
+}
+
+
+/**
+ * picker-view
+ */
+
+.g-picker-view {
+	display: flex;
+	box-sizing: border-box;
+	flex-direction: column;
+	width: 100%;
+	height: 300px;
+	background: white;
+}
+
+.g-picker-view picker-view-column {
+	flex: 1
+}
+
+.g-picker-view view {
+	width: 100%;
+	line-height: 34px;
+	height: 34px;
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+
+
+/**
+ * 选项卡
+ */
+
+.g-tab {
+	display: flex;
+	justify-content: space-between;
+	background: white;
+	margin-bottom: 20rpx;
+}
+
+.g-tab>view {
+	flex: 1;
+	text-align: center;
+}
+
+.g-tab .active>text {
+	padding-bottom: 16rpx;
+	color: #E64150;
+	border-bottom: 1rpx solid #E64150;
+}
+
+
+/**
+ * 线条按钮
+ */
+
+.g-btn {
+	color: #000;
+	padding: 10rpx 15rpx;
+	border: 1px solid #000;
+	border-radius: 5rpx;
+	margin-left: 10rpx;
+}

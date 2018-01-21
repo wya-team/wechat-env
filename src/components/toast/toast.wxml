@@ -1,0 +1,6 @@
+<!-- toast.wxml -->
+<template name="toast">
+	<view class="c-toast" hidden="{{!$toast.isShow}}">
+		<text class="_text">{{$toast.title}}</text>
+	</view>
+</template>

@@ -11,8 +11,8 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "npm run all",
-    "gulp:dev": "rm -rf ./dist/ && gulp dev",
-    "build": "gulp build",
+    "gulp:dev": "rm -rf ./dist/ && ./node_modules/gulp/bin/gulp.js dev",
+    "build": "./node_modules/gulp/bin/gulp.js build",
     "lint": "esw ./src/ gulpfile.js",
     "lint:fix": "npm run lint -- --fix",
     "lint:watch": "npm run lint -- --fix --watch",

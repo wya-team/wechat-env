@@ -83,6 +83,10 @@ const pageConfig = {
 		});
 	}
 };
-const combineConfig = Object.assign({}, toastConfig, testConfig, pageConfig);
+// const combineConfig = assign({}, toastConfig, testConfig, pageConfig);
+const combineConfig = {
+	...toastConfig, 
+	...pageConfig
+};
 const resultConfig = connect(mapStateToData, mapDispatchToActions)(combineConfig);
 Page(resultConfig);

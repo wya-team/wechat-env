@@ -3,12 +3,6 @@ import configureStore from './stores/configureStore';
 import { initialState } from './stores/stores';
 import { getItem, setItem, delItem } from './utils/utils';
 const store = configureStore(initialState);
-let obj = {};
-let a = {};
-obj = {
-	...obj,
-	...a
-};
 App({
 	onLaunch() {
 		delItem('sku_goods');

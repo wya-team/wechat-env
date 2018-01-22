@@ -10,7 +10,7 @@
 		}
 	});
 **/
-import { assign } from '../libs/assign.js';
+// import { assign } from '../libs/assign.js';
 import { GUID } from "../config";
 import { getItem, setItem, delItem } from './utils';
 import { DEV_WITH_SERVER } from '../constants/constants';

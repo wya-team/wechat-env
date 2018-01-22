@@ -34,8 +34,8 @@ export default store => next => action => {
 		action['opts'] = opts;
 		delete param['onSuccess'];
 		delete param['onError'];
-		// const nextRequestAction = {...action,...param};
-		const nextRequestAction = Object.assign({}, action, param);
+		const nextRequestAction = { ...action, ...param };
+		// const nextRequestAction = assign({}, action, param);
 		return nextRequestAction;
 	};
 
@@ -68,11 +68,11 @@ export default store => next => action => {
 		param,
 		localData,
 		success: data => {
-			// params = { //由于后端格式是status:1,data:{}
-			// 	...params,
-			// 	data: data.data
-			// };
-			params = Object.assign({}, params, { data: data.data });
+			// params = assign({}, params, { data: data.data });
+			params = { // 由于后端格式是status:1,data:{}
+				...params,
+				data: data.data
+			};
 			//  触发请求成功的action
 			next(nextAction(apiName + '_SUCCESS', params, opts));
 			onSuccess && onSuccess(data);
@@ -81,7 +81,6 @@ export default store => next => action => {
 		error: data => {
 			//  触发请求失败的action
 			next(nextAction(apiName + '_ERROR', params, opts));
-
 			onError && onError(data);
 			return;
 		}

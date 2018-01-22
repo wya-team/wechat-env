@@ -1,5 +1,3 @@
-let tplCount = {};
-let tplList = {};
 import { connect } from '../../libs/wechat-redux.js';
 import { bindActionCreators } from '../../libs/redux.js';
 import * as types from '../../constants/actions/__tpl__';
@@ -108,7 +106,11 @@ const pageConfig = {
 	}
 	
 };
-const combineConfig = Object.assign({}, pageConfig, toastConfig);
+// const combineConfig = assign({}, pageConfig, toastConfig);
+const combineConfig = { 
+	...pageConfig, 
+	...toastConfig 
+};
 const resultConfig = connect(mapStateToData, mapDispatchToActions)(combineConfig);
 Page(resultConfig);
 

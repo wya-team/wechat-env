@@ -3,10 +3,14 @@ import __tpl__ from './api/__tpl__';
 import _common from './api/_common';
 
 
-const API = Object.assign({},
-	__tpl__,
-	_common
-);
+// const API = assign({},
+// 	__tpl__,
+// 	_common
+// );
+const API = {
+	...__tpl__,
+	..._common
+};
 let baseUrl;
 if (!DEV_WITH_SERVER) {
 	// 开发环境-前端自模拟

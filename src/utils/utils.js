@@ -1,4 +1,4 @@
-import { assign } from '../libs/assign.js';
+// import { assign } from '../libs/assign.js';
 const isAvailable = (function isAvailableIffe() {
 	const test = 'test';
 	try {
@@ -97,13 +97,13 @@ export const initItem = (res, str, count, initObj, initArr)  => {
 	}
 	for (let i = 0; i < data.length; i++) {
 		itemArr = [...itemArr, data[i][id]];
-		// itemObj = {
-		// 	...itemObj,
-		// 	[data[i][id]]: initObj || data[i]
-		// };
-		itemObj = assign({}, itemObj, {
+		itemObj = {
+			...itemObj,
 			[data[i][id]]: initObj || data[i]
-		});
+		};
+		// itemObj = assign({}, itemObj, {
+		// 	[data[i][id]]: initObj || data[i]
+		// });
 	}
 	/* 判断是否有_count*/
 	if (count) {

@@ -122,14 +122,14 @@ gulp.task('wxssPro', () => {
 gulp.task('scripts', () => {
 	return gulp.src('./src/**/*.js')
 		.pipe(babel({
-			presets: ['es2015', 'stage-0']
+			presets: ['env', 'stage-0']
 		}))
 		.pipe(gulp.dest('./dist'));
 });
 gulp.task('scriptsPro', () => {
 	return gulp.src('./src/**/*.js')
 		.pipe(babel({
-			presets: ['es2015', 'stage-0']
+			presets: ['env', 'stage-0']
 		}))
 		.pipe(uglify({
 			compress: true,

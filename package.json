@@ -10,8 +10,8 @@
   ],
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run all",
-    "serve": "rm -rf ./dist/ && npm run prompt && gulp dev",
+    "dev": "npm run prompt && npm run all",
+    "serve": "rm -rf ./dist/ && gulp dev",
     "build": "npm run prompt && gulp build && npm run copy",
     "lint": "esw ./src/ gulpfile.js",
     "lint:fix": "npm run lint -- --fix",

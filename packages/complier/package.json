@@ -1,0 +1,28 @@
+{
+  "name": "@wya/mp-complier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "files": [
+      "dist/**"
+  ],
+  "scripts": {
+    "test": "mocha ./__tests__/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wya-team/wechat-env"
+  },
+  "keywords": [],
+  "author": "wya-team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wya-team/wechat-env/issues"
+  },
+  "homepage": "https://github.com/wya-team/wechat-env#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.0.1"
+  }
+}

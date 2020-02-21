@@ -1,7 +1,0 @@
-export const TPL_MAIN_GET = 'TPL_MAIN_GET';
-export const TPL_MAIN_INIT = 'TPL_MAIN_INIT';
-export const TPL_MAIN_LIST_GET = 'TPL_MAIN_LIST_GET';
-
-export const TPL_TEST_CLICK_GET = 'TPL_TEST_CLICK_GET';
-export const TPL_TEST_CLICK_CLICK = 'TPL_TEST_CLICK_CLICK';
-export const TPL_TEST_CLICK_POST = 'TPL_TEST_CLICK_POST';

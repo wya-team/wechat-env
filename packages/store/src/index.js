@@ -1,3 +1,67 @@
-export default () => {
-	console.log('mp-store');
+import { shallowEqual } from './helper.js';
+
+const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
+const defaultMapDispatchToProps = dispatch => ({ dispatch });
+
+export default (mapStateToProps, mapDispatchToProps) => {
+	const shouldSubscribe = Boolean(mapStateToProps);
+	const mapState = mapStateToProps || defaultMapStateToProps;
+	const app = getApp();
+
+	let mapDispatch;
+	if (typeof mapDispatchToProps === 'function') {
+		mapDispatch = mapDispatchToProps;
+	} else if (!mapDispatchToProps) {
+		mapDispatch = defaultMapDispatchToProps;
+	}
+
+	return function wrapWithConnect(pageConfig) {
+
+		function handleChange(options) {
+			if (!this.unsubscribe) {
+				return;
+			}
+
+			const state = this.store.getState();
+			const mappedState = mapState(state, options);
+			if (!this.data || shallowEqual(this.data, mappedState)) {
+				return;
+			}
+			console.log(2);
+			this.setData(mappedState);
+		}
+
+		const {
+			onLoad: _onLoad,
+			onUnload: _onUnload,
+		} = pageConfig;
+
+		function onLoad(options) {
+			this.store = app.store;
+			if (!this.store) {
+				warning("Store对象不存在!");
+			}
+			if (shouldSubscribe) {
+				this.unsubscribe = this.store.subscribe(handleChange.bind(this, options));
+				handleChange.call(this, options);
+			}
+			if (typeof _onLoad === 'function') {
+				_onLoad.call(this, options);
+			}
+		}
+
+		function onUnload() {
+			if (typeof _onUnload === 'function') {
+				_onUnload.call(this);
+			}
+			typeof this.unsubscribe === 'function' && this.unsubscribe();
+		}
+
+		return {
+			...pageConfig,
+			...mapDispatch(app.store.dispatch), 
+			onLoad, 
+			onUnload
+		};
+	};
 };

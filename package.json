@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "lint-staged": "lint-staged",
-    "lint": "esw packages --ext .wya,.js --color",
+    "lint": "esw packages/ --ext .wya,.js --color",
     "lint:fix": "npm run lint -- --fix",
     "lint:watch": "npm run lint -- --fix --watch"
   },

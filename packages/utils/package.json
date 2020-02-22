@@ -1,14 +1,13 @@
 {
-  "name": "@wya/mp-store",
+  "name": "@wya/mp-utils",
   "version": "1.0.0-alpha.1",
   "description": "",
   "main": "dist/index.js",
   "files": [
-    "dist/**"
+      "dist/**"
   ],
   "scripts": {
-    "test": "mocha --require esm ./__tests__/*.test.js",
-    "test:watch": "npm run test -- --watch"
+    "test": "mocha ./__tests__/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +23,6 @@
   "dependencies": {},
   "devDependencies": {
     "chai": "^4.2.0",
-    "esm": "^3.2.25",
     "mocha": "^7.0.1"
   }
 }

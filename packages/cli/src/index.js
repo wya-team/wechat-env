@@ -1,3 +1,3 @@
-export default () => {
-	console.log('mp-cli');
-};
+const Run = require('./run');
+
+exports.Run = Run;

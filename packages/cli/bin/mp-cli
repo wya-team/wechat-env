@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+const chalk = require('chalk');
+const program = require('cac')();
+const { resolve } = require('path');
+const { Run } = require('../src');
+
+const { log } = console;
+program
+	.version(require('../package').version);
+
+// 使用指令参数 如 mp-cli server;
+program
+	.usage('<cmd>');
+
+// dev
+program
+	.command('dev [sourceDir]', 'development mode')
+	.action((sourceDir = '.', commandOptions) => {
+		let app = new Run({
+			sourceDir: resolve(sourceDir),
+			...commandOptions
+		});
+		app.dev();
+	});
+
+// Run
+program
+	.command('build [sourceDir]', 'production mode')
+	.action((sourceDir = '.', commandOptions) => {
+		let app = new Run({
+			sourceDir: resolve(sourceDir),
+			...commandOptions
+		});
+		app.build();
+	});
+
+// 任意匹配
+program
+	.command('*')
+	.action((cmd) => log(chalk`{red Invalid mode ${cmd}}`));
+
+program.help();
+program.version('1.0.0');
+program.parse();

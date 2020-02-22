@@ -1,6 +1,6 @@
 {
-  "name": "@wya/mp-complier",
-  "version": "1.0.0",
+  "name": "@wya/mp-sass",
+  "version": "1.0.0-alpha.1",
   "description": "",
   "main": "dist/index.js",
   "files": [

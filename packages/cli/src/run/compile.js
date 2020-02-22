@@ -47,7 +47,7 @@ class Compile {
 	sassCompiler() {
 		let { src, dist } = this;
 		return () => gulp
-			.src(`${src}/**/*.wxss`)
+			.src(`${src}/**/*.{wxss,scss}`)
 			.pipe(sass().on('error', sass.logError))
 			.pipe(rename({ extname: '.wxss' }))
 			.pipe(gulp.dest(dist));
@@ -104,7 +104,7 @@ class Compile {
 					staticCopier(),
 					() => {
 						gulp.watch(`${src}/**/*.js`, jsCompiler());
-						gulp.watch(`${src}/**/*.wxss`, sassCompiler());
+						gulp.watch(`${src}/**/*.{wxss,scss}`, sassCompiler());
 						gulp.watch(`${src}/**/*.wxml`, copier(src, dist, 'wxml'));
 						gulp.watch(`${src}/**/*.wxs`, copier(src, dist, 'wxs'));
 						gulp.watch(`${src}/**/*.json`, copier(src, dist, 'json'));

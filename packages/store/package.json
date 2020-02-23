@@ -7,7 +7,7 @@
     "dist/**"
   ],
   "scripts": {
-    "test": "mocha --require esm ./__tests__/*.test.js",
+    "test": "mocha --require esm ./src/__tests__/*.test.js",
     "test:watch": "npm run test -- --watch"
   },
   "repository": {

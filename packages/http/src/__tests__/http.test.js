@@ -1,28 +1,39 @@
-import createHttpClient from '..';
-import { ERROR_CODE } from '../core/HttpError';
+const { expect } = require('chai');
+
+const { HttpError, default: createHttpClient } = require('..');
+const { ERROR_CODE } = require('../core/HttpError');
+
+global.wx = {
+	request(options = {}) {
+		const { url, data, header, method, success, fail } = options;
+		success({
+			login: "wya-team"
+		});
+	}
+};
 
 describe('browser.js', () => {
 	let $ = createHttpClient({
 		onAfter: (res) => {
-			expect(typeof res).toBe('object');
-			console.log(res);
+			expect(typeof res).to.equal('object');
+			// console.log(res);
 		},
 		onBefore: (res) => {
-			expect(typeof res).toBe('object');
-			console.log(res);
+			expect(typeof res).to.equal('object');
+			// console.log(res);
 		}
 	});
-	expect(typeof $.ajax).toBe('function');
+	expect(typeof $.ajax).to.equal('function');
 
-	test('无URL验证错误', async () => {
+	it('无URL验证错误', async () => {
 		try {
 			let res = await $.ajax();
 		} catch (e) {
-			expect(e.code).toBe(ERROR_CODE.HTTP_URL_EMPTY);
+			expect(e.code).to.equal(ERROR_CODE.HTTP_URL_EMPTY);
 		}
 	});
-
-	test('localData验证: status = 1', async () => {
+	
+	it('localData验证: status = 1', async () => {
 		try {
 			let options = {
 				localData: {
@@ -33,13 +44,13 @@ describe('browser.js', () => {
 				}
 			};
 			let res = await $.ajax(options);
-			expect(res.data.user).toBe('wya');
+			expect(res.data.user).to.equal('wya');
 		} catch (res) {
 			throw new Error(res);
 		}
 	});
 
-	test('localData验证: status = 0', async () => {
+	it('localData验证: status = 0', async () => {
 		try {
 			let options = {
 				localData: {
@@ -51,11 +62,11 @@ describe('browser.js', () => {
 			};
 			await $.ajax(options);
 		} catch (res) {
-			expect(res.data.user).toBe('wya');
+			expect(res.data.user).to.equal('wya');
 		}
 	});
 
-	test('localData验证: status = null', async () => {
+	it('localData验证: status = null', async () => {
 		try {
 			let options = {
 				localData: {
@@ -67,13 +78,12 @@ describe('browser.js', () => {
 			};
 			await $.ajax(options);
 		} catch (res) {
-			expect(res.data.user).toBe('wya');
+			expect(res.data.user).to.equal('wya');
 		}
 	});
 
-	// 设置20秒超时
-	jest.setTimeout(20000); 
-	test('server验证: status = 1', async () => {
+	
+	it('server验证: status = 1', async () => {
 		try {
 			let options = {
 				url: 'https://api.github.com/users/wya-team',
@@ -89,15 +99,14 @@ describe('browser.js', () => {
 			};
 
 			let res = await $.ajax(options);
-			expect(res.data.login).toBe('wya-team');
+			expect(res.data.login).to.equal('wya-team');
 		} catch (res) {
 			throw new Error(res);
 		}
 	});
 
-	// 设置20秒超时
-	jest.setTimeout(20000); 
-	test('server验证: status = 0', async () => {
+	
+	it('server验证: status = 0', async () => {
 		try {
 			let options = {
 				url: 'https://api.github.com/users/wya-team',
@@ -106,32 +115,30 @@ describe('browser.js', () => {
 
 			let res = await $.ajax(options);
 		} catch (res) {
-			expect(res.status).toBe(0);
-			expect(res.code).toBe(ERROR_CODE.HTTP_FORCE_DESTROY);
+			expect(res.status).to.equal(0);
+			expect(res.code).to.equal(ERROR_CODE.HTTP_FORCE_DESTROY);
 		}
 	});
 
-	// 设置20秒超时
-	jest.setTimeout(20000); 
-	test('server验证: onOther', async () => {
+	
+	it('server验证: onOther', async () => {
 		try {
 			let options = {
 				url: 'https://api.github.com/users/wya-team',
 				credentials: 'omit', // cors下关闭
 				onOther: ({ response, options, resolve, reject }) => {
-					expect(response.login).toBe('wya-team');
+					expect(response.login).to.equal('wya-team');
 				}
 			};
 
 			let res = await $.ajax(options);
 		} catch (res) {
-			expect(res.code).toBe(ERROR_CODE.HTTP_FORCE_DESTROY);
+			expect(res.code).to.equal(ERROR_CODE.HTTP_FORCE_DESTROY);
 		}
 	});
 
-	// 设置20秒超时
-	jest.setTimeout(20000); 
-	test('server验证: onOther 错误捕获', async () => {
+	
+	it('server验证: onOther 错误捕获', async () => {
 		try {
 			let options = {
 				url: 'https://api.github.com/users/wya-team',
@@ -144,13 +151,12 @@ describe('browser.js', () => {
 
 			let res = await $.ajax(options);
 		} catch (res) {
-			expect(res.code).toBe(ERROR_CODE.HTTP_CODE_ILLEGAL);
-			expect(res.exception.message).toBe('程序内部执行错误');
+			expect(res.code).to.equal(ERROR_CODE.HTTP_CODE_ILLEGAL);
+			expect(res.exception.message).to.equal('程序内部执行错误');
 		}
 	});
 
-	jest.setTimeout(20000); 
-	test('server验证: onLoading 错误捕获', async () => {
+	it('server验证: onLoading 错误捕获', async () => {
 		let count = 0;
 		try {
 			let options = {
@@ -167,9 +173,9 @@ describe('browser.js', () => {
 
 			let res = await $.ajax(options);
 		} catch (res) {
-			expect(res.code).toBe(ERROR_CODE.HTTP_FORCE_DESTROY);
+			expect(res.code).to.equal(ERROR_CODE.HTTP_FORCE_DESTROY);
 		} finally {
-			expect(count).toBe(2);
+			expect(count).to.equal(2);
 		}
 	});
 });

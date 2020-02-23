@@ -86,14 +86,10 @@ const div = (arg1, arg2, opts = {}) => {
 	let t1 = 0, t2 = 0, r1, r2;  // eslint-disable-line
 	try {
 		t1 = arg1.toString().split(".")[1].length;
-	} catch (e) {
-		console.log(e);
-	}
+	} catch (e) { }  // eslint-disable-line
 	try {
 		t2 = arg2.toString().split(".")[1].length;
-	} catch (e) {
-		console.log(e);
-	}
+	} catch (e) { }  // eslint-disable-line
 
 	r1 = Number(arg1.toString().replace(".", ""));
 	r2 = Number(arg2.toString().replace(".", ""));

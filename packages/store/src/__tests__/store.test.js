@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 
-const { Store, default: connect } = require('../src');
-const createLogger = require('../src/plugins/logger').default; 
+const { Store, default: connect } = require('..');
+const createLogger = require('../plugins/logger').default; 
 const PageNative = require('./native/page');
 const modules = require('./modules').default;
 

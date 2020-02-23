@@ -4,10 +4,11 @@
   "description": "",
   "main": "dist/index.js",
   "files": [
-      "dist/**"
+    "dist/**"
   ],
   "scripts": {
-    "test": "mocha ./__tests__/*.test.js"
+    "test": "mocha --require esm ./src/__tests__/*.test.js",
+    "test:watch": "npm run test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -20,9 +21,9 @@
     "url": "https://github.com/wya-team/wechat-env/issues"
   },
   "homepage": "https://github.com/wya-team/wechat-env#readme",
-  "dependencies": {},
   "devDependencies": {
     "chai": "^4.2.0",
+    "esm": "^3.2.25",
     "mocha": "^7.0.1"
   }
 }

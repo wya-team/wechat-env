@@ -1,7 +1,9 @@
 const { EventEmitter } = require('events');
 const path = require('path');
 const fs = require('fs-extra');
-const Compile = require('./compile');
+const { exec } = require('child_process');
+
+const gulpConfig = path.resolve(__dirname, './compiler.js');
 
 class DevProcess extends EventEmitter {
 	constructor(parent) {
@@ -14,8 +16,10 @@ class DevProcess extends EventEmitter {
 	 * TODO
 	 */
 	async process() {
-		let compilation = new Compile(this);
-		compilation.run({ watch: true });
+		let $process = exec(`npx gulp -f ${gulpConfig} dev --color`);
+
+		$process.stdout.on('data', stdout => console.info(stdout));
+		$process.stderr.on('data', stderr => console.info(stderr));
 	}
 }
 

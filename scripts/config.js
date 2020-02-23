@@ -3,24 +3,23 @@ const buble = require('@rollup/plugin-buble');
 const replace = require('@rollup/plugin-replace');
 const commonjs = require('@rollup/plugin-commonjs');
 const nodeResolve = require('@rollup/plugin-node-resolve');
+const babel = require('rollup-plugin-babel');
+const { uglify } = require('rollup-plugin-uglify');
 
 const builds = {
 	store: {
 		entry: 'packages/store/src/index.js',
 		dest: 'packages/store/dist/index.js',
-		env: process.env.NODE_ENV,
 		format: 'cjs'
 	},
 	utils: {
 		entry: 'packages/utils/src/index.js',
 		dest: 'packages/utils/dist/index.js',
-		env: process.env.NODE_ENV,
 		format: 'cjs'
 	},
 	http: {
-		entry: 'packages/utils/src/index.js',
-		dest: 'packages/utils/dist/index.js',
-		env: process.env.NODE_ENV,
+		entry: 'packages/http/src/index.js',
+		dest: 'packages/http/dist/index.js',
 		format: 'cjs'
 	}
 };
@@ -33,14 +32,29 @@ class Config {
 			external: opt.external,
 			plugins: [
 				nodeResolve(), 
-				commonjs({}), 
-				replace({
-					'process.env.NODE_ENV': JSON.stringify(opt.env),
+				babel({
+					babelrc: false,
+					presets: ['@babel/preset-env'],
+					plugins: [
+						[
+							"@babel/plugin-proposal-class-properties",
+							{
+								"loose": true
+							}
+						]
+					],
+					exclude: 'node_modules/**',
+					runtimeHelpers: true
 				}),
+				commonjs({}), 
 				buble({
 					objectAssign: 'Object.assign' // ...Object spread and rest
-				})
-			].concat(opt.options || []),
+				}),
+				replace({
+					'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+				}),
+				process.env.NODE_ENV === 'production' && uglify()
+			],
 			output: {
 				file: opt.dest,
 				format: opt.format,

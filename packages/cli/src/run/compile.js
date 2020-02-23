@@ -13,8 +13,45 @@ const copier = (src, dist, ext) => {
 };
 
 const cleaner = dir => () => del([`${dir}/**`]);
-// TODO
-const r = (source) => path.resolve(process.cwd(), './node_modules', source);
+
+const babelConfig = (() => {
+	let r = (source) => {
+		let fullpath;
+
+		fullpath = path.resolve(__dirname, '../../node_modules', source);
+		if (fs.pathExistsSync(fullpath)) {
+			return fullpath;
+		}
+		
+		fullpath = path.resolve(process.cwd(), './node_modules', source);
+		if (fs.pathExistsSync(fullpath)) {
+			return fullpath;
+		}
+
+		throw new Error(`@wya/mp-cli: 未找到${source}`);
+	};
+	return {
+		presets: [r('@babel/preset-env')],
+		plugins: [
+			r('@babel/plugin-proposal-export-namespace-from'),
+			r('@babel/plugin-proposal-export-default-from'),
+			r('@babel/plugin-proposal-function-bind'),
+			r('@babel/plugin-syntax-dynamic-import'),
+			[
+				r('@babel/plugin-proposal-decorators'),
+				{
+					"legacy": true
+				}
+			],
+			[	
+				r('@babel/plugin-proposal-class-properties'),
+				{
+					"loose": true
+				}
+			]
+		]
+	};
+})();
 
 class Compile {
 	constructor(parent) {
@@ -55,29 +92,10 @@ class Compile {
 
 	jsCompiler() {
 		let { src, dist } = this;
+
 		return () => gulp
 			.src(`${src}/**/*.js`)
-			.pipe(babel({
-				presets: [r('@babel/preset-env')],
-				plugins: [
-					r('@babel/plugin-proposal-export-namespace-from'),
-					r('@babel/plugin-proposal-export-default-from'),
-					r('@babel/plugin-proposal-function-bind'),
-					r('@babel/plugin-syntax-dynamic-import'),
-					[
-						r('@babel/plugin-proposal-decorators'),
-						{
-							"legacy": true
-						}
-					],
-					[	
-						r('@babel/plugin-proposal-class-properties'),
-						{
-							"loose": true
-						}
-					]
-				]
-			}))
+			.pipe(babel(babelConfig))
 			.pipe(gulp.dest(dist));
 	}
 
@@ -103,6 +121,7 @@ class Compile {
 					jsCompiler(),
 					staticCopier(),
 					() => {
+						gulp.watch(`${src}/**/*.wya`, wyaCompiler());
 						gulp.watch(`${src}/**/*.js`, jsCompiler());
 						gulp.watch(`${src}/**/*.{wxss,scss}`, sassCompiler());
 						gulp.watch(`${src}/**/*.wxml`, copier(src, dist, 'wxml'));

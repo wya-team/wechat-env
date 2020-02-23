@@ -8,14 +8,22 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "cross-env NODE_ENV=production node --max_old_space_size=8192 ./scripts/build.js",
+    "bootstrap": "./node_modules/.bin/lerna bootstrap --loglevel silly",
     "lint-staged": "lint-staged",
     "lint": "esw packages/ --ext .wya,.js --color",
     "lint:fix": "npm run lint -- --fix",
     "lint:watch": "npm run lint -- --fix --watch"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
+    "@rollup/plugin-buble": "^0.21.1",
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@rollup/plugin-replace": "^2.3.1",
     "babel-eslint": "^10.0.3",
+    "cross-env": "^7.0.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-babel": "^5.3.0",
@@ -24,7 +32,8 @@
     "eslint-watch": "^6.0.1",
     "lerna": "^3.20.2",
     "lint-staged": "^10.0.7",
-    "pre-commit": "^1.2.2"
+    "pre-commit": "^1.2.2",
+    "rollup": "^1.31.1"
   },
   "lint-staged": {
     "{packages,src}/**/*.{js,jsx,wya}": [

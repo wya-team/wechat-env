@@ -29,7 +29,7 @@ export default class Store {
 		this.dispatch = this.dispatch.bind(this);
 
 		// apply plugins
-		plugins.forEach(plugin => plugin(this));
+		plugins.forEach(plugin => typeof plugin === 'function' && plugin(this));
 	}
 
 	getState() {

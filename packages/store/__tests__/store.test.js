@@ -1,16 +1,15 @@
 const { expect } = require('chai');
 
-const Store = require('../src/core/store').default;
+const { Store, default: connect } = require('../src');
 const createLogger = require('../src/plugins/logger').default; 
 const PageNative = require('./native/page');
 const modules = require('./modules').default;
-const connect = require('../src/index').default;
 
 let Page = connect(PageNative);
 
 global.getApp = () => ({
 	store: new Store({
-		plugins: [createLogger()],
+		plugins: [createLogger({ logger: { log() {} } })],
 		actions: {
 			ASYNC_DECREMENT(store, options = {}) {
 				return new Promise((resolve) => {

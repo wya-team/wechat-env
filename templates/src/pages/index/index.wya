@@ -1,0 +1,157 @@
+<template>
+	<view class="g-container">
+		<view class="v-index__userinfo">
+			<button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+			<block wx:else>
+				<image bindtap="handleViewTap" class="v-index__userinfo--avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+				<text class="v-index__userinfo--nickname">{{userInfo.nickName}}</text>
+			</block>
+		</view>
+		<view class="v-index__usermotto" bindtap="handleViewTap1">
+			<text>{{motto}}：</text>
+			<text>{{user}}</text>
+		</view>
+
+		<view class="v-index__network" bindtap="handleViewTap2">
+			<text>网络请求[$request]: </text>
+			<text>{{user}}</text>
+		</view>
+
+		<view class="v-index__network" bindtap="handleViewTap3">
+			<text>网络请求[request]: </text>
+			<text>{{user}}</text>
+		</view>
+	</view>
+</template>
+
+<script>
+import { Utils } from '@wya/mp-utils';
+import Page from '../../common/page';
+
+const app = getApp();
+Page({
+	mapState: (state) => {
+		return {
+			user: state.indexMain.user
+		};
+	},
+	data: {
+		motto: '你好，小程序',
+		userInfo: {},
+		hasUserInfo: false,
+		canIUse: wx.canIUse('button.open-type.getUserInfo')
+	},
+
+	onLoad() {
+		if (app.globalData.userInfo) {
+			this.setData({
+				userInfo: app.globalData.userInfo,
+				hasUserInfo: true
+			});
+		} else if (this.data.canIUse) {
+			// 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+			// 所以此处加入 callback 以防止这种情况
+			app.userInfoReadyCallback = res => {
+				this.setData({
+					userInfo: res.userInfo,
+					hasUserInfo: true
+				});
+			};
+		} else {
+			// 在没有 open-type=getUserInfo 版本的兼容处理
+			wx.getUserInfo({
+				success: res => {
+					app.globalData.userInfo = res.userInfo;
+					this.setData({
+						userInfo: res.userInfo,
+						hasUserInfo: true
+					});
+				}
+			});
+		}
+	},
+
+	getUserInfo(e) {
+		app.globalData.userInfo = e.detail.userInfo;
+		this.setData({
+			userInfo: e.detail.userInfo,
+			hasUserInfo: true
+		});
+	},
+
+	// 事件处理函数
+	handleViewTap() {
+		wx.navigateTo({
+			url: '../logs/logs'
+		});
+	},
+
+	// 事件处理函数
+	handleViewTap1() {
+		this.$store.commit('INDEX_MAIN_CHANGE_USER', { user: Math.random() });
+	},
+
+	handleViewTap2() {
+		this.$request({
+			localData: {
+				status: 1,
+				data: {
+					user: '$request'
+				}
+			}
+		}).then((res) => {
+			this.$store.commit('INDEX_MAIN_CHANGE_USER', { user: res.data.user });
+		}).catch((res) => {
+
+		});
+	},
+
+	handleViewTap3() {
+		this.request({
+			url: 'INDEX_MAIN_POST',
+			localData: {
+				status: 1,
+				data: {
+					user: 'request'
+				}
+			}
+		}).then((res) => {
+		}).catch((res) => {
+
+		});
+	}
+});
+</script>
+
+<style lang="scss">
+.v-index {
+	&__userinfo {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		&--avatar {
+			width: 128rpx;
+			height: 128rpx;
+			margin: 20rpx;
+			border-radius: 50%;
+		}
+		&--nickname {
+			color: #aaa;
+		}
+	}
+	&__usermotto {
+		margin-top: 100px;
+	}
+
+	&__network {
+		margin-top: 20px;
+	}
+}
+</style>
+
+<config>
+{
+	"navigationBarTitleText": "首页",
+	"usingComponents": {}
+}
+</config>

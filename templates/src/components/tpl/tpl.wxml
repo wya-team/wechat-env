@@ -1,0 +1,8 @@
+<view class="c-tpl">
+	<view
+		class="c-tpl__text"
+		style="color: {{ color }}; background-color: {{ backgroundColor }};font-size: {{ fontSize }}px; box-shadow: {{ boxShadow }};"
+	>
+		<slot></slot>
+	</view>
+</view>

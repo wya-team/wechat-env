@@ -1,0 +1,48 @@
+{
+  "name": "template-mp",
+  "version": "0.0.0",
+  "description": "template mp",
+  "main": "dist/app.js",
+  "scripts": {
+    "dev": "./node_modules/.bin/mp-cli dev ./",
+    "build": "./node_modules/.bin/mp-cli build ./",
+    "clean": "rm -rf dist",
+    "lint-staged": "lint-staged",
+    "lint": "esw src/ --ext .wya,.js --color",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:watch": "npm run lint -- --fix --watch"
+  },
+  "author": "wya-team",
+  "license": "MIT",
+  "dependencies": {
+    "@wya/mp-http": "1.0.2",
+    "@wya/mp-store": "1.0.2",
+    "@wya/mp-utils": "1.0.2"
+  },
+  "devDependencies": {
+    "@wya/mp-cli": "1.0.2",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-html": "^6.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-markdown": "^1.0.1",
+    "eslint-watch": "^6.0.1",
+    "lint-staged": "^10.0.7",
+    "pre-commit": "^1.2.2"
+  },
+  "lint-staged": {
+    "/{packages,src}/**/*.{js,jsx,wya}": [
+      "esw --fix",
+      "git add"
+    ],
+    "*.md": [
+      "esw --ext '.md' --fix",
+      "git add"
+    ]
+  },
+  "pre-commit": [
+    "lint-staged"
+  ]
+}

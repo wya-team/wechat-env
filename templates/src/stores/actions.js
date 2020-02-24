@@ -6,7 +6,6 @@ import net from '../utils/net';
 
 export const actions = {
 	request(store, opts = {}) {
-		console.log(222);
 		const {
 			url: mutation,
 			redirect, // 重定向Mutation

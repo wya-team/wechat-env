@@ -12,7 +12,7 @@ const API = {
 let baseUrl;
 
 /* global __DEV__ */
-if (false) { // eslint-disable-line
+if (process.env.NODE_ENV === 'development') {
 	baseUrl = 'https://gateway.wyawds.com';
 } else {
 	// 生产环境

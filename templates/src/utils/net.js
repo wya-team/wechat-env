@@ -65,7 +65,7 @@ const globalOptions = {
 	onBefore: beforeFn,
 	onAfter: afterFn,
 	apis: API_ROOT,
-	debug: false
+	debug: process.env.NODE_ENV === 'development'
 	// requestType: 'form-data:json'
 };
 

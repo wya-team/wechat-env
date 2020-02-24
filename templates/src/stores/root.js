@@ -12,7 +12,7 @@ import { mutations } from './mutations';
 import modules from './modules/root';
 
 export const storeConfig = {
-	plugins: [createApi()],
+	plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : [],
 	actions,
 	mutations,
 	modules

@@ -59,7 +59,7 @@ module.exports = (options) => {
 		);
 
 		// json
-		fs.outputFileSync(
+		content.config && fs.outputFileSync(
 			fn('json'), 
 			content.config,
 		);
@@ -74,7 +74,7 @@ module.exports = (options) => {
 		fs.outputFileSync(
 			fn('wxss'),
 			sass.renderSync({
-				data: content.style,
+				data: content.style || ' ',
 				file: file.path
 			}).css
 		);

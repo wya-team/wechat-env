@@ -11,15 +11,6 @@ let { resolve } = path;
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
 
-let decode = (content) => {
-	let pmap = ['<', '&', '"'];
-	let amap = ['&lt;', '&amp;', '&quot;'];
-	let reg = new RegExp(`(${amap[0]}|${amap[1]}|${amap[2]})`, 'ig');
-	return content.replace(reg, (match, m) => {
-		return pmap[amap.indexOf(m)];
-	});
-};
-
 module.exports = (options) => {
 	return through.obj(function (file, enc, cb) {
 

@@ -10,7 +10,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production node --max_old_space_size=8192 ./scripts/build.js",
     "bootstrap": "./node_modules/.bin/lerna bootstrap --loglevel silly",
-    "pub": "./node_modules/.bin/lerna publish --no-git-tag-version",
+    "pub": "./node_modules/.bin/lerna publish",
     "lint-staged": "lint-staged",
     "lint": "esw packages/ --ext .wya,.js --color",
     "lint:fix": "npm run lint -- --fix",

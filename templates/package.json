@@ -15,12 +15,12 @@
   "author": "wya-team",
   "license": "MIT",
   "dependencies": {
-    "@wya/mp-http": "1.0.2",
-    "@wya/mp-store": "1.0.2",
-    "@wya/mp-utils": "1.0.2"
+    "@wya/mp-http": "1.1.0",
+    "@wya/mp-store": "1.1.0",
+    "@wya/mp-utils": "1.1.0"
   },
   "devDependencies": {
-    "@wya/mp-cli": "1.0.2",
+    "@wya/mp-cli": "1.1.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",

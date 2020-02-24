@@ -1,5 +1,5 @@
 export const assert = (condition, msg) => {
-	if (process.env.NODE_ENV !== 'production' && !condition) throw new Error(`[@wya/mp-store]: ${msg}`);
+	if (!condition) throw new Error(`[@wya/mp-store]: ${msg}`);
 };
 
 export const forEach = (obj, fn) => {

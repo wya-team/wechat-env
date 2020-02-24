@@ -105,14 +105,17 @@ export default class Store {
 		}
 
 		const listeners = this.currentListeners = this.nextListeners; // eslint-disable-line
-		listeners.forEach(listener => listener({
-			state: this.state,
-			commit: this.commit,
-			dispatch: this.dispatch,
-			type,
-			payload,
-			options
-		}));
+
+		// mutation, state, context
+		listeners.forEach(listener => listener(
+			{
+				type,
+				payload,
+				options
+			}, 
+			this.state,
+			this
+		));
 	}
 
 	/**
@@ -130,14 +133,16 @@ export default class Store {
 		return result.then(res => {
 			try {
 				const listeners = this.currentAsyncListeners = this.nextAsyncListeners; // eslint-disable-line
-				listeners.forEach(listener => listener({
-					state: this.state,
-					commit: this.commit,
-					dispatch: this.dispatch,
-					type,
-					payload,
-					options
-				}));
+				// action, state, context
+				listeners.forEach(listener => listener(
+					{
+						type,
+						payload,
+						options
+					},
+					this.state,
+					this
+				));
 			} catch (e) {
 				console.error(e);
 			}

@@ -51,20 +51,33 @@ const babelConfig = (() => {
 
 							let thirdPath = resolve(__cwd, `node_modules/${value}`);
 							let pkgPath = resolve(thirdPath, `package.json`);
+
+							// 写文件
 							if (!cache[value] && fs.existsSync(pkgPath)) {
 								let { main } = JSON.parse(fs.readFileSync(pkgPath));
 
 								let dir = dirname(resolve(thirdPath, main));
-								let cpPath = resolve(dist, 'libs', value);
+								let pkgDir = main.split('/');
+								pkgDir.pop();
+								let cpPath = resolve(dist, 'libs', value, pkgDir.join('/'));
 
-								fs.copy(dir, cpPath, (err) => {
-									if (!err) {
-										console.log(`源文件已拷贝到目标文件: ${cpPath}`);
-										cache[value] = true;
-									}
-								});
-								
-								path.node.source.value = './' + relative(dirname(filename), resolve(src, 'libs', value));
+								fs.copySync(dir, cpPath);
+
+								console.log(`源文件已拷贝到目标文件: ${cpPath}`);
+								cache[value] = {
+									main
+								};
+							}
+
+							// 赋值
+							if (cache[value]) {
+								let fullpath;
+								try {
+									fullpath = relative(dirname(filename), resolve(src, 'libs', value, cache[value].main))
+								} catch (e) {
+									console.error(e, '请检查文件', filename, value, cache[value].main);
+								}
+								path.node.source.value = fullpath;
 							}
 						}
 					}

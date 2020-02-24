@@ -3,7 +3,7 @@ export const assert = (condition, msg) => {
 };
 
 export const forEach = (obj, fn) => {
-	Object.keys(obj).forEach(key => fn(obj[key], key));
+	Object.keys(obj || {}).forEach(key => fn(obj[key], key));
 };
 
 export const isObject = (obj) => {

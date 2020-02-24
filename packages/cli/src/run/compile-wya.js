@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const del = require('del');
 const through = require('through2');
-const { DOMParser } = require('xmldom');
+const createHtmlDom = require('htmldom');
 const sass = require('node-sass');
 const babel = require('@babel/core');
 const babelConfig = require('./babel-config');
@@ -36,58 +36,14 @@ module.exports = (options) => {
 		}
 
 		let content = file.contents.toString();
-		let parser = new DOMParser({
-			locator: {},
-			errorHandler: {
-				warning(x) {
-					console.warning(x);
-				},
-				error(x) {
-					console.error(x);
-				}
-			}
-		});
+		let $ = createHtmlDom(content);
 
-		let xml = parser.parseFromString(content);
-		let opath = path.parse(file.path);
-		let rst = {
-			moduleId: file.path,
-			style: [],
-			template: {
-				code: '',
-				src: '',
-				type: '',
-			},
-			script: {
-				code: '',
-				src: '',
-				type: ''
-			},
-			config: {
-				code: '',
-				src: '',
-				type: ''
-			}
+		content = {
+			style: $('style').html(),
+			template: $('template').html(),
+			script: $('script').html(),
+			config: $('config').html()
 		};
-
-		[].slice.call(xml.childNodes || []).forEach((child) => {
-			const nodeName = child.nodeName;
-			if (nodeName === 'style' || nodeName === 'template' || nodeName === 'script' || nodeName === 'config') {
-				let rstTypeObj;
-
-				if (nodeName === 'style') {
-					rstTypeObj = { code: '' };
-					rst[nodeName].push(rstTypeObj);
-				} else {
-					rstTypeObj = rst[nodeName];
-				}
-
-				// rstTypeObj.src = child.getAttribute('src');
-				[].slice.call(child.childNodes || []).forEach((c) => {
-					rstTypeObj.code += decode(c.toString());
-				});
-			}
-		});
 
 		let fn = (ext) => {
 			let regex = new RegExp(src);
@@ -95,8 +51,11 @@ module.exports = (options) => {
 		};
 		// script
 		babel.transform(
-			rst.script.code,
-			babelConfig, 
+			content.script,
+			{
+				...babelConfig,
+				filename: file.path
+			}, 
 			(err, result) => {
 				if (err) {
 					throw err;
@@ -111,38 +70,25 @@ module.exports = (options) => {
 		// json
 		fs.outputFileSync(
 			fn('json'), 
-			rst.config.code,
+			content.config,
 		);
 
 		// template
 		fs.outputFileSync(
 			fn('wxml'),
-			rst.template.code,
+			content.template,
 		);
 
 		// style
 		fs.outputFileSync(
 			fn('wxss'),
-			rst.style.map(i => {
-				let result = sass.renderSync({
-					data: i.code,
-					file: file.path
-				});
-				return result.css;
-			}).join('\n')
+			sass.renderSync({
+				data: content.style,
+				file: file.path
+			}).css
 		);
 
-		fs.outputFileSync(
-			fn('wxss'),
-			rst.style.map(i => {
-				let result = sass.renderSync({
-					data: i.code,
-					file: file.path
-				});
-				return result.css;
-			}).join('\n')
-		);
 		// this.push(file);
-		// cb();
+		cb();
 	});
 };

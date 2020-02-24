@@ -1,1 +1,633 @@
-"use strict";function _typeof(t){return(_typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function _defineProperties(t,e){for(var n=0;n<e.length;n++){var i=e[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(t,i.key,i)}}function _createClass(t,e,n){return e&&_defineProperties(t.prototype,e),n&&_defineProperties(t,n),t}function _defineProperty(t,e,n){return e in t?Object.defineProperty(t,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):t[e]=n,t}function ownKeys(e,t){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var i=Object.getOwnPropertySymbols(e);t&&(i=i.filter(function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable})),n.push.apply(n,i)}return n}function _objectSpread2(e){for(var t=1;t<arguments.length;t++){var n=null!=arguments[t]?arguments[t]:{};t%2?ownKeys(Object(n),!0).forEach(function(t){_defineProperty(e,t,n[t])}):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):ownKeys(Object(n)).forEach(function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(n,t))})}return e}Object.defineProperty(exports,"__esModule",{value:!0});var shallowEqual=function(t,e){if(t===e)return!0;var n=Object.keys(t),i=Object.keys(e);if(n.length!==i.length)return!1;for(var s=Object.prototype.hasOwnProperty,o=0;o<n.length;o++)if(!s.call(e,n[o])||t[n[o]]!==e[n[o]])return!1;return!0},defaultMapStates=function(t,n){return t.reduce(function(t,e){return t[e]=n[e]||{},t},{})},connect=function(p){return function(t){var e=t||{},i=e.mapState,n=e.store,s=getApp&&getApp().store||n;if(!s)return p(t);var o=Boolean(i);function r(t){if(this.$unsubscribe){var e,n=this.$store.getState();"function"==typeof i?e=i(n,t):i instanceof Array&&(e=defaultMapStates(i,n)),this.data&&e&&!shallowEqual(this.data,e)&&this.setData(e)}}var c=t.onLoad,a=t.onUnload,u=t.attached,f=t.detached;function l(t){this.$store=s,this.$store||warning("Store对象不存在!"),o&&(this.$unsubscribe=this.$store.subscribe(r.bind(this,t)),r.call(this,t)),"function"==typeof c&&c.call(this,t),"function"==typeof u&&u.call(this,t)}function h(){"function"==typeof a&&a.call(this),"function"==typeof f&&f.call(this,options),"function"==typeof this.$unsubscribe&&this.$unsubscribe()}return p(_objectSpread2({},t,{onLoad:l,onUnload:h,attached:l,detached:h}))}},assert=function(){},forEach=function(e,n){Object.keys(e).forEach(function(t){return n(e[t],t)})},isObject=function(t){return null!==t&&"object"===_typeof(t)},unifyObjectStyle=function(t,e,n){return isObject(t)&&t.type&&(n=e,t=(e=t).type),{type:t,payload:e,options:n}},Module=function(){function i(t,e){_classCallCheck(this,i),Object.defineProperty(this,"options",{value:t,writable:!0});var n=this.options.state;this.state=("function"==typeof n?n():n)||e||{}}return _createClass(i,[{key:"forEachAction",value:function(t){this.options.actions&&forEach(this.options.actions,t)}},{key:"forEachMutation",value:function(t){this.options.mutations&&forEach(this.options.mutations,t)}},{key:"update",value:function(){}}]),i}(),Store=function(){function r(){var e=this,t=0<arguments.length&&void 0!==arguments[0]?arguments[0]:{};_classCallCheck(this,r),Object.defineProperty(this,"options",{value:t,writable:!0});var n=this.options,i=n.state,s=n.plugins,o=void 0===s?[]:s;this.state=("function"==typeof i?i():i)||{},this.actions={},this.mutations={},this.modules={},this.commiting=!1,this.currentListeners=[],this.nextListeners=this.currentListeners,this.currentAsyncListeners=[],this.nextAsyncListeners=this.currentAsyncListeners,this.addModules({root:t}),this.addModules(t.modules),this.commit=this.commit.bind(this),this.dispatch=this.dispatch.bind(this),o.forEach(function(t){return"function"==typeof t&&t(e)})}return _createClass(r,[{key:"getState",value:function(){return this.state}},{key:"addModules",value:function(t){var o=this;forEach(t,function(t,i){assert(!o.modules[i]);var s=new Module(t,o.state[i]);o.modules[i]=s,o.state[i]=s.state,s.forEachMutation(function(e,t){(o.mutations[t]||(o.mutations[t]=[])).push(function(t){e.key=i,e.call(o,s.state,t)})}),s.forEachAction(function(n,t){(o.actions[t]||(o.actions[t]=[])).push(function(t){n.key=i;var e=n.call(o,{state:s.state,commit:o.commit,dispatch:o.dispatch},t);return e&&e.then||(e=Promise.resolve(e)),e})})})}},{key:"commit",value:function(){var n=this,t=unifyObjectStyle.apply(void 0,arguments),e=t.type,i=t.payload,s=t.options,o=this.mutations[e];assert(!this.commiting);try{this.commiting=!0,o.forEach(function(t){var e=t(i);e&&(n.state[t.type]=e)})}finally{this.commiting=!1}(this.currentListeners=this.nextListeners).forEach(function(t){return t({state:n.state,commit:n.commit,dispatch:n.dispatch,type:e,payload:i,options:s})})}},{key:"dispatch",value:function(){var e=this,t=unifyObjectStyle.apply(void 0,arguments),n=t.type,i=t.payload,s=t.options,o=this.actions[n];return(1<o.length?Promise.all(o.map(function(t){return t(i)})):o[0](i)).then(function(t){try{(e.currentAsyncListeners=e.nextAsyncListeners).forEach(function(t){return t({state:e.state,commit:e.commit,dispatch:e.dispatch,type:n,payload:i,options:s})})}catch(t){console.error(t)}return t})}},{key:"subscribe",value:function(e){function n(){i.nextListeners===i.currentListeners&&(i.nextListeners=i.currentListeners.slice())}var i=this;n(),this.nextListeners.push(e);var s=!0;return function(){if(s){s=!1,n();var t=i.nextListeners.indexOf(e);i.nextListeners.splice(t,1)}}}},{key:"subscribeAction",value:function(e){function n(){i.nextAsyncListeners===i.currentAsyncListeners&&(i.nextAsyncListeners=i.currentAsyncListeners.slice())}var i=this;n(),this.nextAsyncListeners.push(e);var s=!0;return function(){if(s){s=!1,n();var t=i.nextAsyncListeners.indexOf(e);i.nextAsyncListeners.splice(t,1)}}}},{key:"update",value:function(){}}]),r}();exports.Store=Store,exports.default=connect;
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+var defineProperty = _defineProperty;
+
+var shallowEqual = function shallowEqual(objA, objB) {
+  if (objA === objB) {
+    return true;
+  }
+
+  var keysA = Object.keys(objA);
+  var keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  } // Test for A's keys different from B.
+
+
+  var hasOwn = Object.prototype.hasOwnProperty;
+
+  for (var i = 0; i < keysA.length; i++) {
+    if (!hasOwn.call(objB, keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) {
+var arguments$1 = arguments;
+ for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+var defaultMapStates = function defaultMapStates(array, state, options) {
+  return array.reduce(function (pre, cur) {
+    pre[cur] = state[cur] || {};
+    return pre;
+  }, {});
+};
+
+var connect = (function (next) {
+  return function (userOptions) {
+    var _ref = userOptions || {},
+        mapState = _ref.mapState,
+        _store = _ref.store;
+
+    var store = getApp && getApp().store || _store;
+
+    if (!store) {
+      return next(userOptions);
+    }
+
+    var shouldSubscribe = Boolean(mapState);
+
+    function handleChange(options) {
+      if (!this.$unsubscribe) {
+        return;
+      }
+
+      var state = this.$store.getState();
+      var mappedState;
+
+      if (typeof mapState === 'function') {
+        mappedState = mapState(state, options);
+      } else if (mapState instanceof Array) {
+        mappedState = defaultMapStates(mapState, state);
+      }
+
+      if (!this.data || !mappedState || shallowEqual(this.data, mappedState)) {
+        return;
+      }
+
+      this.setData(mappedState);
+    }
+
+    var _onLoad = userOptions.onLoad,
+        _onUnload = userOptions.onUnload,
+        _attached = userOptions.attached,
+        _detached = userOptions.detached;
+
+    function onLoad(options) {
+      this.$store = store;
+
+      if (!this.$store) {
+        warning("Store对象不存在!");
+      }
+
+      if (shouldSubscribe) {
+        this.$unsubscribe = this.$store.subscribe(handleChange.bind(this, options));
+        handleChange.call(this, options);
+      }
+
+      if (typeof _onLoad === 'function') {
+        _onLoad.call(this, options);
+      }
+
+      if (typeof _attached === 'function') {
+        _attached.call(this, options);
+      }
+    }
+
+    function onUnload() {
+      if (typeof _onUnload === 'function') {
+        _onUnload.call(this);
+      }
+
+      if (typeof _detached === 'function') {
+        _detached.call(this, options);
+      }
+
+      typeof this.$unsubscribe === 'function' && this.$unsubscribe();
+    }
+
+    return next(_objectSpread({}, userOptions, {
+      onLoad: onLoad,
+      onUnload: onUnload,
+      attached: onLoad,
+      detached: onUnload
+    }));
+  };
+});
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+var classCallCheck = _classCallCheck;
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) { descriptor.writable = true; }
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) { _defineProperties(Constructor.prototype, protoProps); }
+  if (staticProps) { _defineProperties(Constructor, staticProps); }
+  return Constructor;
+}
+
+var createClass = _createClass;
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var _typeof_1 = createCommonjsModule(function (module) {
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+});
+
+var assert = function assert(condition, msg) {
+};
+var forEach = function forEach(obj, fn) {
+  Object.keys(obj || {}).forEach(function (key) {
+    return fn(obj[key], key);
+  });
+};
+var isObject = function isObject(obj) {
+  return obj !== null && _typeof_1(obj) === 'object';
+};
+var unifyObjectStyle = function unifyObjectStyle(type, payload, options) {
+  if (isObject(type) && type.type) {
+    options = payload;
+    payload = type;
+    type = type.type;
+  }
+  return {
+    type: type,
+    payload: payload,
+    options: options
+  };
+};
+
+var Module =
+/*#__PURE__*/
+function () {
+  function Module(options, initialState) {
+    classCallCheck(this, Module);
+
+    Object.defineProperty(this, 'options', {
+      value: options,
+      writable: true
+    });
+    var state = this.options.state;
+    this.state = (typeof state === 'function' ? state() : state) || initialState || {};
+  }
+
+  createClass(Module, [{
+    key: "forEachAction",
+    value: function forEachAction(fn) {
+      if (this.options.actions) {
+        forEach(this.options.actions, fn);
+      }
+    }
+  }, {
+    key: "forEachMutation",
+    value: function forEachMutation(fn) {
+      if (this.options.mutations) {
+        forEach(this.options.mutations, fn);
+      }
+    } // TODO：热更新, 目前小程序不支持
+
+  }, {
+    key: "update",
+    value: function update() {}
+  }]);
+
+  return Module;
+}();
+
+var Store =
+/*#__PURE__*/
+function () {
+  function Store() {
+    var _this = this;
+
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    classCallCheck(this, Store);
+
+    Object.defineProperty(this, 'options', {
+      value: options,
+      writable: true
+    });
+    var _this$options = this.options,
+        state = _this$options.state,
+        _this$options$plugins = _this$options.plugins,
+        plugins = _this$options$plugins === void 0 ? [] : _this$options$plugins;
+    this.state = (typeof state === 'function' ? state() : state) || {};
+    this.actions = {};
+    this.mutations = {};
+    this.modules = {};
+    this.commiting = false;
+    this.currentListeners = [];
+    this.nextListeners = this.currentListeners;
+    this.currentAsyncListeners = [];
+    this.nextAsyncListeners = this.currentAsyncListeners;
+    this.addModules({
+      'root': options
+    });
+    this.addModules(options.modules);
+    this.commit = this.commit.bind(this);
+    this.dispatch = this.dispatch.bind(this); // apply plugins
+
+    plugins.forEach(function (plugin) {
+      return typeof plugin === 'function' && plugin(_this);
+    });
+  }
+
+  createClass(Store, [{
+    key: "getState",
+    value: function getState() {
+      return this.state;
+    }
+    /**
+     * 修改三个数值
+     * state
+     * actions
+     * mutations
+     */
+
+  }, {
+    key: "addModules",
+    value: function addModules(modules) {
+      var _this2 = this;
+
+      forEach(modules, function (item, key) {
+        assert(!_this2.modules[key]);
+        var module = new Module(item, _this2.state[key]);
+        _this2.modules[key] = module;
+        _this2.state[key] = module.state;
+        module.forEachMutation(function (mutation, type) {
+          var entry = _this2.mutations[type] || (_this2.mutations[type] = []);
+          entry.push(function (payload) {
+            mutation.key = key;
+            mutation.call(_this2, module.state, payload);
+          });
+        });
+        module.forEachAction(function (action, type) {
+          var entry = _this2.actions[type] || (_this2.actions[type] = []);
+          entry.push(function (payload) {
+            action.key = key;
+            var res = action.call(_this2, {
+              state: module.state,
+              commit: _this2.commit,
+              dispatch: _this2.dispatch
+            }, payload);
+
+            if (!res || !res.then) {
+              res = Promise.resolve(res);
+            }
+
+            return res;
+          });
+        });
+      });
+    }
+    /**
+     * 只有commit才能引起数据变更
+     */
+
+  }, {
+    key: "commit",
+    value: function commit() {
+      var _this3 = this;
+
+      var _unifyObjectStyle = unifyObjectStyle.apply(void 0, arguments),
+          type = _unifyObjectStyle.type,
+          payload = _unifyObjectStyle.payload,
+          options = _unifyObjectStyle.options;
+
+      var handlers = this.mutations[type];
+      assert(!this.commiting);
+
+      try {
+        this.commiting = true;
+        handlers.forEach(function (mutation) {
+          var result = mutation(payload); // 如果有返回值的话，覆盖state, 不采用浅复制
+
+          if (result) {
+            _this3.state[mutation.type] = result;
+          }
+        });
+      } finally {
+        this.commiting = false;
+      }
+
+      var listeners = this.currentListeners = this.nextListeners; // eslint-disable-line
+
+      listeners.forEach(function (listener) {
+        return listener({
+          state: _this3.state,
+          commit: _this3.commit,
+          dispatch: _this3.dispatch,
+          type: type,
+          payload: payload,
+          options: options
+        });
+      });
+    }
+    /**
+     * 不能引起数据变更, 需要再次触发commit
+     */
+
+  }, {
+    key: "dispatch",
+    value: function dispatch() {
+      var _this4 = this;
+
+      var _unifyObjectStyle2 = unifyObjectStyle.apply(void 0, arguments),
+          type = _unifyObjectStyle2.type,
+          payload = _unifyObjectStyle2.payload,
+          options = _unifyObjectStyle2.options;
+      var handlers = this.actions[type];
+      var result = handlers.length > 1 ? Promise.all(handlers.map(function (action) {
+        return action(payload);
+      })) : handlers[0](payload);
+      return result.then(function (res) {
+        try {
+          var listeners = _this4.currentAsyncListeners = _this4.nextAsyncListeners; // eslint-disable-line
+
+          listeners.forEach(function (listener) {
+            return listener({
+              state: _this4.state,
+              commit: _this4.commit,
+              dispatch: _this4.dispatch,
+              type: type,
+              payload: payload,
+              options: options
+            });
+          });
+        } catch (e) {
+          console.error(e);
+        }
+
+        return res;
+      });
+    }
+    /**
+     * commit订阅同步相关事件
+     */
+
+  }, {
+    key: "subscribe",
+    value: function subscribe(listener) {
+      var _this5 = this;
+
+      var fn = function fn() {
+        if (_this5.nextListeners === _this5.currentListeners) {
+          _this5.nextListeners = _this5.currentListeners.slice();
+        }
+      };
+
+      fn();
+      this.nextListeners.push(listener);
+      var isSubscribed = true;
+
+      var unsubscribe = function unsubscribe() {
+        if (!isSubscribed) {
+          return;
+        }
+
+        isSubscribed = false;
+        fn();
+
+        var index = _this5.nextListeners.indexOf(listener);
+
+        _this5.nextListeners.splice(index, 1);
+      };
+
+      return unsubscribe;
+    }
+    /**
+     * dipatch订阅异步相关事件
+     */
+
+  }, {
+    key: "subscribeAction",
+    value: function subscribeAction(listener) {
+      var _this6 = this;
+
+      var fn = function fn() {
+        if (_this6.nextAsyncListeners === _this6.currentAsyncListeners) {
+          _this6.nextAsyncListeners = _this6.currentAsyncListeners.slice();
+        }
+      };
+
+      fn();
+      this.nextAsyncListeners.push(listener);
+      var isSubscribed = true;
+
+      var unsubscribe = function unsubscribe() {
+        if (!isSubscribed) {
+          return;
+        }
+
+        isSubscribed = false;
+        fn();
+
+        var index = _this6.nextAsyncListeners.indexOf(listener);
+
+        _this6.nextAsyncListeners.splice(index, 1);
+      };
+
+      return unsubscribe;
+    } // TODO：热更新, 目前小程序不支持
+
+  }, {
+    key: "update",
+    value: function update() {}
+  }]);
+
+  return Store;
+}();
+
+var normalizeMap = function normalizeMap(map) {
+  return Array.isArray(map) ? map.map(function (key) {
+    return {
+      key: key,
+      val: key
+    };
+  }) : Object.keys(map).map(function (key) {
+    return {
+      key: key,
+      val: map[key]
+    };
+  });
+};
+
+var mapActions = function mapActions(actions) {
+  var res = {};
+  normalizeMap(actions).forEach(function (_ref) {
+    var key = _ref.key,
+        val = _ref.val;
+
+    res[key] = function () {
+      var arguments$1 = arguments;
+
+      var dispatch = this.$store.dispatch;
+
+      for (var _len = arguments.length, arg = new Array(_len), _key = 0; _key < _len; _key++) {
+        arg[_key] = arguments$1[_key];
+      }
+
+      return typeof val === 'function' ? val.apply(this, [dispatch].concat(arg)) : dispatch.apply(this.$store, [val].concat(arg));
+    };
+  });
+  return res;
+};
+
+var find = function find(list, f) {
+  return list.filter(f)[0];
+};
+var deepCopy = function deepCopy(obj) {
+  var cache = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+  // just return if obj is immutable value
+  if (obj === null || _typeof_1(obj) !== 'object') {
+    return obj;
+  } // if obj is hit, it is in circular structure
+
+
+  var hit = find(cache, function (c) {
+    return c.original === obj;
+  });
+
+  if (hit) {
+    return hit.copy;
+  }
+
+  var copy = Array.isArray(obj) ? [] : {}; // put the copy into cache at first
+  // because we want to refer it in recursive deepCopy
+
+  cache.push({
+    original: obj,
+    copy: copy
+  });
+  Object.keys(obj).forEach(function (key) {
+    copy[key] = deepCopy(obj[key], cache);
+  });
+  return copy;
+};
+
+var repeat = function repeat(str, times) {
+  return new Array(times + 1).join(str);
+};
+
+var pad = function pad(num, maxLength) {
+  return repeat('0', maxLength - num.toString().length) + num;
+};
+
+var createLogger = function createLogger() {
+  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref$collapsed = _ref.collapsed,
+      collapsed = _ref$collapsed === void 0 ? true : _ref$collapsed,
+      _ref$filter = _ref.filter,
+      filter = _ref$filter === void 0 ? function (mutation, stateBefore, stateAfter) {
+    return true;
+  } : _ref$filter,
+      _ref$transformer = _ref.transformer,
+      transformer = _ref$transformer === void 0 ? function (state) {
+    return state;
+  } : _ref$transformer,
+      _ref$mutationTransfor = _ref.mutationTransformer,
+      mutationTransformer = _ref$mutationTransfor === void 0 ? function (mut) {
+    return mut;
+  } : _ref$mutationTransfor,
+      _ref$logger = _ref.logger,
+      logger = _ref$logger === void 0 ? console : _ref$logger;
+
+  return function (store) {
+    var prevState = deepCopy(store.state);
+    store.subscribe(function (mutation, state) {
+      if (typeof logger === 'undefined') {
+        return;
+      }
+
+      var nextState = deepCopy(state);
+
+      if (filter(mutation, prevState, nextState)) {
+        var time = new Date();
+        var formattedTime = " @ ".concat(pad(time.getHours(), 2), ":").concat(pad(time.getMinutes(), 2), ":").concat(pad(time.getSeconds(), 2), ".").concat(pad(time.getMilliseconds(), 3)); // eslint-disable-line
+
+        var formattedMutation = mutationTransformer(mutation);
+        var message = "mutation ".concat(mutation.type).concat(formattedTime);
+        var startMessage = collapsed ? logger.groupCollapsed : logger.group; // render
+
+        try {
+          startMessage.call(logger, message);
+        } catch (e) {
+          console.log(message);
+        }
+
+        logger.log('%c prev state', 'color: #9E9E9E; font-weight: bold', transformer(prevState));
+        logger.log('%c mutation', 'color: #03A9F4; font-weight: bold', formattedMutation);
+        logger.log('%c next state', 'color: #4CAF50; font-weight: bold', transformer(nextState));
+
+        try {
+          logger.groupEnd();
+        } catch (e) {
+          logger.log('—— log end ——');
+        }
+      }
+
+      prevState = nextState;
+    });
+  };
+};
+
+exports.Store = Store;
+exports.createLogger = createLogger;
+exports.default = connect;
+exports.mapActions = mapActions;

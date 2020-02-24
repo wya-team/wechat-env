@@ -5,6 +5,8 @@ const commonjs = require('@rollup/plugin-commonjs');
 const nodeResolve = require('@rollup/plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
 const { uglify } = require('rollup-plugin-uglify');
+const helperModelImports = require('@babel/helper-module-imports');
+let wm = new WeakMap();
 
 const builds = {
 	store: {
@@ -41,7 +43,39 @@ class Config {
 							{
 								"loose": true
 							}
-						]
+						],
+						[
+							({ types: t }) => {
+								return {
+									visitor: {
+										CallExpression(path) {
+											let callee = path.get('callee');
+
+											if (callee.node && callee.node.object && callee.node.property) {
+												if (t.isIdentifier(callee.node.object, { name: 'regeneratorRuntime' })) {
+													let programPath = path.scope.getProgramParent().path;
+													let runtimeId;
+
+													if (wm.has(programPath.node)) {
+														runtimeId = t.identifier(wm.get(programPath.node));
+													} else {
+														runtimeId = helperModelImports.addDefault(programPath, 'regenerator-runtime', {
+															nameHint: 'regeneratorRuntime',
+															importedInterop: 'uncompiled',
+															blockHoist: 3
+														});
+														wm.set(programPath.node, runtimeId.name);
+													}
+													callee.node.object.name = runtimeId.name;
+												}
+											}
+										}
+									}
+								};
+							}
+						],
+						"@babel/plugin-transform-runtime"
+
 					],
 					exclude: 'node_modules/**',
 					runtimeHelpers: true
@@ -52,8 +86,8 @@ class Config {
 				}),
 				replace({
 					'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-				}),
-				process.env.NODE_ENV === 'production' && uglify()
+				})
+				// process.env.NODE_ENV === 'production' && uglify()
 			],
 			output: {
 				file: opt.dest,

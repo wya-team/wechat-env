@@ -1,4 +1,5 @@
 const { resolve, dirname, relative } = require('path');
+const upath = require('upath');
 const fs = require('fs-extra');
 
 let __cwd = process.env.SOURCE_DIR;
@@ -73,11 +74,12 @@ const babelConfig = (() => {
 							if (cache[value]) {
 								let fullpath;
 								try {
-									fullpath = relative(dirname(filename), resolve(src, 'libs', value, cache[value].main))
+									fullpath = relative(dirname(filename), resolve(src, 'libs', value, cache[value].main));
 								} catch (e) {
 									console.error(e, '请检查文件', filename, value, cache[value].main);
 								}
-								path.node.source.value = fullpath;
+
+								path.node.source.value = upath.normalize(fullpath);
 							}
 						}
 					}

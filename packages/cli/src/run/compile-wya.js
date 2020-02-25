@@ -40,7 +40,7 @@ module.exports = (options) => {
 
 			let fn = (ext) => {
 				let regex = new RegExp(src);
-				return file.path.replace(regex, dist).replace(/.wya/, `.${ext}`);
+				return file.path.replace(regex, dist).replace(/\.wya$/, `.${ext}`);
 			};
 			// script
 			babel.transform(
@@ -81,7 +81,7 @@ module.exports = (options) => {
 					let fullpath = resolve(dirname(prev), url);
 					// 如果本身是wxss文件, 编译后不将其包含进来。
 					if (!fs.existsSync(fullpath) || url.includes('.wxss')) {
-						imports += `@import '${upath.normalize(url.replace(/.scss/, '.wxss'))}';\n`;
+						imports += `@import '${upath.normalize(url.replace(/\.scss$/, '.wxss'))}';\n`;
 						return {
 							file: fullpath, 
 							contents: ``

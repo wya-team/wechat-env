@@ -15,42 +15,39 @@ class HttpAdapter {
 		debug && console.time(`[@wya/http]: ${tag}`);
 
 		return new Promise((resolve, reject) => {
-			// 用于取消
-			getInstance && getInstance({
-				cancel: HttpAdapter.cancel.bind(null, { options: opts, reject }), 
-			});	
-
 			/**
-			 * bug fix
-			 * iOS 10 fetch() 没有finally方法
-			 * 使用@babel/polyfill修复Promise，无法修复fetch，可以是fetch内部实现了一套Promise
+			 * https://developers.weixin.qq.com/miniprogram/dev/api/network/request/wx.request.html
+			 * 目前是这些需求
 			 */
-			let finallyHack = () => {
-				debug && console.timeEnd(`[@wya/http]: ${tag}`);
-			};
-			
-			wx.request({
+			let request = wx.request({
 				url,
 				data: body,
 				header: headers,
 				method,
-				success: (responseText) => {
-					resolve(responseText);
-					
-					finallyHack();
+				success: (res) => {
+					resolve(res.data);
 				},
 				fail: (res) => {
 					reject(new HttpError({
 						code: ERROR_CODE.HTTP_STATUS_ERROR,
-						httpStatus: res.status,
+						httpStatus: res.statusCode,
 					}));
-					finallyHack();
+				},
+				complete: () => {
+					debug && console.timeEnd(`[@wya/http]: ${tag}`);
 				}
 			});
+
+			// 用于取消
+			getInstance && getInstance({
+				cancel: HttpAdapter.cancel.bind(null, { options: opts, reject, request }), 
+			});	
 		});
 	}
 	
-	static cancel({ xhr, options, reject }) {
+	static cancel({ request, options, reject }) {
+		request && request.abort();
+
 		options.setOver && options.setOver(new HttpError({
 			code: ERROR_CODE.HTTP_CANCEL
 		}));

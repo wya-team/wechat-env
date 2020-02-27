@@ -11,6 +11,8 @@ const babelConfig = require('./babel-config');
 let { resolve, dirname } = path;
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
+src = upath.normalize(src);
+dist = upath.normalize(dist);
 
 module.exports = (options) => {
 	return through.obj(function (file, enc, cb) {
@@ -39,8 +41,17 @@ module.exports = (options) => {
 			};
 
 			let fn = (ext) => {
-				let regex = new RegExp(src.replace(/\\/, '\\\\')); // 兼容winos
-				return file.path.replace(regex, dist).replace(/\.wya$/, `.${ext}`);
+				let regex = new RegExp(src);
+				let fullpath = upath
+					.normalize(file.path)
+					.replace(regex, dist)
+					.replace(/\.wya$/, `.${ext}`);
+
+				if (!fullpath.includes(dist)) {
+					throw new Error('路径解析错误')
+				}
+
+				return resolve(fullpath);
 			};
 			// script
 			babel.transform(

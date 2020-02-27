@@ -39,7 +39,7 @@ module.exports = (options) => {
 			};
 
 			let fn = (ext) => {
-				let regex = new RegExp(src);
+				let regex = new RegExp(src.replace(/\\/, '\\\\')); // 兼容winos
 				return file.path.replace(regex, dist).replace(/\.wya$/, `.${ext}`);
 			};
 			// script

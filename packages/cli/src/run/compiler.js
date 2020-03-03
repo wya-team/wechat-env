@@ -46,6 +46,7 @@ class Compiler {
 		return gulp
 			.src(`${src}/**/*.wxs`)
 			.pipe(babel(babelConfig))
+			.pipe(rename({ extname: '.wxs' }))
 			.pipe(gulp.dest(dist));
 	}
 

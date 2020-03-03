@@ -45,6 +45,7 @@ class Compiler {
 	static wxs = () => {
 		return gulp
 			.src(`${src}/**/*.wxs`)
+			.pipe(babel(babelConfig))
 			.pipe(gulp.dest(dist));
 	}
 

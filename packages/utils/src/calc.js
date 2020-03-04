@@ -7,12 +7,12 @@
 const add = (arg1, arg2, opts = {}) => {
 	let r1, r2, m, c; // eslint-disable-line
 	try {
-		r1 = arg1.toString().split(".")[1].length;
+		r1 = (arg1.toString().split(".")[1] || '').length;
 	} catch (e) {
 		r1 = 0;
 	}
 	try {
-		r2 = arg2.toString().split(".")[1].length;
+		r2 = (arg2.toString().split(".")[1] || '').length;
 	} catch (e) {
 		r2 = 0;
 	}
@@ -43,12 +43,12 @@ const add = (arg1, arg2, opts = {}) => {
 const sub = (arg1, arg2, opts = {}) => {
 	let r1, r2, m, n; // eslint-disable-line
 	try {
-		r1 = arg1.toString().split(".")[1].length;
+		r1 = (arg1.toString().split(".")[1] || '').length;
 	} catch (e) {
 		r1 = 0;
 	}
 	try {
-		r2 = arg2.toString().split(".")[1].length;
+		r2 = (arg2.toString().split(".")[1] || '').length;
 	} catch (e) {
 		r2 = 0;
 	}
@@ -65,12 +65,12 @@ const sub = (arg1, arg2, opts = {}) => {
 const mul = (arg1, arg2, opts = {}) => {
 	let m = 0, s1 = arg1.toString(), s2 = arg2.toString();  // eslint-disable-line
 	try {
-		m += s1.split(".")[1].length;
+		m += (s1.split(".")[1] || '').length;
 	} catch (e) {
 		console.log(e);
 	}
 	try {
-		m += s2.split(".")[1].length;
+		m += (s2.split(".")[1] || '').length;
 	} catch (e) {
 		console.log(e);
 	}
@@ -85,10 +85,10 @@ const mul = (arg1, arg2, opts = {}) => {
 const div = (arg1, arg2, opts = {}) => {
 	let t1 = 0, t2 = 0, r1, r2;  // eslint-disable-line
 	try {
-		t1 = arg1.toString().split(".")[1].length;
+		t1 = (arg1.toString().split(".")[1] || '').length;
 	} catch (e) { }  // eslint-disable-line
 	try {
-		t2 = arg2.toString().split(".")[1].length;
+		t2 = (arg2.toString().split(".")[1] || '').length;
 	} catch (e) { }  // eslint-disable-line
 
 	r1 = Number(arg1.toString().replace(".", ""));
@@ -105,12 +105,12 @@ const div = (arg1, arg2, opts = {}) => {
 const mod = (arg1, arg2, opts = {}) => {
 	let t1 = 0, t2 = 0;  // eslint-disable-line
 	try {
-		t1 = arg1.toString().split(".")[1].length;
+		t1 = (arg1.toString().split(".")[1] || '').length;
 	} catch (e) {
 		console.log(e);
 	}
 	try {
-		t2 = arg2.toString().split(".")[1].length;
+		t2 = (arg2.toString().split(".")[1] || '').length;
 	} catch (e) {
 		console.log(e);
 	}

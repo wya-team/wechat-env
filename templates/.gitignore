@@ -13,6 +13,7 @@ node_modules
 .c9/
 *.launch
 .settings/
+.history/
 
 # IDE - VSCode
 .vscode/*

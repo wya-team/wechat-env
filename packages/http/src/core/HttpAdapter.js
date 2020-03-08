@@ -8,7 +8,7 @@ class HttpAdapter {
 			credentials,
 			getInstance
 		} = opts;
-		let { url, headers, body, method } = HttpAdapter.getOptions(opts);
+		let { url, headers, body, method, file } = HttpAdapter.getOptions(opts);
 
 		let tag = `${opts.url}: ${new Date().getTime()}`;
 
@@ -17,13 +17,13 @@ class HttpAdapter {
 		return new Promise((resolve, reject) => {
 			/**
 			 * https://developers.weixin.qq.com/miniprogram/dev/api/network/request/wx.request.html
-			 * 目前是这些需求
+			 * 目前是这些需
 			 */
-			let request = wx.request({
+			let ajax; 
+			let requestOptions = {};
+			let commonOptions = {
 				url,
-				data: body,
 				header: headers,
-				method,
 				success: (res) => {
 					resolve(res.data);
 				},
@@ -36,7 +36,23 @@ class HttpAdapter {
 				complete: () => {
 					debug && console.timeEnd(`[@wya/http]: ${tag}`);
 				}
-			});
+			};
+
+			if (opts.method === 'FORM') {
+				ajax = wx.uploadFile;
+				requestOptions = {
+					formData: body,
+					...file
+				};
+			} else {
+				ajax = wx.request;
+				requestOptions = {
+					data: body,
+					method,
+				};
+			}
+
+			let request = ajax({ ...commonOptions, ...requestOptions });
 
 			// 用于取消
 			getInstance && getInstance({
@@ -46,7 +62,7 @@ class HttpAdapter {
 	}
 	
 	static cancel({ request, options, reject }) {
-		request && request.abort();
+		request && request.abort && request.abort();
 
 		options.setOver && options.setOver(new HttpError({
 			code: ERROR_CODE.HTTP_CANCEL
@@ -98,6 +114,7 @@ class HttpAdapter {
 		let method = options.method;
 
 		let body = undefined; // eslint-disable-line
+		let file = undefined; // eslint-disable-line
 
 		// 主动添加Header
 		if ((/(PUT|POST|DELETE)$/.test(options.method))) { // PUT + POST + DELETE
@@ -114,26 +131,24 @@ class HttpAdapter {
 					: paramArray.join('&');
 			}
 		} else if (options.method === 'FORM') {
-
-			// headers['Content-Type'] = 'multipart/form-data';
-			headers['Content-Type'] = null; // 自动生成代码片段, 携带boundary=[hash], 否则后端无法接受
+			body = {};
+			headers['Content-Type'] = null;
 			method = 'POST';
-
-			let formData = new FormData();
 
 			// 参数
 			if (param) {
 				Object.keys(param).forEach(key => {
-					let fileName = undefined;  // eslint-disable-line
-					if (param[key] instanceof Blob) { // File or Blob
-						fileName = param[key].name || fileName;
+					// iOS: wxfile://tmp_xx[.ext]
+					if (/[a-zA-z]+:\/\/tmp[^\s]*/.test(param[key])) { 
+						file = {
+							name: key,
+							filePath: param[key]
+						};
+					} else {
+						body[key] = param[key];
 					}
-					fileName 
-						? formData.append(key, param[key], fileName)
-						: formData.append(key, param[key]); // 特殊处理
 				});
 			}
-			body = formData;
 		}
 
 		headers = { ...headers, ...options.headers };
@@ -151,7 +166,8 @@ class HttpAdapter {
 			url,
 			method,
 			headers,
-			body
+			body,
+			file
 		};
 	};
 }

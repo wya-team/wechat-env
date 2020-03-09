@@ -48,7 +48,7 @@ module.exports = (options) => {
 					.replace(/\.wya$/, `.${ext}`);
 
 				if (!fullpath.includes(dist)) {
-					throw new Error('路径解析错误')
+					throw new Error('路径解析错误');
 				}
 
 				return resolve(fullpath);

@@ -44,9 +44,6 @@ module.exports = class RunManager {
 	}
 
 	async dev() {
-		process.env.NODE_ENV = 'development';
-		this.isProd = false;
-
 		await this.process();
 		this.devProcess = new DevProcess(this);
 		await this.devProcess.process();
@@ -68,9 +65,6 @@ module.exports = class RunManager {
 	}
 
 	async build() {
-		process.env.NODE_ENV = 'production';		
-		this.isProd = true;
-
 		await this.process();
 
 		this.buildProcess = new BuildProcess(this);

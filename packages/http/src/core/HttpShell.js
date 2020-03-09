@@ -110,7 +110,7 @@ class HttpShell {
 		try {
 			const { onBefore } = opts;
 
-			// before
+			// before，全局的方法先执行，注册的方法后执行（确保可以拿到构造好的参数）
 			try {
 				opts = await this.onBefore({ options: opts }) || opts;
 				opts = await onBefore({ options: opts }) || opts;
@@ -209,7 +209,7 @@ class HttpShell {
 
 			let { onOther, onAfter } = options;
 
-			// after
+			// after，注册的方法先执行，全局的方法后执行（确保可以拿到改造好的参数）
 			try {
 				response = await onAfter({ response, options }) || response;
 				response = await this.onAfter({ response, options }) || response;

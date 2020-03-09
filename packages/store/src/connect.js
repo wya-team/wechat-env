@@ -68,6 +68,7 @@ export default (next) => userOptions => {
 				}
 				hasSubscribe = true;
 			}
+			// 注册的方法后执行，确保hook可以读取到store的状态或其他操作
 			if (typeof hook === 'function') {
 				hook.call(this, options);
 			}
@@ -76,7 +77,7 @@ export default (next) => userOptions => {
 	
 	const off = (hook) => {
 		return function () {
-
+			// 注册的方法先执行, 确保执行时可以取到store或执行其他操作;
 			if (typeof hook === 'function') {
 				hook.call(this);
 			}

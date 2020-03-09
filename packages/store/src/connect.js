@@ -17,6 +17,7 @@ export default (next) => userOptions => {
 	}
 
 	const shouldSubscribe = Boolean(mapState);
+	let hasSubscribe = false;
 
 	function handleChange(options) {
 		if (!this.$unsubscribe) {
@@ -41,46 +42,68 @@ export default (next) => userOptions => {
 
 	const {
 		// Page
-		onLoad: _onLoad,
-		onUnload: _onUnload,
+		onLoad,
+		onUnload,
+		onShow,
+		onHide,
 
 		// Component
-		attached: _attached,
-		detached: _detached
+		attached,
+		detached,
+		lifetimes = {},
+		pageLifetimes = {},
+		...rest
 	} = userOptions;
 
-	function onLoad(options) {
-		this.$store = store;
-		if (!this.$store) {
-			warning("Store对象不存在!");
-		}
-		if (shouldSubscribe) {
-			this.$unsubscribe = this.$store.subscribe(handleChange.bind(this, options));
-			handleChange.call(this, options);
-		}
-		if (typeof _onLoad === 'function') {
-			_onLoad.call(this, options);
-		}
-		if (typeof _attached === 'function') {
-			_attached.call(this, options);
-		}
-	}
+	const on = (hook) => {
+		return function (options) {
+			if (!hasSubscribe) {
+				this.$store = store;
+				if (!this.$store) {
+					warning("Store对象不存在!");
+				}
+				if (shouldSubscribe) {
+					this.$unsubscribe = this.$store.subscribe(handleChange.bind(this, options));
+					handleChange.call(this, options);
+				}
+				hasSubscribe = true;
+			}
+			if (typeof hook === 'function') {
+				hook.call(this, options);
+			}
+		};
+	};
+	
+	const off = (hook) => {
+		return function () {
 
-	function onUnload() {
-		if (typeof _onUnload === 'function') {
-			_onUnload.call(this);
-		}
-		if (typeof _detached === 'function') {
-			_detached.call(this, options);
-		}
-		typeof this.$unsubscribe === 'function' && this.$unsubscribe();
-	}
+			if (typeof hook === 'function') {
+				hook.call(this);
+			}
+
+			typeof this.$unsubscribe === 'function' && this.$unsubscribe();
+
+			hasSubscribe = false;
+		};
+	};
 
 	return next({
-		...userOptions,
-		onLoad, 
-		onUnload,
-		attached: onLoad,
-		detached: onUnload,
+		...rest,
+		onLoad: on(onLoad), 
+		onShow: on(onShow), 
+		onUnload: off(onUnload),
+		onHide: off(onHide),
+
+		// for components
+		lifetimes: {
+			...lifetimes,
+			attached: on(attached || lifetimes.attached),
+			detached: off(detached || lifetimes.detached),
+		},
+		pageLifetimes: {
+			...pageLifetimes,
+			show: on(pageLifetimes.show),
+			hide: off(pageLifetimes.hide),
+		}
 	});
 };

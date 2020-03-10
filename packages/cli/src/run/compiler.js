@@ -18,11 +18,13 @@ let entryConfig = null;
 let getEntryConfig = () => {
 	if (entryConfig) return entryConfig;
 	let modules = (process.env.IGNORE_MODULES || '').split(',');
-	let ignore = modules.map(i => `${src}/pages/${i}/**/**`);
+	let ignore = modules.filter(i => !!i).map(i => `${src}/pages/${i}/**/**`);
 
-	return {
-		ignore
+	entryConfig = {
+		ignore: ignore.length ? ignore : undefined
 	};
+
+	return entryConfig;
 };
 class Compiler {
 

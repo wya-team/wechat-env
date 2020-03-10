@@ -26,7 +26,7 @@ module.exports = (options) => {
 
 			// 插件不支持对 Stream 对直接操作，跑出异常
 			if (file.isStream()) {
-				this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+				this.emit('error', 'mp-cli/js: Streaming not supported');
 				return cb();
 			}
 

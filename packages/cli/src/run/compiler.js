@@ -7,6 +7,7 @@ const rename = require('gulp-rename');
 const babel = require('gulp-babel');
 const babelConfig = require('./babel-config');
 const compileWya = require('./compile-wya');
+const compileJSON = require('./compile-json');
 sass.compiler = require('node-sass');
 
 let src = process.env.REPO_SOURCE_DIR;
@@ -66,6 +67,7 @@ class Compiler {
 	static json = () => {
 		return gulp
 			.src(`${src}/**/*.json`, getEntryConfig())
+			.pipe(compileJSON())
 			.pipe(gulp.dest(dist));
 	}
 

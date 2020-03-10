@@ -15,6 +15,7 @@ program
 // dev
 program
 	.command('dev [sourceDir]', 'development mode')
+	.option('--npm-script <npmScript>', 'npm scripts', { default: "echo 'end'" })
 	.action((sourceDir = '.', commandOptions) => {
 		let app = new Run({
 			sourceDir: resolve(sourceDir),

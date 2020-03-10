@@ -77,7 +77,7 @@ class DevProcess extends EventEmitter {
 	 */
 	async process() {
 		await this.prompt();
-		let $process = exec(`npx gulp -f ${gulpConfig} dev --color`);
+		let $process = exec(`npx gulp -f ${gulpConfig} dev --color & ${this.$parent.options.npmScript}`);
 
 		$process.stdout.on('data', stdout => console.info(stdout));
 		$process.stderr.on('data', stderr => console.info(stderr));

@@ -14,22 +14,27 @@ let dist = process.env.REPO_DIST_DIR;
 
 console.log(`ENTRY: ${src}\nOUTPUT: ${dist}`);
 
-let ignore = () => {
+let entryConfig = null;
+let getEntryConfig = () => {
+	if (entryConfig) return entryConfig;
 	let modules = (process.env.IGNORE_MODULES || '').split(',');
-	let result = modules.map(i => `${src}/${i}/**`);
-	return result;
+	let ignore = modules.map(i => `${src}/pages/${i}/**/**`);
+
+	return {
+		ignore
+	};
 };
 class Compiler {
 
 	static wya = () => {
 		return gulp
-			.src(`${src}/**/*.wya`, { ignore: ignore() })
+			.src(`${src}/**/*.wya`, getEntryConfig())
 			.pipe(compileWya());
 	}
 
 	static sass = () => {
 		return gulp
-			.src(`${src}/**/*.{wxss,scss}`, { ignore: ignore() })
+			.src(`${src}/**/*.{wxss,scss}`, getEntryConfig())
 			.pipe(sass().on('error', sass.logError))
 			.pipe(rename({ extname: '.wxss' }))
 			.pipe(gulp.dest(dist));
@@ -37,20 +42,20 @@ class Compiler {
 
 	static js = () => {
 		return gulp
-			.src(`${src}/**/*.js`, { ignore: ignore() })
+			.src(`${src}/**/*.js`, getEntryConfig())
 			.pipe(babel(babelConfig))
 			.pipe(gulp.dest(dist));
 	}
 
 	static wxml = () => {
 		return gulp
-			.src(`${src}/**/*.wxml`, { ignore: ignore() })
+			.src(`${src}/**/*.wxml`, getEntryConfig())
 			.pipe(gulp.dest(dist));
 	}
 
 	static wxs = () => {
 		return gulp
-			.src(`${src}/**/*.wxs`, { ignore: ignore() })
+			.src(`${src}/**/*.wxs`, getEntryConfig())
 			.pipe(babel(babelConfig))
 			.pipe(rename({ extname: '.wxs' }))
 			.pipe(gulp.dest(dist));
@@ -58,7 +63,7 @@ class Compiler {
 
 	static json = () => {
 		return gulp
-			.src(`${src}/**/*.json`, { ignore: ignore() })
+			.src(`${src}/**/*.json`, getEntryConfig())
 			.pipe(gulp.dest(dist));
 	}
 

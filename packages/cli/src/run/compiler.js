@@ -14,16 +14,22 @@ let dist = process.env.REPO_DIST_DIR;
 
 console.log(`ENTRY: ${src}\nOUTPUT: ${dist}`);
 
+let ignore = () => {
+	let modules = (process.env.IGNORE_MODULES || '').split(',');
+	let result = modules.map(i => `${src}/${i}/**`);
+	return result;
+};
 class Compiler {
+
 	static wya = () => {
 		return gulp
-			.src(`${src}/**/*.wya`)
+			.src(`${src}/**/*.wya`, { ignore: ignore() })
 			.pipe(compileWya());
 	}
 
 	static sass = () => {
 		return gulp
-			.src(`${src}/**/*.{wxss,scss}`)
+			.src(`${src}/**/*.{wxss,scss}`, { ignore: ignore() })
 			.pipe(sass().on('error', sass.logError))
 			.pipe(rename({ extname: '.wxss' }))
 			.pipe(gulp.dest(dist));
@@ -31,20 +37,20 @@ class Compiler {
 
 	static js = () => {
 		return gulp
-			.src(`${src}/**/*.js`)
+			.src(`${src}/**/*.js`, { ignore: ignore() })
 			.pipe(babel(babelConfig))
 			.pipe(gulp.dest(dist));
 	}
 
 	static wxml = () => {
 		return gulp
-			.src(`${src}/**/*.wxml`)
+			.src(`${src}/**/*.wxml`, { ignore: ignore() })
 			.pipe(gulp.dest(dist));
 	}
 
 	static wxs = () => {
 		return gulp
-			.src(`${src}/**/*.wxs`)
+			.src(`${src}/**/*.wxs`, { ignore: ignore() })
 			.pipe(babel(babelConfig))
 			.pipe(rename({ extname: '.wxs' }))
 			.pipe(gulp.dest(dist));
@@ -52,7 +58,7 @@ class Compiler {
 
 	static json = () => {
 		return gulp
-			.src(`${src}/**/*.json`)
+			.src(`${src}/**/*.json`, { ignore: ignore() })
 			.pipe(gulp.dest(dist));
 	}
 
@@ -64,7 +70,6 @@ class Compiler {
 		return del([`${dist}/**/*.wya`], { force: true });
 	}
 }
-
 // build task
 exports.build = gulp.series(
 	Compiler.cleaner,

@@ -58,12 +58,12 @@ class DevProcess extends EventEmitter {
 
 				let ignore;
 				if (result.isSelectAll === 'no') {
-					ignore = [];
-				} else {
 					ignore = allModules.filter((i) => !modules.includes(i));
+				} else {
+					ignore = [];
 				}
-
-				console.log(ignore, modules);
+				
+				process.env.IGNORE_MODULES = ignore.join(',');
 				resolve();
 			}).catch((res) => {
 				reject(res);

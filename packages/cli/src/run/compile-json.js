@@ -35,8 +35,18 @@ module.exports = (options) => {
 				regex = new RegExp(`^(${regex})`);
 				
 				let json = JSON.parse(file.contents.toString());
+
+				// pages
 				json.pages = json.pages.filter(i => !regex.test(i));
 
+				// tabBar
+				if (json.tabBar && json.tabBar.list) {
+					json.tabBar.list = json.tabBar.list.filter(i => !regex.test(i.pagePath));
+					if (json.tabBar.list.length <= 1) {
+						delete json.tabBar;
+					}
+				}
+				
 				file.contents = Buffer.from(JSON.stringify(json, null, "\t"));
 			}
 		}

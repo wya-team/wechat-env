@@ -7,20 +7,25 @@ const defaultMapStates = (array, state, options) => {
 	}, {});
 };
 
+/**
+ * 全局仅对this实例注入 $store
+ */
+const HAS_SUBSCRIBE = '@wya/mp-store/has-subscribe';
+const UNSUBSCRIBE = '@wya/mp-store/unsubscribe';
 
 export default (next) => userOptions => {
 	const { mapState, store: _store } = userOptions || {};
 	const store = getApp && getApp().store || _store;
 
 	if (!store) {
+		console.warn('@wya/mp-store: 请先注入store');
 		return next(userOptions);
 	}
 
 	const shouldSubscribe = Boolean(mapState);
-	let hasSubscribe = false;
 
 	function handleChange(options) {
-		if (!this.$unsubscribe) {
+		if (!this[UNSUBSCRIBE]) {
 			return;
 		}
 
@@ -57,16 +62,14 @@ export default (next) => userOptions => {
 
 	const on = (hook) => {
 		return function (options) {
-			if (!hasSubscribe) {
+			if (!this[HAS_SUBSCRIBE]) {
 				this.$store = store;
-				if (!this.$store) {
-					warning("Store对象不存在!");
-				}
+				
 				if (shouldSubscribe) {
-					this.$unsubscribe = this.$store.subscribe(handleChange.bind(this, options));
+					this[UNSUBSCRIBE] = this.$store.subscribe(handleChange.bind(this, options));
 					handleChange.call(this, options);
 				}
-				hasSubscribe = true;
+				this[HAS_SUBSCRIBE] = true;
 			}
 			// 注册的方法后执行，确保hook可以读取到store的状态或其他操作
 			if (typeof hook === 'function') {
@@ -82,9 +85,9 @@ export default (next) => userOptions => {
 				hook.call(this);
 			}
 
-			typeof this.$unsubscribe === 'function' && this.$unsubscribe();
+			typeof this[UNSUBSCRIBE] === 'function' && this[UNSUBSCRIBE]();
 
-			hasSubscribe = false;
+			this[HAS_SUBSCRIBE] = false;
 		};
 	};
 

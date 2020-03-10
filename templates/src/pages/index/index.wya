@@ -106,8 +106,8 @@ Page({
 		});
 	},
 
-	handleViewTap3() {
-		this.request({
+	async handleViewTap3() {
+		await this.request({
 			url: 'INDEX_MAIN_POST',
 			localData: {
 				status: 1,
@@ -115,9 +115,6 @@ Page({
 					user: 'request'
 				}
 			}
-		}).then((res) => {
-		}).catch((res) => {
-
 		});
 	}
 });

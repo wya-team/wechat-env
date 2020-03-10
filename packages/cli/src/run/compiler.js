@@ -8,6 +8,7 @@ const babel = require('gulp-babel');
 const babelConfig = require('./babel-config');
 const compileWya = require('./compile-wya');
 const compileJSON = require('./compile-json');
+const compileLibs = require('./compile-libs');
 sass.compiler = require('node-sass');
 
 let src = process.env.REPO_SOURCE_DIR;
@@ -28,6 +29,14 @@ let getEntryConfig = () => {
 	return entryConfig;
 };
 class Compiler {
+
+	// 特殊场景处理
+	static libs = () => {
+		return gulp
+			.src(`${dist}/libs/**/*.js`)
+			.pipe(compileLibs())
+			.pipe(gulp.dest(`${dist}/libs/**/*.js`));
+	}
 
 	static wya = () => {
 		return gulp
@@ -89,6 +98,7 @@ exports.build = gulp.series(
 		Compiler.wxml,
 		Compiler.wxs,
 		Compiler.json,
+		Compiler.libs,
 	)
 );
 
@@ -102,7 +112,9 @@ exports.dev = gulp.series(
 		Compiler.wxml,
 		Compiler.wxs,
 		Compiler.json,
+		Compiler.libs,
 		() => {
+			gulp.watch(`${dist}/libs/**/*.js`, Compiler.libs);
 			gulp.watch(`${src}/**/*.wya`, Compiler.wya); // watch默认会输出一个wya格式的代码
 			gulp.watch(`${src}/**/*.js`, Compiler.js);
 			gulp.watch(`${src}/**/*.{wxss,scss}`, Compiler.sass);

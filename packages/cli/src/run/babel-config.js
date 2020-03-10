@@ -32,6 +32,9 @@ const babelConfig = (() => {
 			r('@babel/plugin-proposal-function-bind'),
 			r('@babel/plugin-syntax-dynamic-import'),
 			[
+				r('@babel/plugin-transform-runtime')
+			],
+			[
 				r('@babel/plugin-proposal-decorators'),
 				{
 					"legacy": true
@@ -53,18 +56,39 @@ const babelConfig = (() => {
 							let thirdPath = resolve(__cwd, `node_modules/${value}`);
 							let pkgPath = resolve(thirdPath, `package.json`);
 
+							let hasPkg = fs.existsSync(pkgPath);
+							let isJS = fs.existsSync(thirdPath.includes('.js') ? thirdPath : `${thirdPath}.js`);
+							let hasJS = fs.existsSync(thirdPath + '/index.js');
+							
 							// 写文件
-							if (!cache[value] && fs.existsSync(pkgPath)) {
-								let { main } = JSON.parse(fs.readFileSync(pkgPath));
+							if (!cache[value] && (hasPkg || hasJS || isJS)) {
 
-								let dir = dirname(resolve(thirdPath, main));
-								let pkgDir = main.split('/');
-								pkgDir.pop();
-								let cpPath = resolve(dist, 'libs', value, pkgDir.join('/'));
+								let main;
+								let dir;
+								let cpPath;
+								if (hasPkg) {
+									let pkgDir;
+									main = JSON.parse(fs.readFileSync(pkgPath)).main;
 
-								fs.copySync(dir, cpPath);
+									dir = dirname(resolve(thirdPath, main));
+									pkgDir = main.split('/');
+									pkgDir.pop();
+									cpPath = resolve(dist, 'libs', value, pkgDir.join('/'));
 
-								console.log(`源文件已拷贝到目标文件: ${cpPath}`);
+									fs.copySync(dir, cpPath);
+									console.log(`源文件已拷贝到目标文件1: ${cpPath}`);
+								}
+
+								if (isJS || hasJS) {
+									main = hasJS ? '/index.js' : value.includes('.js') ? '' : `.js`;
+
+									dir = resolve(thirdPath + main);
+									cpPath = resolve(dist, 'libs', value) + main;
+
+									fs.copySync(dir, cpPath);
+									console.log(`源文件已拷贝到目标文件2: ${cpPath}`);
+								} 
+
 								cache[value] = {
 									main
 								};
@@ -74,7 +98,7 @@ const babelConfig = (() => {
 							if (cache[value]) {
 								let fullpath;
 								try {
-									fullpath = relative(dirname(filename), resolve(src, 'libs', value, cache[value].main));
+									fullpath = relative(dirname(filename), resolve(src, 'libs', value) + cache[value].main);
 								} catch (e) {
 									console.error(e, '请检查文件', filename, value, cache[value].main);
 								}

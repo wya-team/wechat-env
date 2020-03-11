@@ -114,8 +114,15 @@ const babelConfig = (() => {
 					return {
 						visitor: {
 							MemberExpression(path) {
-								if (path.matchesPattern("process.env.NODE_ENV")) {
-									path.replaceWith(t.valueToNode(process.env.NODE_ENV));
+								const hasNodeENV = path.matchesPattern("process.env.NODE_ENV");
+								const hasBranch = path.matchesPattern("process.env.BRANCH");
+								const hasCustom = path.matchesPattern("process.env.CUSTOM");
+								
+								// 发布分支, 
+								if (hasNodeENV || hasBranch || hasCustom) {
+									hasNodeENV && path.replaceWith(t.valueToNode(process.env.NODE_ENV));
+									hasBranch && path.replaceWith(t.valueToNode(process.env.BRANCH));
+									hasCustom && path.replaceWith(t.valueToNode(process.env.CUSTOM));
 
 									if (path.parentPath.isBinaryExpression()) {
 										const evaluated = path.parentPath.evaluate();

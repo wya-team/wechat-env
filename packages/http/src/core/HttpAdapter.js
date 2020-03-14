@@ -28,17 +28,16 @@ class HttpAdapter {
 				url,
 				header: headers,
 				success: (res) => {
-					HttpHelper.remove(request);
 					resolve(res.data);
 				},
 				fail: (res) => {
-					HttpHelper.remove(request);
 					reject(new HttpError({
 						code: ERROR_CODE.HTTP_STATUS_ERROR,
 						httpStatus: res.statusCode,
 					}));
 				},
 				complete: () => {
+					HttpHelper.remove(request);
 					debug && console.timeEnd(`[@wya/http]: ${tag}`);
 				}
 			};

@@ -1,4 +1,5 @@
 import HttpError, { ERROR_CODE } from './HttpError';
+import HttpHelper from './HttpHelper';
 import { getPropByPath } from '../utils/index';
 
 class HttpAdapter {
@@ -19,15 +20,19 @@ class HttpAdapter {
 			 * https://developers.weixin.qq.com/miniprogram/dev/api/network/request/wx.request.html
 			 * 目前是这些需
 			 */
-			let ajax; 
+			let ajax;
+			let request;
+			let cancel; 
 			let requestOptions = {};
 			let commonOptions = {
 				url,
 				header: headers,
 				success: (res) => {
+					HttpHelper.remove(request);
 					resolve(res.data);
 				},
 				fail: (res) => {
+					HttpHelper.remove(request);
 					reject(new HttpError({
 						code: ERROR_CODE.HTTP_STATUS_ERROR,
 						httpStatus: res.statusCode,
@@ -52,12 +57,13 @@ class HttpAdapter {
 				};
 			}
 
-			let request = ajax({ ...commonOptions, ...requestOptions });
+			request = ajax({ ...commonOptions, ...requestOptions });
+			cancel = HttpAdapter.cancel.bind(null, { options: opts, reject, request });
 
+			let params = { cancel, request, options: opts };
 			// 用于取消
-			getInstance && getInstance({
-				cancel: HttpAdapter.cancel.bind(null, { options: opts, reject, request }), 
-			});	
+			getInstance && getInstance(params);	
+			HttpHelper.add(params);
 		});
 	}
 	

@@ -1,14 +1,23 @@
 const { expect } = require('chai');
 
-const { HttpError, default: createHttpClient } = require('..');
+const { HttpError, HttpHelper, default: createHttpClient } = require('..');
 const { ERROR_CODE } = require('../core/HttpError');
 
 global.wx = {
 	request(options = {}) {
-		const { url, data, header, method, success, fail } = options;
-		success({
-			login: "wya-team"
-		});
+		const { url, data, header, method, success, fail, complete, delayForTest = 50 } = options;
+		setTimeout(() => {
+			success({
+				// 小程序返回格式
+				data: {
+					status: 1,
+					data: {
+						login: "wya-team"
+					}
+				}
+			});
+			complete();
+		}, delayForTest);
 	}
 };
 
@@ -92,7 +101,7 @@ describe('browser.js', () => {
 					return {
 						status: 1,
 						data: {
-							...response
+							...response.data
 						}
 					};
 				}
@@ -178,4 +187,26 @@ describe('browser.js', () => {
 			expect(count).to.equal(2);
 		}
 	});
+
+	it('HttpHelper', async () => {
+		expect(HttpHelper.requests.length).to.equal(0);
+
+		let options = {
+			url: 'https://api.github.com/users/wya-team',
+			delayForTest: 2000
+		};
+
+		let request = $.ajax(options);
+
+		await new Promise(resolve => setTimeout(resolve, 20));
+		expect(HttpHelper.requests.length).to.equal(1);
+
+		await request;
+		expect(HttpHelper.requests.length).to.equal(0);
+
+		HttpHelper.cancelAll();
+		HttpHelper.cancel();
+		expect(HttpHelper.requests.length).to.equal(0);
+	});
+	
 });

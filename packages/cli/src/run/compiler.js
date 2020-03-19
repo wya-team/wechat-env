@@ -98,7 +98,7 @@ exports.build = gulp.series(
 		Compiler.wxml,
 		Compiler.wxs,
 		Compiler.json,
-		Compiler.libs,
+		// Compiler.libs,
 	)
 );
 
@@ -112,9 +112,9 @@ exports.dev = gulp.series(
 		Compiler.wxml,
 		Compiler.wxs,
 		Compiler.json,
-		Compiler.libs,
+		// Compiler.libs,
 		() => {
-			gulp.watch(`${dist}/libs/**/*.js`, Compiler.libs);
+			// gulp.watch(`${dist}/libs/**/*.js`, Compiler.libs);
 			gulp.watch(`${src}/**/*.wya`, Compiler.wya); // watch默认会输出一个wya格式的代码
 			gulp.watch(`${src}/**/*.js`, Compiler.js);
 			gulp.watch(`${src}/**/*.{wxss,scss}`, Compiler.sass);

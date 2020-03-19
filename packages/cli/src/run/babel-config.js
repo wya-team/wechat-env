@@ -6,7 +6,13 @@ let __cwd = process.env.SOURCE_DIR;
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
 
+let count = 0;
 let cache = {};
+let getModuleId = (key) => {
+	cache[key] = cache[key] || `module${count++}`;
+
+	return cache[key];
+};
 
 const babelConfig = (() => {
 	let r = (source) => {
@@ -32,7 +38,10 @@ const babelConfig = (() => {
 			r('@babel/plugin-proposal-function-bind'),
 			r('@babel/plugin-syntax-dynamic-import'),
 			[
-				r('@babel/plugin-transform-runtime')
+				r('@babel/plugin-proposal-object-rest-spread'), 
+				{ 
+					"loose": true 
+				}
 			],
 			[
 				r('@babel/plugin-proposal-decorators'),
@@ -46,67 +55,36 @@ const babelConfig = (() => {
 					"loose": true
 				}
 			],
-			[	
-				{
-					visitor: {
-						ImportDeclaration(path, { filename }) {
-							let { value } = path.node.source;
-							if (!value || value.includes('./') || value.includes('..')) return;
 
-							let thirdPath = resolve(__cwd, `node_modules/${value}`);
-							let pkgPath = resolve(thirdPath, `package.json`);
+			[
+				r('@babel/plugin-transform-runtime')
+			],
+			[
+				({ types: t }) => {
+					return {
+						visitor: {
+							// 不使用ImportDeclaration, babel转义使用的是require
+							CallExpression(path, { filename }) {
+								let moduleName = path.node.arguments[0] && path.node.arguments[0].value;
+								let methodName = path.node.callee.name;
 
-							let hasPkg = fs.existsSync(pkgPath);
-							let isJS = fs.existsSync(thirdPath.includes('.js') ? thirdPath : `${thirdPath}.js`);
-							let hasJS = fs.existsSync(thirdPath + '/index.js');
-							
-							// 写文件
-							if (!cache[value] && (hasPkg || hasJS || isJS)) {
+								if (!moduleName || moduleName.includes('./') || moduleName.includes('..')) return;
+								if (methodName === 'require' 
+									&& !moduleName.includes('@@runtime.js')
+								) {
 
-								let main;
-								let dir;
-								let cpPath;
-								if (hasPkg) {
-									let pkgDir;
-									main = JSON.parse(fs.readFileSync(pkgPath)).main;
+									let fullpath = upath.normalize(relative(dirname(filename), resolve(src, 'libs/@@runtime.js')));
 
-									dir = dirname(resolve(thirdPath, main));
-									pkgDir = main.split('/');
-									pkgDir.pop();
-									cpPath = resolve(dist, 'libs', value, pkgDir.join('/'));
-
-									fs.copySync(dir, cpPath);
-									console.log(`源文件已拷贝到目标文件1: ${cpPath}`);
+									path.replaceWith(
+										t.memberExpression(
+											t.callExpression(t.identifier('require'), [t.stringLiteral(fullpath)]),
+											t.identifier(getModuleId(moduleName))
+										),
+									);
 								}
-
-								if (isJS || hasJS) {
-									main = hasJS ? '/index.js' : value.includes('.js') ? '' : `.js`;
-
-									dir = resolve(thirdPath + main);
-									cpPath = resolve(dist, 'libs', value) + main;
-
-									fs.copySync(dir, cpPath);
-									console.log(`源文件已拷贝到目标文件2: ${cpPath}`);
-								} 
-
-								cache[value] = {
-									main
-								};
-							}
-
-							// 赋值
-							if (cache[value]) {
-								let fullpath;
-								try {
-									fullpath = relative(dirname(filename), resolve(src, 'libs', value) + cache[value].main);
-								} catch (e) {
-									console.error(e, '请检查文件', filename, value, cache[value].main);
-								}
-
-								path.node.source.value = upath.normalize(fullpath);
 							}
 						}
-					}
+					};
 				}
 			],
 			[

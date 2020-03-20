@@ -7,6 +7,7 @@ const { rollup } = require('rollup');
 const commonjs = require('@rollup/plugin-commonjs');
 const replace = require('@rollup/plugin-replace');
 const nodeResolve = require('@rollup/plugin-node-resolve');
+const alias = require('@rollup/plugin-alias');
 const { uglify } = require('rollup-plugin-uglify');
 
 let { resolve, dirname, parse } = path;
@@ -36,12 +37,19 @@ module.exports = (options) => {
 		rollup({
 			input: file.path,
 			plugins: [
+				// 是否存在
+				fs.pathExistsSync(resolve(__cwd, './node_modules/regenerator-runtime')) && alias({
+					entries: [{
+						find: /^@babel\/runtime\/regenerator$/, 
+						replacement: 'regenerator-runtime'
+					}]
+				}),
 				nodeResolve(),
 				commonjs({}), 
 				replace({
 					'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
-				})
-				// process.env.NODE_ENV === 'production' && uglify()
+				}),
+				process.env.NODE_ENV === 'production' && uglify()
 			]
 		}).then((minJS) => {
 			return minJS.write({

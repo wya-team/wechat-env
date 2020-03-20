@@ -15,11 +15,14 @@ module.exports = class RunManager {
 		this.entryDir = path.resolve(this.options.sourceDir, './src');
 		this.outputDir = path.resolve(this.options.sourceDir, './dist');
 
+		this.tempDir = path.resolve(this.options.sourceDir, './.temp');
+
 		// 给gulp使用
 		process.env.SOURCE_DIR = this.sourceDir;
 		process.env.REPO_SOURCE_DIR = this.entryDir;
 		process.env.REPO_DIST_DIR = this.outputDir;
-
+		process.env.TEMP_DIR = this.tempDir;
+		
 		this.cwd = process.cwd();
 
 		if (!fs.existsSync(this.entryDir)) {

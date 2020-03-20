@@ -8,13 +8,14 @@ const babel = require('gulp-babel');
 const babelConfig = require('./babel-config');
 const compileWya = require('./compile-wya');
 const compileJSON = require('./compile-json');
-const compileLibs = require('./compile-libs');
+const compileRuntime = require('./compile-runtime');
 sass.compiler = require('node-sass');
 
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
+let temp = process.env.TEMP_DIR;
 
-console.log(`ENTRY: ${src}\nOUTPUT: ${dist}`);
+console.log(`ENTRY: ${src}\nOUTPUT: ${dist}\TEMP: ${temp}`);
 
 let entryConfig = null;
 let getEntryConfig = () => {
@@ -30,12 +31,10 @@ let getEntryConfig = () => {
 };
 class Compiler {
 
-	// 特殊场景处理
-	static libs = () => {
+	static runtime = () => {
 		return gulp
-			.src(`${dist}/libs/**/*.js`)
-			.pipe(compileLibs())
-			.pipe(gulp.dest(`${dist}/libs/**/*.js`));
+			.src(`${temp}/**/*.js`)
+			.pipe(compileRuntime());
 	}
 
 	static wya = () => {
@@ -98,8 +97,8 @@ exports.build = gulp.series(
 		Compiler.wxml,
 		Compiler.wxs,
 		Compiler.json,
-		// Compiler.libs,
-	)
+	),
+	Compiler.runtime,
 );
 
 // dev task
@@ -111,16 +110,15 @@ exports.dev = gulp.series(
 		Compiler.js,
 		Compiler.wxml,
 		Compiler.wxs,
-		Compiler.json,
-		// Compiler.libs,
 		() => {
-			// gulp.watch(`${dist}/libs/**/*.js`, Compiler.libs);
 			gulp.watch(`${src}/**/*.wya`, Compiler.wya); // watch默认会输出一个wya格式的代码
 			gulp.watch(`${src}/**/*.js`, Compiler.js);
 			gulp.watch(`${src}/**/*.{wxss,scss}`, Compiler.sass);
 			gulp.watch(`${src}/**/*.wxml`, Compiler.wxml);
 			gulp.watch(`${src}/**/*.wxs`, Compiler.wxs);
 			gulp.watch(`${src}/**/*.json`, Compiler.json);
+			gulp.watch(`${temp}/**/*.js`, Compiler.runtime);
 		}
-	)
+	),
+	Compiler.runtime
 );

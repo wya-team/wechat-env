@@ -5,12 +5,30 @@ const fs = require('fs-extra');
 let __cwd = process.env.SOURCE_DIR;
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
+let temp = process.env.TEMP_DIR;
+let hasRegenerator = fs.pathExistsSync(resolve(__cwd, './node_modules/regenerator-runtime'));
 
 let count = 0;
 let cache = {};
 let getModuleId = (key) => {
-	cache[key] = cache[key] || `module${count++}`;
 
+	// 0.13.5的版本微信无法执行
+	if (hasRegenerator && key === '@babel/runtime/regenerator') {
+		key = 'regenerator-runtime';
+	}
+
+	if (!cache[key]) {
+		cache[key] = `m${count++}`;
+
+		// 副作用：写入文件
+		fs.outputFileSync(
+			`${temp}/@@runtime.js`,
+			Object.keys(cache).reduce((pre, cur) => {
+				pre += `exports.${cache[cur]} = require('${cur}');\n`;
+				return pre;
+			}, '')
+		);
+	}
 	return cache[key];
 };
 
@@ -22,6 +40,8 @@ const babelConfig = (() => {
 		if (fs.pathExistsSync(fullpath)) {
 			return fullpath;
 		}
+		
+		console.log(fullpath);
 		
 		fullpath = resolve(__cwd, './node_modules', source);
 		if (fs.pathExistsSync(fullpath)) {
@@ -83,7 +103,7 @@ const babelConfig = (() => {
 									);
 								}
 							}
-						}
+						},
 					};
 				}
 			],

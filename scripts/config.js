@@ -6,77 +6,40 @@ const nodeResolve = require('@rollup/plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
 const { uglify } = require('rollup-plugin-uglify');
 const helperModelImports = require('@babel/helper-module-imports');
+
 let wm = new WeakMap();
 
 const builds = {
 	store: {
+		script: 'babel packages/store/src --out-dir packages/store/dist --copy-files --ignore **.test.js,**.md,examples/**',
 		entry: 'packages/store/src/index.js',
-		dest: 'packages/store/dist/index.js',
+		dest: 'packages/store/dist/store.min.js',
 		format: 'cjs'
 	},
 	utils: {
+		script: 'babel packages/utils/src --out-dir packages/utils/dist --copy-files --ignore **.test.js,**.md,examples/**',
 		entry: 'packages/utils/src/index.js',
-		dest: 'packages/utils/dist/index.js',
+		dest: 'packages/utils/dist/utils.min.js',
 		format: 'cjs'
 	},
 	http: {
+		script: 'babel packages/http/src --out-dir packages/http/dist --copy-files --ignore **.test.js,**.md,examples/**',
 		entry: 'packages/http/src/index.js',
-		dest: 'packages/http/dist/index.js',
+		dest: 'packages/http/dist/http.min.js',
 		format: 'cjs'
 	}
 };
 
 class Config {
 	static getConfig = (name) => {
-		let opt = builds[name];
+		let opts = builds[name];
 		let config = {
-			input: opt.entry,
-			external: opt.external,
+			input: opts.entry,
+			external: opts.external,
 			plugins: [
 				nodeResolve(), 
 				babel({
-					babelrc: false,
-					presets: ['@babel/preset-env'],
-					plugins: [
-						[
-							"@babel/plugin-proposal-class-properties",
-							{
-								"loose": true
-							}
-						],
-						[
-							({ types: t }) => {
-								return {
-									visitor: {
-										CallExpression(path) {
-											let callee = path.get('callee');
-
-											if (callee.node && callee.node.object && callee.node.property) {
-												if (t.isIdentifier(callee.node.object, { name: 'regeneratorRuntime' })) {
-													let programPath = path.scope.getProgramParent().path;
-													let runtimeId;
-
-													if (wm.has(programPath.node)) {
-														runtimeId = t.identifier(wm.get(programPath.node));
-													} else {
-														runtimeId = helperModelImports.addDefault(programPath, 'regenerator-runtime', {
-															nameHint: 'regeneratorRuntime',
-															importedInterop: 'uncompiled',
-															blockHoist: 3
-														});
-														wm.set(programPath.node, runtimeId.name);
-													}
-													callee.node.object.name = runtimeId.name;
-												}
-											}
-										}
-									}
-								};
-							}
-						],
-						"@babel/plugin-transform-runtime"
-
-					],
+					babelrc: true,
 					exclude: 'node_modules/**',
 					runtimeHelpers: true
 				}),
@@ -90,11 +53,12 @@ class Config {
 				// process.env.NODE_ENV === 'production' && uglify()
 			],
 			output: {
-				file: opt.dest,
-				format: opt.format,
-				named: opt.moduleName || name,
+				file: opts.dest,
+				format: opts.format,
+				named: opts.moduleName || name,
 				exports: 'named'
-			}
+			},
+			script: opts.script
 		};
 		return config;
 	}

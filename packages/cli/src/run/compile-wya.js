@@ -57,7 +57,7 @@ module.exports = (options) => {
 			babel.transform(
 				content.script,
 				{
-					...babelConfig,
+					...babelConfig(),
 					filename: file.path
 				}, 
 				(err, result) => {

@@ -15,7 +15,7 @@ let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
 let temp = process.env.TEMP_DIR;
 
-console.log(`ENTRY: ${src}\nOUTPUT: ${dist}\TEMP: ${temp}`);
+console.log(`ENTRY: ${src}\nOUTPUT: ${dist}\nTEMP: ${temp}\n${process.env.NODE_ENV}`);
 
 let entryConfig = null;
 let getEntryConfig = () => {
@@ -54,7 +54,7 @@ class Compiler {
 	static js = () => {
 		return gulp
 			.src(`${src}/**/*.js`, getEntryConfig())
-			.pipe(babel(babelConfig))
+			.pipe(babel(babelConfig()))
 			.pipe(gulp.dest(dist));
 	}
 
@@ -67,7 +67,7 @@ class Compiler {
 	static wxs = () => {
 		return gulp
 			.src(`${src}/**/*.wxs`, getEntryConfig())
-			.pipe(babel(babelConfig))
+			.pipe(babel(babelConfig({ runtimeHelpers: false })))
 			.pipe(rename({ extname: '.wxs' }))
 			.pipe(gulp.dest(dist));
 	}
@@ -96,7 +96,7 @@ exports.build = gulp.series(
 		Compiler.js,
 		Compiler.wxml,
 		Compiler.wxs,
-		Compiler.json,
+		Compiler.json
 	),
 	Compiler.runtime,
 );
@@ -110,6 +110,7 @@ exports.dev = gulp.series(
 		Compiler.js,
 		Compiler.wxml,
 		Compiler.wxs,
+		Compiler.json,
 		() => {
 			gulp.watch(`${src}/**/*.wya`, Compiler.wya); // watch默认会输出一个wya格式的代码
 			gulp.watch(`${src}/**/*.js`, Compiler.js);

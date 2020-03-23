@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const { rollup } = require('rollup');
+const { rollup: rollupBuilder } = require('rollup');
 const Config = require('./config');
 
 class Builder {
@@ -11,10 +11,12 @@ class Builder {
 	}
 
 	async process() {
-		let { output, script, ...rest } = this.config;
-		await exec(`${script}`);
+		let { script, rollup } = this.config;
+		script && await exec(`${script}`);
 		
-		rollup(rest)
+		if (!rollup) return;
+		const { output, ...rest } = rollup;
+		rollupBuilder(rest)
 			.then((builder) => builder.write({ output }))
 			.then(rst => {
 				console.log('Success!');

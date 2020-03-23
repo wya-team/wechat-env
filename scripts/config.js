@@ -10,29 +10,47 @@ const helperModelImports = require('@babel/helper-module-imports');
 let wm = new WeakMap();
 
 const builds = {
+	cli: {
+		script: 'babel packages/cli/src --out-dir packages/cli/dist --copy-files --ignore **.test.js,**.md,examples/**',
+	},
 	store: {
 		script: 'babel packages/store/src --out-dir packages/store/dist --copy-files --ignore **.test.js,**.md,examples/**',
-		entry: 'packages/store/src/index.js',
-		dest: 'packages/store/dist/store.min.js',
-		format: 'cjs'
+		rollup: {
+			entry: 'packages/store/src/index.js',
+			dest: 'packages/store/dist/store.min.js',
+			format: 'cjs'
+		}
 	},
 	utils: {
 		script: 'babel packages/utils/src --out-dir packages/utils/dist --copy-files --ignore **.test.js,**.md,examples/**',
-		entry: 'packages/utils/src/index.js',
-		dest: 'packages/utils/dist/utils.min.js',
-		format: 'cjs'
+		rollup: {
+			entry: 'packages/utils/src/index.js',
+			dest: 'packages/utils/dist/utils.min.js',
+			format: 'cjs'
+		}
 	},
 	http: {
 		script: 'babel packages/http/src --out-dir packages/http/dist --copy-files --ignore **.test.js,**.md,examples/**',
-		entry: 'packages/http/src/index.js',
-		dest: 'packages/http/dist/http.min.js',
-		format: 'cjs'
+		rollup: {
+			entry: 'packages/http/src/index.js',
+			dest: 'packages/http/dist/http.min.js',
+			format: 'cjs'
+		}
 	}
 };
 
 class Config {
 	static getConfig = (name) => {
-		let opts = builds[name];
+		return {
+			...builds[name],
+			rollup: Config.getRollupConfig(name)
+		};
+	}
+
+	static getRollupConfig = (name) => {
+		let opts = builds[name].rollup;
+		if (!opts) return;
+
 		let config = {
 			input: opts.entry,
 			external: opts.external,
@@ -57,8 +75,7 @@ class Config {
 				format: opts.format,
 				named: opts.moduleName || name,
 				exports: 'named'
-			},
-			script: opts.script
+			}
 		};
 		return config;
 	}

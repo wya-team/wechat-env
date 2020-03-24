@@ -1,13 +1,19 @@
 {
   "name": "template-mp",
   "version": "0.0.0",
-  "description": "template mp",
+  "description": "Template MP",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "./node_modules/.bin/mp-cli dev ./",
-    "build": "./node_modules/.bin/mp-cli build ./",
+    "dev": "npm run serve",
+    "dev:pre": "npm run serve-pre",
+    "dev:master": "npm run serve-master",
+    "serve": "cross-env BRANCH=develop ./node_modules/.bin/mp-cli dev ./ -- --npm-script 'npm run lint:watch'",
+    "serve-pre": "cross-env BRANCH=pre-release ./node_modules/.bin/mp-cli dev ./ -- --npm-script 'npm run lint:watch'",
+    "serve-master": "cross-env BRANCH=master ./node_modules/.bin/mp-cli dev ./ -- --npm-script 'npm run lint:watch'",
+    "build": "cross-env BRANCH=master ./node_modules/.bin/mp-cli build ./",
+    "build:dev": "cross-env BRANCH=develop ./node_modules/.bin/mp-cli build ./",
+    "build:pre": "cross-env BRANCH=pre-release ./node_modules/.bin/mp-cli build ./",
     "clean": "rm -rf dist",
-    "lint-staged": "lint-staged",
     "lint": "esw src/ --ext .wya,.js --color",
     "lint:fix": "npm run lint -- --fix",
     "lint:watch": "npm run lint -- --fix --watch"
@@ -22,19 +28,28 @@
   "devDependencies": {
     "@wya/mp-cli": "1.2.1",
     "babel-eslint": "^10.0.3",
+    "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-html": "^6.0.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-markdown": "^1.0.1",
+    "eslint-plugin-vue": "^6.2.1",
     "eslint-watch": "^6.0.1",
+    "fs-extra": "^8.1.0",
+    "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
-    "pre-commit": "^1.2.2",
-    "regenerator-runtime": "^0.11.1"
+    "regenerator-runtime": "0.12.1",
+    "replace-ext": "^1.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
-    "/{packages,src}/**/*.{js,jsx,wya}": [
+    "{packages,src}/**/*.{js,jsx,wya}": [
       "esw --fix",
       "git add"
     ],
@@ -42,8 +57,5 @@
       "esw --ext '.md' --fix",
       "git add"
     ]
-  },
-  "pre-commit": [
-    "lint-staged"
-  ]
+  }
 }

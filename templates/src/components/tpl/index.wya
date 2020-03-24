@@ -1,0 +1,21 @@
+<template>
+	<view>我是组件</view>
+</template>
+
+<script>
+import Component from '../../common/component';
+
+Component({
+
+});
+</script>
+
+<style lang="scss">
+
+</style>
+
+<config>
+{
+	"component": true
+}
+</config>

@@ -1,6 +1,6 @@
 <template>
 	<view class="g-container v-log__list">
-		<tpl>按钮22</tpl>
+		<xcx-tpl>按钮22</xcx-tpl>
 		<block wx:for="{{logs}}" wx:key="log" wx:for-item="log">
 			<text class="v-log__item">{{index + 1}}. {{log}}</text>
 		</block>
@@ -40,7 +40,7 @@ Page({
 {
 	"navigationBarTitleText": "查看启动日志",
 	"usingComponents": {
-		"tpl": "../../components/tpl/tpl"
+		"xcx-tpl": "../../components/tpl/index"
 	}
 }
 </config>

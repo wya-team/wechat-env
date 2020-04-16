@@ -37,6 +37,27 @@ program
 		app.build();
 	});
 
+// Run add
+program
+	.command('add [sourceDir]', 'create templates')
+	.action((sourceDir = '.', commandOptions) => {
+		// TODO
+	});
+
+// Run delete
+program
+	.command('delete [sourceDir]', 'delete templates')
+	.action((sourceDir = '.', commandOptions) => {
+		// TODO
+	});
+
+// Run update|upgrade
+program
+	.command('update [sourceDir]', 'update templates')
+	.action((sourceDir = '.', commandOptions) => {
+		// TODO
+	});
+
 // 任意匹配
 program
 	.command('*')

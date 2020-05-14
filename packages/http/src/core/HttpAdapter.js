@@ -34,6 +34,7 @@ class HttpAdapter {
 					reject(new HttpError({
 						code: ERROR_CODE.HTTP_STATUS_ERROR,
 						httpStatus: res.statusCode,
+						msg: res.errMsg
 					}));
 				},
 				complete: () => {

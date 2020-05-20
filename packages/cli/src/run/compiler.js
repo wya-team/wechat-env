@@ -1,4 +1,5 @@
 const path = require('path');
+const upath = require('upath');
 const del = require('del');
 const fs = require('fs-extra');
 const gulp = require('gulp');
@@ -29,23 +30,25 @@ let getEntryConfig = () => {
 
 	return entryConfig;
 };
+
+const u = v => upath.normalize(v);
 class Compiler {
 
 	static runtime = () => {
 		return gulp
-			.src(`${temp}/**/*.js`)
+			.src(u(`${temp}/**/*.js`))
 			.pipe(compileRuntime());
 	}
 
 	static wya = () => {
 		return gulp
-			.src(`${src}/**/*.wya`, getEntryConfig())
+			.src(u(`${src}/**/*.wya`), getEntryConfig())
 			.pipe(compileWya());
 	}
 
 	static sass = () => {
 		return gulp
-			.src(`${src}/**/*.{wxss,scss}`, getEntryConfig())
+			.src(u(`${src}/**/*.{wxss,scss}`), getEntryConfig())
 			.pipe(sass().on('error', sass.logError))
 			.pipe(rename({ extname: '.wxss' }))
 			.pipe(gulp.dest(dist));
@@ -53,20 +56,20 @@ class Compiler {
 
 	static js = () => {
 		return gulp
-			.src(`${src}/**/*.js`, getEntryConfig())
+			.src(u(`${src}/**/*.js`), getEntryConfig())
 			.pipe(babel(babelConfig()))
 			.pipe(gulp.dest(dist));
 	}
 
 	static wxml = () => {
 		return gulp
-			.src(`${src}/**/*.wxml`, getEntryConfig())
+			.src(u(`${src}/**/*.wxml`), getEntryConfig())
 			.pipe(gulp.dest(dist));
 	}
 
 	static wxs = () => {
 		return gulp
-			.src(`${src}/**/*.wxs`, getEntryConfig())
+			.src(u(`${src}/**/*.wxs`), getEntryConfig())
 			.pipe(babel(babelConfig({ runtimeHelpers: false })))
 			.pipe(rename({ extname: '.wxs' }))
 			.pipe(gulp.dest(dist));
@@ -74,17 +77,17 @@ class Compiler {
 
 	static json = () => {
 		return gulp
-			.src(`${src}/**/*.json`, getEntryConfig())
+			.src(u(`${src}/**/*.json`), getEntryConfig())
 			.pipe(compileJSON())
 			.pipe(gulp.dest(dist));
 	}
 
 	static cleaner = () => {
-		return del([`${dist}/**`], { force: true });
+		return del([u(`${dist}/**`)], { force: true });
 	}
 
 	static wyaCleaner = () => {
-		return del([`${dist}/**/*.wya`], { force: true });
+		return del([u(`${dist}/**/*.wya`)], { force: true });
 	}
 }
 // build task
@@ -112,13 +115,13 @@ exports.dev = gulp.series(
 		Compiler.wxs,
 		Compiler.json,
 		() => {
-			gulp.watch(`${src}/**/*.wya`, Compiler.wya); // watch默认会输出一个wya格式的代码
-			gulp.watch(`${src}/**/*.js`, Compiler.js);
-			gulp.watch(`${src}/**/*.{wxss,scss}`, Compiler.sass);
-			gulp.watch(`${src}/**/*.wxml`, Compiler.wxml);
-			gulp.watch(`${src}/**/*.wxs`, Compiler.wxs);
-			gulp.watch(`${src}/**/*.json`, Compiler.json);
-			gulp.watch(`${temp}/**/*.js`, Compiler.runtime);
+			gulp.watch(u(`${src}/**/*.wya`), Compiler.wya); // watch默认会输出一个wya格式的代码
+			gulp.watch(u(`${src}/**/*.js`), Compiler.js);
+			gulp.watch(u(`${src}/**/*.{wxss,scss}`), Compiler.sass);
+			gulp.watch(u(`${src}/**/*.wxml`), Compiler.wxml);
+			gulp.watch(u(`${src}/**/*.wxs`), Compiler.wxs);
+			gulp.watch(u(`${src}/**/*.json`), Compiler.json);
+			gulp.watch(u(`${temp}/**/*.js`), Compiler.runtime);
 		}
 	),
 	Compiler.runtime

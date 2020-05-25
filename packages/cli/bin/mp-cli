@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-parseInt(process.versions.node, 10) > 12 
+parseInt(process.versions.node, 10) >= 12 
 	? require('../src/index')
 	: require('../dist/index');

@@ -82,6 +82,12 @@ class Compiler {
 			.pipe(gulp.dest(dist));
 	}
 
+	static image = () => {
+		return gulp
+			.src(u(`${src}/**/*.{png,jpg,gif,ico,jpeg}`))
+			.pipe(gulp.dest(dist));
+	}
+
 	static cleaner = () => {
 		return del([u(`${dist}/**`)], { force: true });
 	}
@@ -99,7 +105,8 @@ exports.build = gulp.series(
 		Compiler.js,
 		Compiler.wxml,
 		Compiler.wxs,
-		Compiler.json
+		Compiler.json,
+		Compiler.image,
 	),
 	Compiler.runtime,
 );
@@ -114,6 +121,7 @@ exports.dev = gulp.series(
 		Compiler.wxml,
 		Compiler.wxs,
 		Compiler.json,
+		Compiler.image,
 		() => {
 			gulp.watch(u(`${src}/**/*.wya`), Compiler.wya); // watch默认会输出一个wya格式的代码
 			gulp.watch(u(`${src}/**/*.js`), Compiler.js);
@@ -121,6 +129,7 @@ exports.dev = gulp.series(
 			gulp.watch(u(`${src}/**/*.wxml`), Compiler.wxml);
 			gulp.watch(u(`${src}/**/*.wxs`), Compiler.wxs);
 			gulp.watch(u(`${src}/**/*.json`), Compiler.json);
+			gulp.watch(u(`${src}/**/*.{png,jpg,gif,ico,jpeg}`), Compiler.image);
 			gulp.watch(u(`${temp}/**/*.js`), Compiler.runtime);
 		}
 	),

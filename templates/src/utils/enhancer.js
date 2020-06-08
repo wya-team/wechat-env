@@ -68,7 +68,30 @@ class Enhancer {
 	}
 
 	static _fn2promise(opts = {}) {
-		
+		const { methods = [] } = opts;
+		let originalMethods = {};
+		methods.forEach((method) => {
+			originalMethods[method] = wx[method];
+			Object.defineProperty(wx, method, { 
+				value: (...args) => {
+					if (!args[0] || (args[0] && typeof args[0] === 'object')) {
+						let options = args[0] || {};
+
+						if (options.success || options.fail || options.complete) {
+							originalMethods[method](options);
+						} else {
+							return new Promise((resolve, reject) => {
+								originalMethods[method].call(wx, {
+									...options,
+									success: resolve,
+									fail: reject
+								});
+							});
+						}
+					}
+				}
+			});
+		});
 	}
 }
 

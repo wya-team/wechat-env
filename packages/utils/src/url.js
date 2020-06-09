@@ -31,7 +31,7 @@ export const URL = {
 	 */	
 	parse(url, opts = {}) {
 		// TODO: 使用 new window.URL(url);
-		url = url || `${location.pathname}${location.search}`;
+		url = url || getCurrentPages().pop().route || '';
 		let path = [];
 		const query = {};
 		// const urlArr = url.replace('/', '').split('?');
@@ -65,7 +65,7 @@ export const URL = {
 	get(key, url, opts = {}) {
 		url = url 
 			? url.substring(url.indexOf('?')) 
-			: '';
+			: getCurrentPages().pop().route || '';
 
 		let regExp = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
 		let val = decodeURIComponent(url).substr(1).match(regExp);

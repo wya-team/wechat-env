@@ -1,4 +1,5 @@
 import { URL } from '@wya/mp-utils';
+import debounce from 'lodash.debounce';
 
 /**
  * wx 全局变量
@@ -24,8 +25,8 @@ class Enhancer {
 		Object.defineProperty(wx, 'switchTab', { value: migrating });
 		Object.defineProperty(wx, 'redirectTo', { value: migrating });
 		Object.defineProperty(wx, 'navigateTo', { value: migrating });
-		
-		wx.navigateAuto = (opts = {}) => {
+
+		wx.navigateAuto = debounce((opts = {}) => {
 			const { url, redirect, ...rest } = opts;
 			if (!url) {
 				wx.navigateBack();
@@ -57,14 +58,16 @@ class Enhancer {
 				fn();
 			} else {
 				let page = getCurrentPages().pop();
-
+				const optStr = url.split('?')[1] || '';
 				if (page && page.route !== 'pages/auth/index') {
-					originalRedirectTo({ url: `/pages/auth/index?url=${url}` });
+					originalRedirectTo({
+						url: `/pages/auth/index?url=${url.split('?')[0]}&opts=${encodeURIComponent(optStr)}`
+					});
 				} else if (page) {
 					wx.showModal({ title: `请点击授权` });
 				}
 			}
-		};
+		}, 250, { leading: true, trailing: false });
 	}
 
 	static _fn2promise(opts = {}) {
@@ -72,7 +75,7 @@ class Enhancer {
 		let originalMethods = {};
 		methods.forEach((method) => {
 			originalMethods[method] = wx[method];
-			Object.defineProperty(wx, method, { 
+			Object.defineProperty(wx, method, {
 				value: (...args) => {
 					if (!args[0] || (args[0] && typeof args[0] === 'object')) {
 						let options = args[0] || {};

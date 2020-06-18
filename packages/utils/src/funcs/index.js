@@ -8,7 +8,7 @@ import {
 	cloneDeepEasier
 } from './assit';
 import { formatMoney, sum2array } from './format';
-import { compose } from './other';
+import { compose, debounce } from './other';
 
 export const Utils = {
 	getUid,
@@ -21,6 +21,7 @@ export const Utils = {
 	formatMoney,
 	sum2array,
 	compose,
+	debounce,
 	/**
 	 * 扩展或重写
 	 */

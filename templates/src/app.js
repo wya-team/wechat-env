@@ -5,7 +5,7 @@ import { HttpHelper, ajax } from '@wya/mp-http';
 import API_ROOT from './stores/apis/root';
 import Enhancer from './utils/enhancer';
 import { storeConfig } from './stores/root';
-import { decodeScene, createSchedule } from './utils/util';
+import { decodeScene, createSchedule } from './utils/utils';
 import { USER_KEY } from './constants/constants';
 
 Enhancer.invoke(wx, {
@@ -17,8 +17,10 @@ Enhancer.invoke(wx, {
 const { log } = console;
 
 App({
+	userData: null,
+	userInfo: {},
 	async onShow(options) {
-		const { query } = wx.getEnterOptionsSync();
+		const { query = {} } = wx.getEnterOptionsSync && wx.getEnterOptionsSync() || {};
 
 		this.loginSchedule = createSchedule();
 

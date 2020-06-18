@@ -1,8 +1,14 @@
 {
   "useWorkspaces": true,
   "npmClient": "yarn",
-  "packages": [
-    "packages/*"
-  ],
+  "command": {
+    "publish": {
+      "ignoreChanges": ["*.md"],
+      "message": "chore(release): publish"
+    },
+    "bootstrap": {
+      "npmClientArgs": ["--no-package-lock"]
+    }
+  },
   "version": "independent"
 }

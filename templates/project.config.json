@@ -61,10 +61,11 @@
 			"current": 3,
 			"list": [
 				{
-					"id": -1,
-					"name": "log",
-					"pathName": "pages/log/index",
-					"query": ""
+					"id": 0,
+					"name": "logs",
+					"pathName": "pages/index/index",
+					"query": "",
+					"scene": null
 				},
 				{
 					"id": -1,

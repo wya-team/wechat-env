@@ -73,7 +73,7 @@ class Config {
 			output: {
 				file: opts.dest,
 				format: opts.format,
-				named: opts.moduleName || name,
+				// named: opts.moduleName || name,
 				exports: 'named'
 			}
 		};

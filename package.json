@@ -5,16 +5,19 @@
   "description": "",
   "main": "",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "templates"
   ],
   "scripts": {
-    "build": "cross-env NODE_ENV=production node --max_old_space_size=8192 ./scripts/build.js",
-    "bootstrap": "./node_modules/.bin/lerna bootstrap --loglevel silly",
-    "pub": "./node_modules/.bin/lerna publish",
+    "build:packages": "cross-env NODE_ENV=production node --max_old_space_size=8192 ./scripts/build.js",
+    "bootstrap": "lerna bootstrap --loglevel silly",
+    "pub": "npm run build:packages && lerna publish",
     "lint-staged": "lint-staged",
     "lint": "esw packages/ --ext .wya,.js --color",
     "lint:fix": "npm run lint -- --fix",
-    "lint:watch": "npm run lint -- --fix --watch"
+    "lint:watch": "npm run lint -- --fix --watch",
+    "dev": "yarn workspace @wya/mp-template dev",
+    "build": "yarn workspace @wya/mp-template build"
   },
   "dependencies": {},
   "devDependencies": {
@@ -41,7 +44,7 @@
     "lerna": "^3.20.2",
     "lint-staged": "^10.0.7",
     "pre-commit": "^1.2.2",
-    "regenerator-runtime": "0.11.1",
+    "regenerator-runtime": "0.12.1",
     "rollup": "^2.1.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-uglify": "^6.0.4"

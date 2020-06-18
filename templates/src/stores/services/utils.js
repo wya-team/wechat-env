@@ -1,5 +1,5 @@
 import { Storage } from '@wya/mp-utils';
-import { isEqualWith } from '../../utils/util';
+import { isEqualWith } from '../../utils/utils';
 import net from '../../utils/net';
 
 export const serviceObj = {

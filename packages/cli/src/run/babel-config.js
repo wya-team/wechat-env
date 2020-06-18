@@ -6,7 +6,8 @@ let __cwd = process.env.SOURCE_DIR;
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
 let temp = process.env.TEMP_DIR;
-let hasRegenerator = fs.pathExistsSync(resolve(__cwd, './node_modules/regenerator-runtime'));
+let hasRegenerator = fs.pathExistsSync(resolve(__cwd, './node_modules/regenerator-runtime'))
+	|| fs.pathExistsSync(resolve(__cwd, '../node_modules/regenerator-runtime'));
 
 let count = 0;
 let cache = {};
@@ -34,12 +35,20 @@ let getModuleId = (key) => {
 let r = (source) => {
 	let fullpath;
 
+	// /[global]/node_modules
 	fullpath = resolve(__dirname, '../../node_modules', source);
 	if (fs.pathExistsSync(fullpath)) {
 		return fullpath;
 	}
 	
+	// /[repo]/node_modules
 	fullpath = resolve(__cwd, './node_modules', source);
+	if (fs.pathExistsSync(fullpath)) {
+		return fullpath;
+	}
+
+	// /wehcat-env/node_modules
+	fullpath = resolve(__cwd, '../node_modules', source);
 	if (fs.pathExistsSync(fullpath)) {
 		return fullpath;
 	}

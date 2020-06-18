@@ -16,6 +16,9 @@ let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
 let temp = process.env.TEMP_DIR;
 
+let hasRegenerator = fs.pathExistsSync(resolve(__cwd, './node_modules/regenerator-runtime'))
+	|| fs.pathExistsSync(resolve(__cwd, '../node_modules/regenerator-runtime'));
+	
 let entry = resolve(src, 'app.json');
 
 module.exports = (options) => {
@@ -38,7 +41,7 @@ module.exports = (options) => {
 			input: file.path,
 			plugins: [
 				// 是否存在
-				fs.pathExistsSync(resolve(__cwd, './node_modules/regenerator-runtime')) && alias({
+				hasRegenerator && alias({
 					entries: [{
 						find: /^@babel\/runtime\/regenerator$/, 
 						replacement: 'regenerator-runtime'

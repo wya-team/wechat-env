@@ -16,6 +16,7 @@
     "lint": "esw packages/ --ext .wya,.js --color",
     "lint:fix": "npm run lint -- --fix",
     "lint:watch": "npm run lint -- --fix --watch",
+    "test": "node scripts/unit-test.js",
     "dev": "yarn workspace @wya/mp-template dev",
     "build": "yarn workspace @wya/mp-template build"
   },

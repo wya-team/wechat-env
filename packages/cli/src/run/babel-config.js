@@ -32,33 +32,26 @@ let getModuleId = (key) => {
 	}
 	return cache[key];
 };
-let r = (source) => {
-	let fullpath;
+const resolvePackage = (source) => {
+	let nms = [
+		resolve(__dirname, '../../node_modules', source),
+		resolve(__cwd, './node_modules', source),
+		resolve(__cwd, '../node_modules', source),
+		...module.paths.map($path => resolve($path, source))
+	];
 
-	// /[global]/node_modules
-	fullpath = resolve(__dirname, '../../node_modules', source);
-	if (fs.pathExistsSync(fullpath)) {
-		return fullpath;
-	}
-	
-	// /[repo]/node_modules
-	fullpath = resolve(__cwd, './node_modules', source);
-	if (fs.pathExistsSync(fullpath)) {
-		return fullpath;
-	}
+	let fullpath = nms.find(i => fs.pathExistsSync(i));
 
-	// /wehcat-env/node_modules
-	fullpath = resolve(__cwd, '../node_modules', source);
-	if (fs.pathExistsSync(fullpath)) {
-		return fullpath;
+	if (!fullpath) {
+		throw new Error(`@wya/mp-cli: 未找到${source}`);
 	}
 
-	throw new Error(`@wya/mp-cli: 未找到${source}`);
+	return fullpath;
 };
 
 let runtimePlugins = [
 	[
-		r('@babel/plugin-transform-runtime')
+		resolvePackage('@babel/plugin-transform-runtime')
 	],
 	[
 		({ types: t }) => {
@@ -123,26 +116,26 @@ let runtimePlugins = [
 const babelConfig = (opts = {}) => {
 	const { runtimeHelpers = true } = opts;
 	return {
-		presets: [r('@babel/preset-env')],
+		presets: [resolvePackage('@babel/preset-env')],
 		plugins: [
-			r('@babel/plugin-proposal-export-namespace-from'),
-			r('@babel/plugin-proposal-export-default-from'),
-			r('@babel/plugin-proposal-function-bind'),
-			r('@babel/plugin-syntax-dynamic-import'),
+			resolvePackage('@babel/plugin-proposal-export-namespace-from'),
+			resolvePackage('@babel/plugin-proposal-export-default-from'),
+			resolvePackage('@babel/plugin-proposal-function-bind'),
+			resolvePackage('@babel/plugin-syntax-dynamic-import'),
 			[
-				r('@babel/plugin-proposal-object-rest-spread'), 
+				resolvePackage('@babel/plugin-proposal-object-rest-spread'), 
 				{ 
 					"loose": true 
 				}
 			],
 			[
-				r('@babel/plugin-proposal-decorators'),
+				resolvePackage('@babel/plugin-proposal-decorators'),
 				{
 					"legacy": true
 				}
 			],
 			[	
-				r('@babel/plugin-proposal-class-properties'),
+				resolvePackage('@babel/plugin-proposal-class-properties'),
 				{
 					"loose": true
 				}

@@ -2,8 +2,8 @@ const path = require('path');
 const buble = require('@rollup/plugin-buble');
 const replace = require('@rollup/plugin-replace');
 const commonjs = require('@rollup/plugin-commonjs');
-const nodeResolve = require('@rollup/plugin-node-resolve');
-const babel = require('rollup-plugin-babel');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const { babel } = require('@rollup/plugin-babel');
 const { uglify } = require('rollup-plugin-uglify');
 const helperModelImports = require('@babel/helper-module-imports');
 
@@ -59,7 +59,7 @@ class Config {
 				babel({
 					babelrc: true,
 					exclude: 'node_modules/**',
-					runtimeHelpers: true
+					babelHelpers: 'runtime'
 				}),
 				commonjs({}), 
 				buble({

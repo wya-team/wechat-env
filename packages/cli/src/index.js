@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const program = require('cac')();
 const { resolve } = require('path');
-const { Run } = require('./commands');
+const { Run, Add } = require('./commands');
 
 const { log } = console;
 program
@@ -37,8 +37,13 @@ program
 // Run add
 program
 	.command('add [sourceDir]', 'create templates')
+	.option('--config <config>', 'config', { default: "" })
 	.action((sourceDir = '.', commandOptions) => {
-		// TODO
+		let app = new Add({
+			sourceDir: resolve(sourceDir),
+			...commandOptions
+		});
+		app.process();
 	});
 
 // Run delete

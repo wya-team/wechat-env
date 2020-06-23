@@ -17,8 +17,12 @@
     "lint:fix": "npm run lint -- --fix",
     "lint:watch": "npm run lint -- --fix --watch",
     "test": "node scripts/unit-test.js",
-    "dev": "yarn workspace @wya/mp-template dev",
-    "build": "yarn workspace @wya/mp-template build"
+    "link": "lerna exec --scope @wya/mp-cli -- yarn link",
+    "unlink": "lerna exec --scope @wya/mp-cli -- yarn unlink",
+    "add": "yarn workspace @wya/mp-template run add",
+    "create": "yarn workspace @wya/mp-template run create",
+    "dev": "yarn workspace @wya/mp-template run dev",
+    "build": "yarn workspace @wya/mp-template run build"
   },
   "dependencies": {},
   "devDependencies": {

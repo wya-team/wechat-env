@@ -58,7 +58,9 @@
     "esm": "^3.2.25",
     "mocha": "^7.0.1"
   },
+  "bin-info": "mp-cli 兼容老版本",
   "bin": {
-    "mp-cli": "bin/mp-cli"
+    "mp-cli": "bin/cli",
+    "wya-mp": "bin/cli"
   }
 }

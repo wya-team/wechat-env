@@ -35,6 +35,19 @@ module.exports = class AddManager {
 				}
 			},
 			{
+				type: 'input',
+				name: 'packageName',
+				message: 'Package Name:',
+				validate(val) {
+					if (val === '') {
+						return 'Package Name is required!';
+					} else {
+						return true;
+					}
+				},
+				default: 'pages'
+			},
+			{
 				type: 'list',
 				name: 'template',
 				message: 'Select template:',

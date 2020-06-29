@@ -18,6 +18,7 @@ module.exports = (opts = {}) => {
 		dir,
 		project,
 		template,
+		packageName,
 		pagingMode,
 		pagingType,
 		extra = '',
@@ -52,9 +53,10 @@ module.exports = (opts = {}) => {
 		.join('');
 	let module = pathArr.slice(1).join('-');
 
+	const pageRoute = packageName === 'pages' ? packageName : `${packageName}/pages`;
 	let basicConfig = {
 		page: {
-			path: upath.normalize(`${dir}pages/${pathArr[0]}/${module}.wya`)
+			path: upath.normalize(`${dir}${pageRoute}/${pathArr[0]}/${module}.wya`)
 		},
 		api: {
 			path: upath.normalize(`${dir}stores/apis/${mutation}.js`)
@@ -84,11 +86,12 @@ module.exports = (opts = {}) => {
 	};
 
 
+	const itemRoute = packageName === 'pages' ? '' : packageName;
 	let scrollConfig = {
 		// mutation: basicConfig.mutation,
 		page: basicConfig.page,
 		item: {
-			path: upath.normalize(`${dir}components/${pathArr[0]}/${module}/item.wya`)
+			path: upath.normalize(`${dir}${itemRoute}/components/${pathArr[0]}/${module}/item.wya`)
 		},
 		api: basicConfig.api,
 		module: basicConfig.module,
@@ -120,7 +123,7 @@ module.exports = (opts = {}) => {
 				fs.outputFileSync(
 					fullpath,
 					typeof tpl[key] === 'function'
-						? tpl[key]({ mutation, humpMutation, route, pathArr, project, module, extra, title })
+						? tpl[key]({ mutation, humpMutation, route, pathArr, project, packageName, module, extra, title })
 						: content
 				);
 			} else if (typeof tpl[`${key}Override`] === 'function') {
@@ -130,7 +133,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					tpl[`${key}Override`](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, humpMutation, route, pathArr, project, module, extra, title }
+						{ mutation, humpMutation, route, pathArr, project, packageName, module, extra, title }
 					)
 				);
 			}
@@ -149,7 +152,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					rootTpl[_key](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, humpMutation, pathArr, project, module, extra, title, route }
+						{ mutation, humpMutation, pathArr, project, packageName, module, extra, title, route }
 					)
 				);
 				
@@ -169,7 +172,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						scrollTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, humpMutation, pathArr, project, module, pagingType, extra, title, route, env }
+							{ mutation, humpMutation, pathArr, project, packageName, module, pagingType, extra, title, route, env }
 						)
 					);
 					
@@ -190,7 +193,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						formTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, humpMutation, pathArr, project, module, extra, title, env }
+							{ mutation, humpMutation, pathArr, project, packageName, module, extra, title, env }
 						)
 					);
 					

@@ -4,6 +4,7 @@ exports.page = (opts = {}) => {
 	const { mutation, humpMutation, pathArr, project, obj, title } = opts;
 	let extra = getExtra(pathArr);
 	let contents = '';
+	const relativePath = packageName !== 'pages' ? '../' : '';
 
 	contents += `<template>\n`;
 	contents += `	<view>\n`;
@@ -12,7 +13,7 @@ exports.page = (opts = {}) => {
 	contents += `</template>\n\n`;
 
 	contents += `<script>\n`;
-	contents += `import Page from '../../common/page';\n\n`;
+	contents += `import Page from '../../${relativePath}common/page';\n\n`;
 	contents += `Page({\n`;
 	contents += `	mapState(state) {\n`;
 	contents += `		return {\n`;

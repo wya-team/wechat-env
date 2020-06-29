@@ -1,11 +1,12 @@
 const { getNewContent, getExtra, getMutationType } = require('../utils/helper');
 
 exports.page = (content, opts = {}) => {
-	const { mutation, humpMutation, pathArr, project, obj, pagingMode: mode, pagingType: type, route, title } = opts;
+	const { mutation, humpMutation, pathArr, project, packageName, obj, pagingMode: mode, pagingType: type, route, title } = opts;
 	let extra = getExtra(pathArr);
 
 	let mutationType = `${getMutationType(pathArr)}`;
 	let pagingType = mutationType + '_LIST';
+	const relativePath = packageName !== 'pages' ? '../' : '';
 
 	try {
 		let contents = '';
@@ -39,7 +40,7 @@ exports.page = (content, opts = {}) => {
 				contents += `	</mc-tabs>\n`;
 				contents += `</template>\n`;
 				break;	
-			default :
+			default:
 				contents += `<template>\n`;
 				contents += `	<mc-recycle-list\n`;
 				contents += `		height="100%"\n`;
@@ -57,7 +58,7 @@ exports.page = (content, opts = {}) => {
 		}
 		contents += `\n`;
 		contents += `<script>\n`;
-		contents += `import Page from '../../common/page';\n`;
+		contents += `import Page from '../../${relativePath}common/page';\n`;
 		contents += `\n`;
 		contents += `Page({\n`;
 		contents += `	mapState(state) {\n`;

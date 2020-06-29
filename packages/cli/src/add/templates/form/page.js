@@ -1,7 +1,8 @@
 exports.page = (content, opts = {}) => {
-	const { mutation, pathArr, project, obj, title } = opts;
+	const { mutation, pathArr, project, packageName, obj, title } = opts;
 	try {
 		let contents = '';
+		const relativePath = packageName !== 'pages' ? '../' : '';
 
 		contents += `<template>\n`;
 		contents += `	<mc-form\n`;
@@ -27,7 +28,7 @@ exports.page = (content, opts = {}) => {
 		contents += `</template>\n\n`;
 
 		contents += `<script>\n`;
-		contents += `import Page from '../../common/page';\n\n`;
+		contents += `import Page from '../../${relativePath}common/page';\n\n`;
 		contents += `Page({\n`;
 		contents += `	data: {\n`;
 		contents += `		dataSource: [\n`;

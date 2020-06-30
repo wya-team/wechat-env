@@ -1,8 +1,8 @@
 const { getMutationType } = require('./utils/helper');
 
 exports.mutation = (opts = {}) => {
-	const { pathArr, obj } = opts;
-	let mutationType = getMutationType(pathArr) + '_GET';
+	const { pathArr, obj, packageName } = opts;
+	let mutationType = getMutationType(pathArr, packageName) + '_GET';
 	let contents = '';
 	contents += `/**\n`;
 	contents += ` * 请注释模块内容\n`;
@@ -12,8 +12,8 @@ exports.mutation = (opts = {}) => {
 };
 
 exports.mutationOverride = (content, opts = {}) => {
-	const { pathArr, obj } = opts;
-	let mutationType = getMutationType(pathArr) + '_GET';
+	const { pathArr, obj, packageName } = opts;
+	let mutationType = getMutationType(pathArr, packageName) + '_GET';
 	let newContent = '';
 	newContent += `export const ${mutationType} = '${mutationType}';`;
 

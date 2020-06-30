@@ -4,7 +4,7 @@ exports.page = (content, opts = {}) => {
 	const { mutation, humpMutation, pathArr, project, packageName, obj, pagingMode: mode, pagingType: type, route, title } = opts;
 	let extra = getExtra(pathArr);
 
-	let mutationType = `${getMutationType(pathArr)}`;
+	let mutationType = `${getMutationType(pathArr, packageName)}`;
 	let pagingType = mutationType + '_LIST';
 	const relativePath = packageName !== 'pages' ? '../' : '';
 

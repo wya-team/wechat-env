@@ -1,7 +1,7 @@
 const { getExtra, getMutationType } = require('./utils/helper');
 
 exports.module = (opts = {}) => {
-	const { mutation, humpMutation, pathArr, project, obj } = opts;
+	const { mutation, humpMutation, pathArr, packageName, project, obj } = opts;
 
 	let extra = getExtra(pathArr);
 
@@ -12,7 +12,7 @@ exports.module = (opts = {}) => {
 	contents += `	data: ''\n`;
 	contents += `};\n\n`;
 	contents += `const mutations = {\n`;
-	contents += `	${getMutationType(pathArr)}_GET_SUCCESS(state, { data, param }) {\n`;
+	contents += `	${getMutationType(pathArr, packageName)}_GET_SUCCESS(state, { data, param }) {\n`;
 	contents += `		state.data = {\n`;
 	contents += `			...data\n`;
 	contents += `		};\n`;

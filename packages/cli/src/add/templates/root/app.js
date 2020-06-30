@@ -20,7 +20,7 @@ exports.rootApp = (content, opts = {}) => {
 		const targetPackage = subpackages[targetIndex];
 		const targetPages = (targetPackage || {}).pages || [];
 		const page = `pages${route}`;
-		const isExist = pages.some((it) => it === page);
+		const isExist = targetPages.some((it) => it === page);
 		if (!isExist) {
 			targetPages.push(page);
 		} 

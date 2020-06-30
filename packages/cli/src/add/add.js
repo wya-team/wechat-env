@@ -46,8 +46,8 @@ module.exports = (opts = {}) => {
 	/**
 	 * container mutation reducer component
 	 */
-	let mutation = pathArr[0];
-	let humpMutation = pathArr[0]
+	let mutation = packageName === 'pages' ? pathArr[0] : `${packageName.split('-')[1]}-${pathArr[0]}`;
+	let humpMutation = mutation
 		.split('-')
 		.map((it, index) => (index === 0 ? it : `${it[0].toUpperCase()}${it.slice(1)}`))
 		.join('');

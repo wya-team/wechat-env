@@ -33,7 +33,7 @@ exports.page = (content, opts = {}) => {
 				contents += `				<${project}-item \n`;
 				contents += `					wx:for="{{ listInfo[item.value].data }}"\n`;
 				contents += `					wx:key="index"\n`;
-				contents += `					it="{{ item }}}"\n`;
+				contents += `					it="{{ item }}"\n`;
 				contents += `				/>\n`;
 				contents += `			</mc-recycle-list>\n`;
 				contents += `		</mc-tabs-pane>\n`;

@@ -3,6 +3,15 @@
     "pages/index/index",
     "pages/logs/logs"
   ],
+  "subpackages": [
+		{
+			"root": "package-sub",
+			"pages": [
+				"pages/setting/index",
+				"pages/home/index"
+			]
+		}
+	],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",

@@ -1,0 +1,25 @@
+<template>
+	<view>
+		home
+	</view>
+</template>
+
+<script>
+export default {
+	data:{},
+	
+	methods: {
+		loadData() {
+
+		}
+	},
+};
+</script>
+
+<style lang="scss">
+</style>
+<config>
+{
+	"navigationBarTitleText": "首页",
+}
+</config>

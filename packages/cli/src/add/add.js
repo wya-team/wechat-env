@@ -46,17 +46,18 @@ module.exports = (opts = {}) => {
 	/**
 	 * container mutation reducer component
 	 */
-	let mutation = packageName === 'pages' ? pathArr[0] : `${packageName.split('-')[1]}-${pathArr[0]}`;
-	let humpMutation = mutation
+	let mutation = pathArr[0];
+	let mutationWithPackage = packageName === 'pages' ? pathArr[0] : `${packageName.split('-')[1]}-${pathArr[0]}`;
+	let humpMutation = mutationWithPackage
 		.split('-')
 		.map((it, index) => (index === 0 ? it : `${it[0].toUpperCase()}${it.slice(1)}`))
 		.join('');
 	let module = pathArr.slice(1).join('-');
 
-	const pageRoute = packageName === 'pages' ? packageName : `${packageName}/pages`;
+	const packagePath = isSubPackage ? `${packageName}/` : '';
 	let basicConfig = {
 		page: {
-			path: upath.normalize(`${dir}${pageRoute}/${pathArr[0]}/${module}.wya`)
+			path: upath.normalize(`${dir}${packagePath}pages/${pathArr[0]}/${module}.wya`)
 		},
 		api: {
 			path: upath.normalize(`${dir}stores/apis/${mutation}.js`)
@@ -85,13 +86,11 @@ module.exports = (opts = {}) => {
 		page: basicConfig.page,
 	};
 
-
-	const itemRoute = packageName === 'pages' ? '' : packageName;
 	let scrollConfig = {
 		// mutation: basicConfig.mutation,
 		page: basicConfig.page,
 		item: {
-			path: upath.normalize(`${dir}${itemRoute}/components/${pathArr[0]}/${module}/item.wya`)
+			path: upath.normalize(`${dir}${packagePath}/components/${pathArr[0]}/${module}/item.wya`)
 		},
 		api: basicConfig.api,
 		module: basicConfig.module,

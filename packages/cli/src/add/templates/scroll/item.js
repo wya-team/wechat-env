@@ -4,6 +4,7 @@ exports.item = (content, opts = {}) => {
 	const { mutation, pathArr, project, obj, title } = opts;
 	let extra = getExtra(pathArr);
 	let contents = '';
+	const relativePath = packageName !== 'pages' ? '../' : '';
 
 	contents += `<template>\n`;
 	contents += `	<view>\n`;
@@ -11,7 +12,7 @@ exports.item = (content, opts = {}) => {
 	contents += `	</view>\n`;
 	contents += `</template>\n\n`;
 	contents += `<script>\n`;
-	contents += `import Component from '../../../common/component';\n\n`;
+	contents += `import Component from '../../../${relativePath}common/component';\n\n`;
 	contents += `Component({\n`;
 	contents += `	properties: {\n`;
 	contents += `		it: {\n`;

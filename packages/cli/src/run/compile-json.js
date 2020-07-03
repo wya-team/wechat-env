@@ -41,7 +41,6 @@ module.exports = (options) => {
 
 				// subpackages
 				if (json.subpackages) {
-					console.log(regex);
 					json.subpackages = json.subpackages.map((i) => {
 						i.pages = i.pages.filter(url => !regex.test(`${i.root}/${url}`));
 						return i;

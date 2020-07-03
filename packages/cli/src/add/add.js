@@ -60,13 +60,13 @@ module.exports = (opts = {}) => {
 			path: upath.normalize(`${dir}${packagePath}pages/${pathArr[0]}/${module}.wya`)
 		},
 		api: {
-			path: upath.normalize(`${dir}stores/apis/${mutation}.js`)
+			path: upath.normalize(`${dir}stores/apis/${mutationWithPackage}.js`)
 		},
 		module: {
-			path: upath.normalize(`${dir}stores/modules/${mutation}/${module}.js`)
+			path: upath.normalize(`${dir}stores/modules/${mutationWithPackage}/${module}.js`)
 		},
 		rootModule: {
-			path: upath.normalize(`${dir}stores/modules/${mutation}/root.js`)
+			path: upath.normalize(`${dir}stores/modules/${mutationWithPackage}/root.js`)
 		}
 	};
 
@@ -132,7 +132,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					tpl[`${key}Override`](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, humpMutation, route, pathArr, project, packageName, module, extra, title }
+						{ mutation, humpMutation, mutationWithPackage, route, pathArr, project, packageName, module, extra, title }
 					)
 				);
 			}

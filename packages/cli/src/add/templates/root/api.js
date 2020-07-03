@@ -1,13 +1,13 @@
 const { getNewContent, getExtra } = require('../utils/helper');
 
 exports.rootApi = (content, opts = {}) => {
-	const { mutation, humpMutation, pathArr, componentArr, obj } = opts;
+	const { mutation, humpMutation, mutationWithPackage, pathArr, componentArr, obj } = opts;
 	try {
 		let extra = getExtra(pathArr);
 		let pathName = `${pathArr.slice(1).join('-')}`;
 		let moduleName = `${humpMutation}${extra}`;
 
-		let importContent = `import ${humpMutation} from './${mutation}';`;
+		let importContent = `import ${humpMutation} from './${mutationWithPackage}';`;
 		let injectContent = `	...${humpMutation}`;
 
 		let importSplit = `\nconst API = {\n`;

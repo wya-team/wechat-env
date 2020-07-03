@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const { prompt, Separator } = require('inquirer');
 const { exec } = require('child_process');
 
+
 const gulpConfig = path.resolve(__dirname, './compiler.js');
 
 class DevProcess extends EventEmitter {
@@ -14,37 +15,65 @@ class DevProcess extends EventEmitter {
 	}
 
 	getAllModules() {
-		const modules = [];
-		const directory = path.resolve(this.$parent.entryDir, './pages');
-		fs.readdirSync(directory).forEach((file) => {
-			const fullpath = path.resolve(directory, file);
-			// 获取文件信息
-			const stat = fs.statSync(fullpath);
-			if (!['tpl'].includes(file) && stat.isDirectory()) {
-				modules.push(file);
-			}
+		let configs = require(path.resolve(this.$parent.entryDir, './app.json')); // eslint-disable-line
+		let packages = [''];
+		if (
+			configs.subpackages 
+			&& configs.subpackages.length > 0
+		) {
+			configs.subpackages.forEach((item, index) => {
+				packages.push(`${item.root}`);
+			});
+		}
+		const result = [];
+
+		packages.forEach($package => {
+			let directory = path.resolve(this.$parent.entryDir, `./${$package}`, './pages');
+			let current = {
+				package: $package || '',
+				modules: []
+			};
+			fs.readdirSync(directory).forEach((file) => {
+				const fullpath = path.resolve(directory, file);
+				// 获取文件信息
+				const stat = fs.statSync(fullpath);
+				if (!['tpl'].includes(file) && stat.isDirectory()) {
+					current.modules.push(file);
+				}
+			});
+
+			result.push(current);
 		});
 
-		return modules;
+		return result;
 	}
 
 	prompt() {
-		let modules = this.getAllModules();
+		let allModules = this.getAllModules();
 		return new Promise((resolve, reject) => {
 			prompt([
 				{
 					type: 'list',
 					name: 'isSelectAll',
-					message: 'Select all modules:',
-					choices: [modules.join(','), 'no']
+					message: 'Select all package:',
+					choices: allModules.reduce((pre, cur, index, source) => {
+						pre = pre.concat(cur.package || 'master');
+						source.length - 1 === index && (pre = [pre.join(','), 'no']);
+						return pre;
+					}, [])
 				},
 				{
 					type: 'checkbox',
 					name: 'modules',
 					when: (answers) => answers.isSelectAll === 'no',
 					message: 'Select modules:',
-					pageSize: modules.length + 1,
-					choices: modules,
+					pageSize: allModules.reduce((pre, cur) => cur.modules.length + pre + 4, 1),
+					choices: allModules.reduce((pre, cur, index, source) => {
+						pre.push(new Separator(`\n\n--- ${cur.package || 'master'} ---`));
+						pre = pre.concat(cur.modules.map(i => `${cur.package ? `${cur.package}/` : ''}pages/${i}`));
+						source.length - 1 === index && (pre.push(new Separator(`\n`)));
+						return pre;
+					}, []),
 					validate(answer) {
 						if (answer.length < 1) {
 							return '至少选择一个模块, 使用Space键选中';
@@ -54,11 +83,18 @@ class DevProcess extends EventEmitter {
 				}
 			]).then((result) => {
 				let { isSelectAll, modules = [] } = result;
-				let allModules = this.getAllModules();
 
 				let ignore;
 				if (result.isSelectAll === 'no') {
-					ignore = allModules.filter((i) => !modules.includes(i));
+					ignore = allModules
+						.reduce(
+							(pre, cur, index, source) => pre.concat(
+								cur.modules.map(
+									i => `${cur.package ? `${cur.package}/` : ''}pages/${i}`
+								)
+							), 
+							[]
+						).filter((i) => !modules.includes(i));
 				} else {
 					ignore = [];
 				}

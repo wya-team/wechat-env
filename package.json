@@ -21,8 +21,9 @@
     "unlink": "lerna exec --scope @wya/mp-cli -- yarn unlink",
     "add": "yarn workspace @wya/mp-template run add",
     "create": "yarn workspace @wya/mp-template run create",
-    "dev": "yarn workspace @wya/mp-template run dev",
-    "build": "yarn workspace @wya/mp-template run build"
+    "clean:debug": "rm -rf templates/node_modules/.bin/wya-mp",
+    "dev": "npm run clean:debug && yarn workspace @wya/mp-template run dev",
+    "build": "npm run clean:debug && yarn workspace @wya/mp-template run build"
   },
   "dependencies": {},
   "devDependencies": {

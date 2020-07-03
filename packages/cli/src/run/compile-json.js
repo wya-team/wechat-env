@@ -29,7 +29,7 @@ module.exports = (options) => {
 				let regex = process.env.IGNORE_MODULES
 					.split(',')
 					.filter(i => !!i)
-					.map(i => `/?pages/${i}/`)
+					.map(i => `/?${i}/`)
 					.join('|');
 
 				regex = new RegExp(`^(${regex})`);
@@ -38,6 +38,15 @@ module.exports = (options) => {
 
 				// pages
 				json.pages = json.pages.filter(i => !regex.test(i));
+
+				// subpackages
+				if (json.subpackages) {
+					console.log(regex);
+					json.subpackages = json.subpackages.map((i) => {
+						i.pages = i.pages.filter(url => !regex.test(`${i.root}/${url}`));
+						return i;
+					});
+				}
 
 				// tabBar
 				if (json.tabBar && json.tabBar.list) {

@@ -22,7 +22,7 @@ let entryConfig = null;
 let getEntryConfig = () => {
 	if (entryConfig) return entryConfig;
 	let modules = (process.env.IGNORE_MODULES || '').split(',');
-	let ignore = modules.filter(i => !!i).map(i => `${src}/pages/${i}/**/**`);
+	let ignore = modules.filter(i => !!i).map(i => `${src}/${i}/**/**`);
 
 	entryConfig = {
 		ignore: ignore.length ? ignore : undefined

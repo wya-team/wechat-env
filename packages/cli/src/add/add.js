@@ -42,6 +42,8 @@ module.exports = (opts = {}) => {
 		pathArr[1] = 'main';
 		route = `${path}/main`;
 	}
+	// 是否在子包内创建
+	const isSubPackage = packageName !== 'pages';
 
 	/**
 	 * container mutation reducer component

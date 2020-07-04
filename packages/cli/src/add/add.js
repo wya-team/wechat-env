@@ -124,7 +124,7 @@ module.exports = (opts = {}) => {
 				fs.outputFileSync(
 					fullpath,
 					typeof tpl[key] === 'function'
-						? tpl[key]({ mutation, humpMutation, route, pathArr, project, packageName, module, extra, title })
+						? tpl[key]({ mutation, humpMutation, mutationWithPackage, route, pathArr, project, packageName, module, extra, title })
 						: content
 				);
 			} else if (typeof tpl[`${key}Override`] === 'function') {
@@ -153,7 +153,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					rootTpl[_key](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, humpMutation, pathArr, project, packageName, module, extra, title, route }
+						{ mutation, humpMutation, mutationWithPackage, pathArr, project, packageName, module, extra, title, route }
 					)
 				);
 				

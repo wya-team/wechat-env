@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build:packages": "cross-env NODE_ENV=production node --max_old_space_size=8192 ./scripts/build.js",
-    "bootstrap": "lerna bootstrap --loglevel silly",
+    "bootstrap": "lerna clean --yes && lerna bootstrap --loglevel silly",
     "pub": "npm run build:packages && lerna publish",
     "pub:no-tag": "npm run pub -- --no-git-tag-version",
     "lint-staged": "lint-staged",

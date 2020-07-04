@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const program = require('cac')();
 const { resolve } = require('path');
-const { Run, Add } = require('./commands');
+const { Run, Add, Init } = require('./commands');
 
 const { log } = console;
 program
@@ -10,6 +10,17 @@ program
 // 使用指令参数 如 mp-cli server;
 program
 	.usage('<cmd>');
+
+// init
+program
+	.command('init [sourceDir]', 'download scaffold')
+	.action((sourceDir = '.', commandOptions) => {
+		let app = new Init({
+			sourceDir: resolve(sourceDir),
+			...commandOptions
+		});
+		app.process();
+	});
 
 // dev
 program

@@ -1,7 +1,7 @@
 const { getExtra } = require('../utils/helper');
 
 exports.item = (content, opts = {}) => {
-	const { mutation, pathArr, project, obj, title } = opts;
+	const { mutation, pathArr, packageName, project, obj, title } = opts;
 	let extra = getExtra(pathArr);
 	let contents = '';
 	const relativePath = packageName !== 'pages' ? '../' : '';

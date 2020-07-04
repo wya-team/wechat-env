@@ -64,7 +64,7 @@ exports.getExtra = (pathArr) => {
 	}).join('');
 };
 
-exports.getMutationType = (pathArr) => {
+exports.getMutationType = (pathArr, packageName) => {
 	const arr = [...pathArr];
 	if (packageName !== 'pages') {
 		const extra = packageName.split('-')[1];

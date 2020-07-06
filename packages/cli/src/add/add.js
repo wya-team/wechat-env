@@ -173,7 +173,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						scrollTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, humpMutation, pathArr, project, packageName, module, pagingType, extra, title, route, env }
+							{ mutation, humpMutation, pathArr, project, packageName, module, pagingType, extra, title, route }
 						)
 					);
 					
@@ -194,7 +194,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						formTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, humpMutation, pathArr, project, packageName, module, extra, title, env }
+							{ mutation, humpMutation, pathArr, project, packageName, module, extra, title }
 						)
 					);
 					

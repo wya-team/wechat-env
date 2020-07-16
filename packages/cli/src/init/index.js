@@ -49,7 +49,7 @@ module.exports = class InitManager {
 				message: 'Select branch:',
 				// 可提供分支
 				choices: [
-					'master', 
+					'master' 
 				],
 				validate(val) {
 					if (val !== '') {

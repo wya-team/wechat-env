@@ -67,11 +67,9 @@ class DevProcess extends EventEmitter {
 					name: 'modules',
 					when: (answers) => answers.isSelectAll === 'no',
 					message: 'Select modules:',
-					pageSize: allModules.reduce((pre, cur) => cur.modules.length + pre + 4, 1),
 					choices: allModules.reduce((pre, cur, index, source) => {
-						pre.push(new Separator(`\n\n--- ${cur.package || 'master'} ---`));
+						pre.push(new Separator(`--- ${cur.package || 'master'} ---`));
 						pre = pre.concat(cur.modules.map(i => `${cur.package ? `${cur.package}/` : ''}pages/${i}`));
-						source.length - 1 === index && (pre.push(new Separator(`\n`)));
 						return pre;
 					}, []),
 					validate(answer) {

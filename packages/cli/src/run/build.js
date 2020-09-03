@@ -8,7 +8,6 @@ const gulpConfig = path.resolve(__dirname, './compiler.js');
 class BuildProcess extends EventEmitter {
 	constructor(parent) {
 		super();
-		process.env.NODE_ENV = 'production';
 
 		this.$parent = parent;
 	}

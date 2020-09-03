@@ -2,15 +2,18 @@ const fs = require('fs-extra');
 const path = require('path');
 const DevProcess = require('./dev');
 const BuildProcess = require('./build');
+const { resolvePackage } = require('./utils');
 
 module.exports = class RunManager {
 	constructor(options = {}) {
 		const defaultOptions = {
 			withI18n: false,
-			config: 'mp-cli.config.js',
+			config: 'cli.config.js',
 		};
 		this.options = { ...defaultOptions, ...options };
+
 		this.sourceDir = this.options.sourceDir;
+		this.docDir = path.resolve(this.sourceDir, defaultOptions.config);
 
 		this.entryDir = path.resolve(this.options.sourceDir, './src');
 		this.outputDir = path.resolve(this.options.sourceDir, './dist');
@@ -40,13 +43,27 @@ module.exports = class RunManager {
 	 * 其中包含加载页面和插件、应用插件等。
 	 */
 	async process() {
+		let result = require(this.docDir);
+		this.docConfig = typeof result === 'function' ? result() : result;
+
 		return new Promise((resolve, reject) => {
-			// TODO 
+
+			// 文件同步，主要是组件库，TODO: 组件库内的第三方资源与项目内同步打包
+			let { copies = [] } = this.docConfig;
+			for (let i = 0; i < copies.length; i++) {
+				let { name, from, to } = copies[i];
+
+				resolvePackage(name); // = 检查包是否存在
+				fs.copySync(from, to);
+			}
+
 			resolve();
 		});
 	}
 
 	async dev() {
+		process.env.NODE_ENV = 'development';
+
 		await this.process();
 		this.devProcess = new DevProcess(this);
 		await this.devProcess.process();
@@ -68,6 +85,8 @@ module.exports = class RunManager {
 	}
 
 	async build() {
+		process.env.NODE_ENV = 'production';
+
 		await this.process();
 
 		this.buildProcess = new BuildProcess(this);

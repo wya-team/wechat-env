@@ -1,6 +1,7 @@
 const { resolve, dirname, relative, parse } = require('path');
 const upath = require('upath');
 const fs = require('fs-extra');
+const { resolvePackage } = require('./utils');
 
 let __cwd = process.env.SOURCE_DIR;
 let src = process.env.REPO_SOURCE_DIR;
@@ -31,22 +32,6 @@ let getModuleId = (key) => {
 		);
 	}
 	return cache[key];
-};
-const resolvePackage = (source) => {
-	let nms = [
-		resolve(__dirname, '../../node_modules', source),
-		resolve(__cwd, './node_modules', source),
-		resolve(__cwd, '../node_modules', source),
-		...module.paths.map($path => resolve($path, source))
-	];
-
-	let fullpath = nms.find(i => fs.pathExistsSync(i));
-
-	if (!fullpath) {
-		throw new Error(`@wya/mp-cli: 未找到${source}`);
-	}
-
-	return fullpath;
 };
 
 let runtimePlugins = [

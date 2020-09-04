@@ -93,13 +93,18 @@ class Compiler {
 	static cleaner = () => {
 		return new Promise((resolve, reject) => {
 			del([u(`${dist}/**`)], { force: true }).then(() => {
-				let result = require(configFile);
-				let { copies = [] } = typeof result === 'function' ? result() : result;
-				for (let i = 0; i < copies.length; i++) {
-					let { name, from, to } = copies[i];
-					resolvePackage(name); // = 检查包是否存在
-					fs.copySync(from, to);
+
+				// 同步文件
+				if (fs.pathExistsSync(configFile)) {
+					let result = require(configFile);
+					let { copies = [] } = typeof result === 'function' ? result() : result;
+					for (let i = 0; i < copies.length; i++) {
+						let { name, from, to } = copies[i];
+						resolvePackage(name); // = 检查包是否存在
+						fs.copySync(from, to);
+					}	
 				}
+				
 				resolve();
 			}).catch(reject);
 		})

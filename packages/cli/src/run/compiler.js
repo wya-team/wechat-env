@@ -10,11 +10,13 @@ const babelConfig = require('./babel-config');
 const compileWya = require('./compile-wya');
 const compileJSON = require('./compile-json');
 const compileRuntime = require('./compile-runtime');
+const { resolvePackage } = require('./utils');
 sass.compiler = require('node-sass');
 
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
 let temp = process.env.TEMP_DIR;
+let configFile = process.env.CONFIG_FILE_PATH;
 
 console.log(`ENTRY: ${src}\nOUTPUT: ${dist}\nTEMP: ${temp}\n${process.env.NODE_ENV}`);
 
@@ -89,7 +91,18 @@ class Compiler {
 	}
 
 	static cleaner = () => {
-		return del([u(`${dist}/**`)], { force: true });
+		return new Promise((resolve, reject) => {
+			del([u(`${dist}/**`)], { force: true }).then(() => {
+				let result = require(configFile);
+				let { copies = [] } = typeof result === 'function' ? result() : result;
+				for (let i = 0; i < copies.length; i++) {
+					let { name, from, to } = copies[i];
+					resolvePackage(name); // = 检查包是否存在
+					fs.copySync(from, to);
+				}
+				resolve();
+			}).catch(reject);
+		})
 	}
 
 	static wyaCleaner = () => {

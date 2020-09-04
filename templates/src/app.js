@@ -7,6 +7,7 @@ import Enhancer from './utils/enhancer';
 import { storeConfig } from './stores/root';
 import { decodeScene, createSchedule } from './utils/utils';
 import { USER_KEY } from './constants/constants';
+import { config } from './mc.config';
 
 Enhancer.invoke(wx, {
 	// 导航页
@@ -17,9 +18,12 @@ Enhancer.invoke(wx, {
 const { log } = console;
 
 App({
+	$mc: {},
 	userData: null,
 	userInfo: {},
 	async onShow(options) {
+		this.$mc.config = config;
+		
 		const { query = {} } = wx.getEnterOptionsSync && wx.getEnterOptionsSync() || {};
 
 		this.loginSchedule = createSchedule();
@@ -127,7 +131,6 @@ App({
 			page.onLoad();
 			page.onShow();
 		}
-
 	},
 
 	store: new Store(storeConfig)

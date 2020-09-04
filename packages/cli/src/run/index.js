@@ -13,7 +13,7 @@ module.exports = class RunManager {
 		this.options = { ...defaultOptions, ...options };
 
 		this.sourceDir = this.options.sourceDir;
-		this.docDir = path.resolve(this.sourceDir, defaultOptions.config);
+		this.configFile = path.resolve(this.sourceDir, defaultOptions.config);
 
 		this.entryDir = path.resolve(this.options.sourceDir, './src');
 		this.outputDir = path.resolve(this.options.sourceDir, './dist');
@@ -25,6 +25,7 @@ module.exports = class RunManager {
 		process.env.REPO_SOURCE_DIR = this.entryDir;
 		process.env.REPO_DIST_DIR = this.outputDir;
 		process.env.TEMP_DIR = this.tempDir;
+		process.env.CONFIG_FILE_PATH = this.configFile;
 		
 		this.cwd = process.cwd();
 
@@ -43,20 +44,7 @@ module.exports = class RunManager {
 	 * 其中包含加载页面和插件、应用插件等。
 	 */
 	async process() {
-		let result = require(this.docDir);
-		this.docConfig = typeof result === 'function' ? result() : result;
-
 		return new Promise((resolve, reject) => {
-
-			// 文件同步，主要是组件库，TODO: 组件库内的第三方资源与项目内同步打包
-			let { copies = [] } = this.docConfig;
-			for (let i = 0; i < copies.length; i++) {
-				let { name, from, to } = copies[i];
-
-				resolvePackage(name); // = 检查包是否存在
-				fs.copySync(from, to);
-			}
-
 			resolve();
 		});
 	}

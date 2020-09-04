@@ -20,6 +20,6 @@ export default {
 </style>
 <config>
 {
-	"navigationBarTitleText": "设置",
+	"navigationBarTitleText": "设置"
 }
 </config>

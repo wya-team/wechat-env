@@ -61,6 +61,7 @@ exports.page = (content, opts = {}) => {
 		contents += `import Page from '../../${relativePath}common/page';\n`;
 		contents += `\n`;
 		contents += `Page({\n`;
+		contents += `	navigator: '${mutationType}',\n`;
 		contents += `	mapState(state) {\n`;
 		contents += `		const { ${humpMutation}${extra} } = state;\n`;
 		contents += `		return {\n`;

@@ -117,7 +117,10 @@ class Compiler {
 		let buildsReady = [];
 		let copiesReady = [];
 
-		if (!fs.pathExistsSync(configFile)) return Promise.resolve;
+		if (!fs.pathExistsSync(configFile)) {
+			return Promise.resolve;
+		}
+
 		// 同步文件
 		let result = require(configFile); // eslint-disable-line
 		let { copies = [] } = typeof result === 'function' ? result() : result;
@@ -126,12 +129,18 @@ class Compiler {
 			resolvePackage(name); // = 检查包是否存在
 
 			if (enforce === 'pre') {
-
 				// check
 				options = {
-					ignore: options.ignore && options.ignore.length ? options.ignore : undefined,
-					...options
+					...options,
+					ignore: options.ignore && options.ignore.length 
+						? options.ignore.filter(i => !!i).map(i => {
+							if (i.includes('**')) return i;
+							return `${from}/${i}/**/**`;
+						}) 
+						: undefined,
 				};
+
+				console.log(options);
 
 				buildsReady = buildsReady.concat([
 					Compiler.wya(from, to, options),
@@ -197,5 +206,5 @@ exports.dev = gulp.series(
 			gulp.watch(u(`${temp}/**/*.js`), Compiler.runtime());
 		}
 	),
-	Compiler.runtime
+	Compiler.runtime()
 );

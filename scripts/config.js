@@ -21,6 +21,14 @@ const builds = {
 			format: 'cjs'
 		}
 	},
+	polyfill: {
+		script: 'babel packages/polyfill/src --out-dir packages/polyfill/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		rollup: {
+			entry: 'packages/polyfill/src/index.js',
+			dest: 'packages/polyfill/dist/polyfill.min.js',
+			format: 'cjs'
+		}
+	},
 	utils: {
 		script: 'babel packages/utils/src --out-dir packages/utils/dist --copy-files --ignore **.test.js,**.md,examples/**',
 		rollup: {

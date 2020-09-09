@@ -14,7 +14,10 @@ module.exports = {
 			name: '@wya/mc',
 			enforce: 'pre', // 需要预编译
 			from: resolve(__dirname, './node_modules/@wya/mc', './src/'),
-			to: resolve(__dirname, './dist', './libs/mc')
+			to: resolve(__dirname, './dist', './libs/mc'),
+			options: {
+				ignore: ['echarts']
+			}
 		}
 	]
 };

@@ -1,6 +1,6 @@
+import '@wya/mp-polyfill';
 import { Store } from '@wya/mp-store';
 import { Storage, URL } from '@wya/mp-utils';
-
 import { HttpHelper, ajax } from '@wya/mp-http';
 import API_ROOT from './stores/apis/root';
 import Enhancer from './utils/enhancer';

@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build:packages": "cross-env NODE_ENV=production node --max_old_space_size=8192 ./scripts/build.js",
-    "bootstrap": "lerna clean --yes && lerna bootstrap --loglevel silly",
+    "bootstrap": "lerna clean --yes && lerna bootstrap --loglevel silly && cd templates/ && npm install",
     "pub": "npm run build:packages && lerna publish",
     "pub:no-tag": "npm run pub -- --no-git-tag-version",
     "lint-staged": "lint-staged",
@@ -25,6 +25,9 @@
     "clean:debug": "rm -rf templates/node_modules/.bin/wya-mp",
     "dev": "npm run clean:debug && yarn workspace @wya/mp-template run dev",
     "build": "npm run clean:debug && yarn workspace @wya/mp-template run build"
+  },
+  "scripts-info": {
+    "bootstrap": "npm install 保持依赖不在root下"
   },
   "dependencies": {},
   "devDependencies": {

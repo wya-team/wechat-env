@@ -11,7 +11,7 @@ let hasRegenerator = fs.pathExistsSync(resolve(__cwd, './node_modules/regenerato
 	|| fs.pathExistsSync(resolve(__cwd, '../node_modules/regenerator-runtime'));
 
 let count = 0;
-let cache = {};
+let cache = {}; // TODO: 前置编译 { '@wya/mp-polyfill': 'xx' }
 let getModuleId = (key) => {
 
 	// 0.13.5的版本微信无法执行

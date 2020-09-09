@@ -1,6 +1,6 @@
 {
   "name": "@wya/mp-template",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "description": "Template MP",
   "main": "dist/app.js",
@@ -26,12 +26,12 @@
   "dependencies": {
     "@wya/mc": "^1.1.1",
     "@wya/mp-http": "^1.4.0",
-    "@wya/mp-polyfill": "^1.0.0",
+    "@wya/mp-polyfill": "^1.0.1",
     "@wya/mp-store": "^1.3.0",
     "@wya/mp-utils": "^1.4.0"
   },
   "devDependencies": {
-    "@wya/mp-cli": "^1.4.0",
+    "@wya/mp-cli": "^1.4.2",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",

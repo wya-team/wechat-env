@@ -1,4 +1,7 @@
+let ready = false;
+
 (() => {
+	if (ready) return;
 	let roots = [
 		typeof global !== 'undefined' && global,
 		typeof window !== 'undefined' && window,
@@ -28,4 +31,6 @@
 			if (!root[key]) root[key] = originals[key];
 		});
 	});
+
+	ready = true;
 })();

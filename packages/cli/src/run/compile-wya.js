@@ -15,6 +15,7 @@ src = upath.normalize(src);
 dist = upath.normalize(dist);
 
 module.exports = (options) => {
+	const { from, to } = options;
 	return through.obj(function (file, enc, cb) {
 
 		try {
@@ -41,13 +42,13 @@ module.exports = (options) => {
 			};
 
 			let fn = (ext) => {
-				let regex = new RegExp(src);
+				let regex = new RegExp(from);
 				let fullpath = upath
 					.normalize(file.path)
-					.replace(regex, dist)
+					.replace(regex, to)
 					.replace(/\.wya$/, `.${ext}`);
 
-				if (!fullpath.includes(dist)) {
+				if (!fullpath.includes(to)) {
 					throw new Error('路径解析错误');
 				}
 
@@ -57,7 +58,7 @@ module.exports = (options) => {
 			babel.transform(
 				content.script,
 				{
-					...babelConfig(),
+					...babelConfig({ from, to }),
 					filename: file.path
 				}, 
 				(err, result) => {

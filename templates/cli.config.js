@@ -12,7 +12,8 @@ module.exports = {
 	copies: [
 		{
 			name: '@wya/mc',
-			from: resolve(__dirname, './node_modules/@wya/mc', './lib/'),
+			enforce: 'pre', // 需要预编译
+			from: resolve(__dirname, './node_modules/@wya/mc', './src/'),
 			to: resolve(__dirname, './dist', './libs/mc')
 		}
 	]

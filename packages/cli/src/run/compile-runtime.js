@@ -63,12 +63,9 @@ module.exports = (options) => {
 				}
 			});
 		}).then(() => {
-			// this.push(file);
 			cb();
 		}).catch(res => {
 			console.log(res);
 		});
-
-
 	});
 };

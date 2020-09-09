@@ -3,7 +3,7 @@ const upath = require('upath');
 const del = require('del');
 const fs = require('fs-extra');
 const gulp = require('gulp');
-const sass = require('gulp-sass');
+const gulpSass = require('gulp-sass');
 const rename = require('gulp-rename');
 const babel = require('gulp-babel');
 const babelConfig = require('./babel-config');
@@ -11,7 +11,7 @@ const compileWya = require('./compile-wya');
 const compileJSON = require('./compile-json');
 const compileRuntime = require('./compile-runtime');
 const { resolvePackage } = require('./utils');
-sass.compiler = require('node-sass');
+gulpSass.compiler = require('node-sass');
 
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
@@ -36,119 +36,165 @@ let getEntryConfig = () => {
 const u = v => upath.normalize(v);
 class Compiler {
 
-	static runtime = () => {
-		return gulp
-			.src(u(`${temp}/**/*.js`))
-			.pipe(compileRuntime());
+	static runtime = (from = src, to = dist) => {
+		return function runtime() {
+			return gulp
+				.src(u(`${temp}/**/*.js`))
+				.pipe(compileRuntime());
+		};
 	}
 
-	static wya = () => {
-		return gulp
-			.src(u(`${src}/**/*.wya`), getEntryConfig())
-			.pipe(compileWya());
+	static wya = (from = src, to = dist, opts) => {
+		return function wya() {
+			return gulp
+				.src(u(`${from}/**/*.wya`), opts || getEntryConfig())
+				.pipe(compileWya({ from, to }));
+		};
 	}
 
-	static sass = () => {
-		return gulp
-			.src(u(`${src}/**/*.{wxss,scss}`), getEntryConfig())
-			.pipe(sass().on('error', sass.logError))
-			.pipe(rename({ extname: '.wxss' }))
-			.pipe(gulp.dest(dist));
+	static sass = (from = src, to = dist, opts) => {
+		return function sass() {
+			return gulp
+				.src(u(`${from}/**/*.{wxss,scss}`), opts || getEntryConfig())
+				.pipe(gulpSass().on('error', gulpSass.logError))
+				.pipe(rename({ extname: '.wxss' }))
+				.pipe(gulp.dest(to));
+		};
 	}
 
-	static js = () => {
-		return gulp
-			.src(u(`${src}/**/*.js`), getEntryConfig())
-			.pipe(babel(babelConfig()))
-			.pipe(gulp.dest(dist));
+	static js = (from = src, to = dist, opts) => {
+		return function js() {
+			return gulp
+				.src(u(`${from}/**/*.js`), opts || getEntryConfig())
+				.pipe(babel(babelConfig({ from, to })))
+				.pipe(gulp.dest(to));
+		};
 	}
 
-	static wxml = () => {
-		return gulp
-			.src(u(`${src}/**/*.wxml`), getEntryConfig())
-			.pipe(gulp.dest(dist));
+	static wxml = (from = src, to = dist, opts) => {
+		return function wxml() {
+			return gulp
+				.src(u(`${from}/**/*.wxml`), opts || getEntryConfig())
+				.pipe(gulp.dest(to));
+		};
 	}
 
-	static wxs = () => {
-		return gulp
-			.src(u(`${src}/**/*.wxs`), getEntryConfig())
-			.pipe(babel(babelConfig({ runtimeHelpers: false })))
-			.pipe(rename({ extname: '.wxs' }))
-			.pipe(gulp.dest(dist));
+	static wxs = (from = src, to = dist, opts) => {
+		return function wxs() {
+			return gulp
+				.src(u(`${from}/**/*.wxs`), opts || getEntryConfig())
+				.pipe(babel(babelConfig({ runtimeHelpers: false, from, to })))
+				.pipe(rename({ extname: '.wxs' }))
+				.pipe(gulp.dest(to));
+		};
 	}
 
-	static json = () => {
-		return gulp
-			.src(u(`${src}/**/*.json`), getEntryConfig())
-			.pipe(compileJSON())
-			.pipe(gulp.dest(dist));
+	static json = (from = src, to = dist, opts) => {
+		return function json() {
+			return gulp
+				.src(u(`${from}/**/*.json`), opts || getEntryConfig())
+				.pipe(compileJSON())
+				.pipe(gulp.dest(to));
+		};
 	}
 
-	static image = () => {
-		return gulp
-			.src(u(`${src}/**/*.{png,jpg,gif,ico,jpeg}`))
-			.pipe(gulp.dest(dist));
+	static image = (from = src, to = dist, opts) => {
+		return function image() {
+			return gulp
+				.src(u(`${from}/**/*.{png,jpg,gif,ico,jpeg}`))
+				.pipe(gulp.dest(to));
+		};
 	}
 
 	static cleaner = () => {
-		return new Promise((resolve, reject) => {
-			del([u(`${dist}/**`)], { force: true }).then(() => {
-
-				// 同步文件
-				if (fs.pathExistsSync(configFile)) {
-					let result = require(configFile);
-					let { copies = [] } = typeof result === 'function' ? result() : result;
-					for (let i = 0; i < copies.length; i++) {
-						let { name, from, to } = copies[i];
-						resolvePackage(name); // = 检查包是否存在
-						fs.copySync(from, to);
-					}	
-				}
-				
-				resolve();
-			}).catch(reject);
-		})
+		return function cleaner() {
+			return del([u(`${dist}/**`)], { force: true });
+		};
 	}
 
-	static wyaCleaner = () => {
-		return del([u(`${dist}/**/*.wya`)], { force: true });
-	}
+	// 预编译项
+	static prebuild = () => {
+		let buildsReady = [];
+		let copiesReady = [];
+
+		if (!fs.pathExistsSync(configFile)) return Promise.resolve;
+		// 同步文件
+		let result = require(configFile); // eslint-disable-line
+		let { copies = [] } = typeof result === 'function' ? result() : result;
+		for (let i = 0; i < copies.length; i++) {
+			let { name, from, to, enforce, options = {} } = copies[i];
+			resolvePackage(name); // = 检查包是否存在
+
+			if (enforce === 'pre') {
+
+				// check
+				options = {
+					ignore: options.ignore && options.ignore.length ? options.ignore : undefined,
+					...options
+				};
+
+				buildsReady = buildsReady.concat([
+					Compiler.wya(from, to, options),
+					Compiler.sass(from, to, options),
+					Compiler.js(from, to, options),
+					Compiler.wxml(from, to, options),
+					Compiler.wxs(from, to, options),
+					Compiler.json(from, to, options),
+					Compiler.image(from, to, options)
+				]);
+			} else {
+				copiesReady.push(() => fs.copySync(from, to));
+			}
+		}	
+		
+		return gulp.series(
+			function copies() {
+				copiesReady.forEach(fn => fn());
+				return Promise.resolve();
+			},
+			buildsReady.length > 0 
+				? gulp.parallel(...buildsReady) 
+				: Promise.resolve
+		);
+	};
 }
 // build task
 exports.build = gulp.series(
-	Compiler.cleaner,
+	Compiler.cleaner(),
+	Compiler.prebuild(),
 	gulp.parallel(
-		Compiler.wya,
-		Compiler.sass,
-		Compiler.js,
-		Compiler.wxml,
-		Compiler.wxs,
-		Compiler.json,
-		Compiler.image,
+		Compiler.wya(),
+		Compiler.sass(),
+		Compiler.js(),
+		Compiler.wxml(),
+		Compiler.wxs(),
+		Compiler.json(),
+		Compiler.image(),
 	),
-	Compiler.runtime,
+	Compiler.runtime(),
 );
 
 // dev task
 exports.dev = gulp.series(
-	Compiler.cleaner,
+	Compiler.cleaner(),
+	Compiler.prebuild(),
 	gulp.parallel(
-		Compiler.wya,
-		Compiler.sass,
-		Compiler.js,
-		Compiler.wxml,
-		Compiler.wxs,
-		Compiler.json,
-		Compiler.image,
+		Compiler.wya(),
+		Compiler.sass(),
+		Compiler.js(),
+		Compiler.wxml(),
+		Compiler.wxs(),
+		Compiler.json(),
+		Compiler.image(),
 		() => {
-			gulp.watch(u(`${src}/**/*.wya`), Compiler.wya); // watch默认会输出一个wya格式的代码
-			gulp.watch(u(`${src}/**/*.js`), Compiler.js);
-			gulp.watch(u(`${src}/**/*.{wxss,scss}`), Compiler.sass);
-			gulp.watch(u(`${src}/**/*.wxml`), Compiler.wxml);
-			gulp.watch(u(`${src}/**/*.wxs`), Compiler.wxs);
-			gulp.watch(u(`${src}/**/*.json`), Compiler.json);
-			gulp.watch(u(`${src}/**/*.{png,jpg,gif,ico,jpeg}`), Compiler.image);
-			gulp.watch(u(`${temp}/**/*.js`), Compiler.runtime);
+			gulp.watch(u(`${src}/**/*.wya`), Compiler.wya()); // watch默认会输出一个wya格式的代码
+			gulp.watch(u(`${src}/**/*.js`), Compiler.js());
+			gulp.watch(u(`${src}/**/*.{wxss,scss}`), Compiler.sass());
+			gulp.watch(u(`${src}/**/*.wxml`), Compiler.wxml());
+			gulp.watch(u(`${src}/**/*.wxs`), Compiler.wxs());
+			gulp.watch(u(`${src}/**/*.json`), Compiler.json());
+			gulp.watch(u(`${src}/**/*.{png,jpg,gif,ico,jpeg}`), Compiler.image());
+			gulp.watch(u(`${temp}/**/*.js`), Compiler.runtime());
 		}
 	),
 	Compiler.runtime

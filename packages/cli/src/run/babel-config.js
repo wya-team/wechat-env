@@ -34,7 +34,7 @@ let getModuleId = (key) => {
 	return cache[key];
 };
 
-let runtimePlugins = [
+let runtimePlugins = (from, to) => ([
 	[
 		resolvePackage('@babel/plugin-transform-runtime')
 	],
@@ -56,13 +56,14 @@ let runtimePlugins = [
 							&& !moduleName.includes('@@runtime.js')
 						) {
 
-							let fullpath = upath.normalize(relative(dirname(filename), resolve(src, 'libs/@@runtime.js')));
+							let base = 'libs/@@runtime.js';
+							let fullpath = upath.normalize(relative(dirname(filename), resolve(from, relative(to, dist), base)));
 
 							path.replaceWith(
 								t.memberExpression(
 									t.callExpression(t.identifier('require'), [t.stringLiteral(fullpath)]),
 									t.identifier(getModuleId(moduleName))
-								),
+								)
 							);
 						}
 					}
@@ -97,9 +98,9 @@ let runtimePlugins = [
 			};
 		}
 	]
-];
+]);
 const babelConfig = (opts = {}) => {
-	const { runtimeHelpers = true } = opts;
+	const { runtimeHelpers = true, from, to } = opts;
 	return {
 		presets: [resolvePackage('@babel/preset-env')],
 		plugins: [
@@ -125,7 +126,7 @@ const babelConfig = (opts = {}) => {
 					"loose": true
 				}
 			]
-		].concat(runtimeHelpers ? runtimePlugins : [])
+		].concat(runtimeHelpers ? runtimePlugins(from, to) : [])
 	};
 };
 

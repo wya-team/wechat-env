@@ -21,7 +21,7 @@
     "checkInvalidKey": true,
     "checkSiteMap": true,
     "uploadWithSourceMap": true,
-    "compileHotReLoad": false,
+    "compileHotReLoad": true,
     "useMultiFrameRuntime": false,
     "useApiHook": true,
     "babelSetting": {
@@ -36,7 +36,7 @@
     "packNpmRelationList": []
   },
   "compileType": "miniprogram",
-  "libVersion": "2.9.4",
+  "libVersion": "2.12.2",
   "appid": "wx852cddebbfcfe58f",
   "projectname": "xcx-env",
   "cloudfunctionTemplateRoot": "",

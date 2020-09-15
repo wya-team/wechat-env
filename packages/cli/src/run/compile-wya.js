@@ -15,7 +15,9 @@ src = upath.normalize(src);
 dist = upath.normalize(dist);
 
 module.exports = (options) => {
-	const { from, to } = options;
+	let { from, to } = options;
+	from = upath.normalize(from);
+	to = upath.normalize(to);
 	return through.obj(function (file, enc, cb) {
 
 		try {

@@ -1,6 +1,6 @@
 {
   "name": "@wya/mp-template",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "private": true,
   "description": "Template MP",
   "main": "dist/app.js",
@@ -31,7 +31,7 @@
     "@wya/mp-utils": "^1.4.0"
   },
   "devDependencies": {
-    "@wya/mp-cli": "^1.4.2",
+    "@wya/mp-cli": "^1.4.3",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",

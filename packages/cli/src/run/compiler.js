@@ -38,16 +38,16 @@ const u = v => upath.normalize(v);
 class Compiler {
 
 	static runtime = (opts = {}) => {
-		const { globs = `/**/*.js` } = opts;
+		const { globs = `/**/*.js`, single = {} } = opts;
 		return function runtime() {
 			return gulp
-				.src(u(`${temp}${globs}`))
+				.src(u(single.from || `${temp}${globs}`))
 				.pipe(compileRuntime());
 		};
 	}
 
 	static wya = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.wya`, gulpOpts } = opts;
+		const { from = src, to = dist, globs = `/**/*.wya`, single = {}, gulpOpts } = opts;
 		return function wya() {
 			return gulp
 				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
@@ -56,62 +56,62 @@ class Compiler {
 	}
 
 	static sass = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.{wxss,scss}`, gulpOpts } = opts;
+		const { from = src, to = dist, globs = `/**/*.{wxss,scss}`, single = {}, gulpOpts } = opts;
 		return function sass() {
 			return gulp
-				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
+				.src(u(single.from || `${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(gulpSass().on('error', gulpSass.logError))
 				.pipe(rename({ extname: '.wxss' }))
-				.pipe(gulp.dest(to));
+				.pipe(gulp.dest(single.to || to));
 		};
 	}
 
 	static js = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.js`, gulpOpts } = opts;
+		const { from = src, to = dist, globs = `/**/*.js`, single = {}, gulpOpts } = opts;
 		return function js() {
 			return gulp
-				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
+				.src(single.from || u(`${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(babel(babelConfig({ from, to })))
-				.pipe(gulp.dest(to));
+				.pipe(gulp.dest(single.to || to));
 		};
 	}
 
 	static wxml = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.wxml`, gulpOpts } = opts;
+		const { from = src, to = dist, globs = `/**/*.wxml`, single = {}, gulpOpts } = opts;
 		return function wxml() {
 			return gulp
-				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
-				.pipe(gulp.dest(to));
+				.src(u(single.from || `${from}${globs}`), gulpOpts || getEntryConfig())
+				.pipe(gulp.dest(single.to || to));
 		};
 	}
 
 	static wxs = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.wxs`, gulpOpts } = opts;
+		const { from = src, to = dist, globs = `/**/*.wxs`, single = {}, gulpOpts } = opts;
 		return function wxs() {
 			return gulp
-				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
+				.src(u(single.from || `${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(babel(babelConfig({ runtimeHelpers: false, from, to })))
 				.pipe(rename({ extname: '.wxs' }))
-				.pipe(gulp.dest(to));
+				.pipe(gulp.dest(single.to || to));
 		};
 	}
 
 	static json = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.json`, gulpOpts } = opts;
+		const { from = src, to = dist, globs = `/**/*.json`, single = {}, gulpOpts } = opts;
 		return function json() {
 			return gulp
-				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
+				.src(u(single.from || `${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(compileJSON())
-				.pipe(gulp.dest(to));
+				.pipe(gulp.dest(single.to || to));
 		};
 	}
 
 	static image = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.{png,jpg,gif,ico,jpeg}`, gulpOpts } = opts;
+		const { from = src, to = dist, globs = `/**/*.{png,jpg,gif,ico,jpeg}`, single = {}, gulpOpts } = opts;
 		return function image() {
 			return gulp
-				.src(u(`${from}${globs}`))
-				.pipe(gulp.dest(to));
+				.src(u(single.from || `${from}${globs}`))
+				.pipe(gulp.dest(single.to || to));
 		};
 	}
 
@@ -206,16 +206,23 @@ exports.dev = gulp.series(
 	Compiler.runtime(),
 	function watch() {
 		let fn = (globs, generateTask) => {
-			gulp.watch(u(globs)).on('all', (type, path) => {
-				const globs = path.replace(new RegExp(src, 'g'), '');
-				const run = generateTask({ globs });
+			gulp.watch(u(globs)).on('all', (type, fullpath) => {
+
+				const run = generateTask({ 
+					single: {
+						from: fullpath,
+						to: path.dirname(fullpath).replace(new RegExp(src, 'g'), dist)
+					}, 
+					gulpOpts: {}
+				 });
 
 				run();
-				// 日志输出
-				console.log(chalk`{green ${type}}: {rgb(97,174,238) ${globs}}`);
-				console.log(chalk`{green from}: {rgb(255,131,0) ${u(path)}}`);
-				console.log(chalk`{green to}: {rgb(255,131,0) ${u(dist + globs)}}`);
 
+				const realPath = fullpath.replace(new RegExp(src, 'g'), '');
+				// 日志输出
+				console.log(chalk`{green ${type}}: {rgb(97,174,238) ${realPath}}`);
+				console.log(chalk`{green from}: {rgb(255,131,0) ${u(fullpath)}}`);
+				console.log(chalk`{green to}: {rgb(255,131,0) ${u(dist + realPath)}}`);
 			});
 		};
 

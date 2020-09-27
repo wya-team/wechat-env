@@ -3,6 +3,7 @@ const upath = require('upath');
 const fs = require('fs-extra');
 const del = require('del');
 const through = require('through2');
+const chalk = require('chalk');
 const createHtmlDom = require('htmldom');
 const sass = require('node-sass');
 const babel = require('@babel/core');
@@ -26,13 +27,24 @@ module.exports = (options) => {
 				return cb();
 			}
 
-			// 插件不支持对 Stream 对直接操作，跑出异常
+			// 插件不支持对 Stream 对直接操作，跑出异常, 异常进程
 			if (file.isStream()) {
-				this.emit('error', 'mp-cli/js: Streaming not supported');
+				this.emit('error', 'mp-cli/wya: 不支持Stream');
 				return cb();
 			}
 
 			let content = file.contents.toString();
+			if (!content) {
+				content = `
+					<template>
+						<view></view>
+					</template>
+					<script>Component({})</script>
+					<style lang="scss"></style>
+					<config>{}</config>
+				`;
+			}
+
 			let $ = createHtmlDom(content);
 
 			content = {
@@ -55,12 +67,15 @@ module.exports = (options) => {
 
 				fullpath = resolve(fullpath);
 
+				if (fs.existsSync(fullpath) && data === fs.readFileSync(fullpath, 'utf-8')) {
+					return;
+				}
 				/**
 				 * http://nodejs.cn/api/fs.html#fs_file_system_flags
 				 * 修改文件而不是覆盖文件，则 flag 选项需要被设置为 'r+' 而不是默认的 'w'。
 				 */
 				fs.outputFileSync(fullpath, data, {
-					flags: 'rs+'
+					flags: 'r+'
 				});
 			};
 			// script

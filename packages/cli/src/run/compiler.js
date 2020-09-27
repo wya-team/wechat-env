@@ -2,6 +2,7 @@ const path = require('path');
 const upath = require('upath');
 const del = require('del');
 const fs = require('fs-extra');
+const chalk = require('chalk');
 const gulp = require('gulp');
 const gulpSass = require('gulp-sass');
 const rename = require('gulp-rename');
@@ -36,72 +37,80 @@ let getEntryConfig = () => {
 const u = v => upath.normalize(v);
 class Compiler {
 
-	static runtime = (from = src, to = dist) => {
+	static runtime = (opts = {}) => {
+		const { globs = `/**/*.js` } = opts;
 		return function runtime() {
 			return gulp
-				.src(u(`${temp}/**/*.js`))
+				.src(u(`${temp}${globs}`))
 				.pipe(compileRuntime());
 		};
 	}
 
-	static wya = (from = src, to = dist, opts) => {
+	static wya = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.wya`, gulpOpts } = opts;
 		return function wya() {
 			return gulp
-				.src(u(`${from}/**/*.wya`), opts || getEntryConfig())
+				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(compileWya({ from, to }));
 		};
 	}
 
-	static sass = (from = src, to = dist, opts) => {
+	static sass = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.{wxss,scss}`, gulpOpts } = opts;
 		return function sass() {
 			return gulp
-				.src(u(`${from}/**/*.{wxss,scss}`), opts || getEntryConfig())
+				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(gulpSass().on('error', gulpSass.logError))
 				.pipe(rename({ extname: '.wxss' }))
 				.pipe(gulp.dest(to));
 		};
 	}
 
-	static js = (from = src, to = dist, opts) => {
+	static js = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.js`, gulpOpts } = opts;
 		return function js() {
 			return gulp
-				.src(u(`${from}/**/*.js`), opts || getEntryConfig())
+				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(babel(babelConfig({ from, to })))
 				.pipe(gulp.dest(to));
 		};
 	}
 
-	static wxml = (from = src, to = dist, opts) => {
+	static wxml = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.wxml`, gulpOpts } = opts;
 		return function wxml() {
 			return gulp
-				.src(u(`${from}/**/*.wxml`), opts || getEntryConfig())
+				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(gulp.dest(to));
 		};
 	}
 
-	static wxs = (from = src, to = dist, opts) => {
+	static wxs = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.wxs`, gulpOpts } = opts;
 		return function wxs() {
 			return gulp
-				.src(u(`${from}/**/*.wxs`), opts || getEntryConfig())
+				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(babel(babelConfig({ runtimeHelpers: false, from, to })))
 				.pipe(rename({ extname: '.wxs' }))
 				.pipe(gulp.dest(to));
 		};
 	}
 
-	static json = (from = src, to = dist, opts) => {
+	static json = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.json`, gulpOpts } = opts;
 		return function json() {
 			return gulp
-				.src(u(`${from}/**/*.json`), opts || getEntryConfig())
+				.src(u(`${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(compileJSON())
 				.pipe(gulp.dest(to));
 		};
 	}
 
-	static image = (from = src, to = dist, opts) => {
+	static image = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.{png,jpg,gif,ico,jpeg}`, gulpOpts } = opts;
 		return function image() {
 			return gulp
-				.src(u(`${from}/**/*.{png,jpg,gif,ico,jpeg}`))
+				.src(u(`${from}${globs}`))
 				.pipe(gulp.dest(to));
 		};
 	}
@@ -130,7 +139,7 @@ class Compiler {
 
 			if (enforce === 'pre') {
 				// check
-				options = {
+				const gulpOpts = {
 					...options,
 					ignore: options.ignore && options.ignore.length 
 						? options.ignore.filter(i => !!i).map(i => {
@@ -140,16 +149,14 @@ class Compiler {
 						: undefined,
 				};
 
-				console.log(options);
-
 				buildsReady = buildsReady.concat([
-					Compiler.wya(from, to, options),
-					Compiler.sass(from, to, options),
-					Compiler.js(from, to, options),
-					Compiler.wxml(from, to, options),
-					Compiler.wxs(from, to, options),
-					Compiler.json(from, to, options),
-					Compiler.image(from, to, options)
+					Compiler.wya({ from, to, gulpOpts }),
+					Compiler.sass({ from, to, gulpOpts }),
+					Compiler.js({ from, to, gulpOpts }),
+					Compiler.wxml({ from, to, gulpOpts }),
+					Compiler.wxs({ from, to, gulpOpts }),
+					Compiler.json({ from, to, gulpOpts }),
+					Compiler.image({ from, to, gulpOpts })
 				]);
 			} else {
 				copiesReady.push(() => fs.copySync(from, to));
@@ -194,17 +201,31 @@ exports.dev = gulp.series(
 		Compiler.wxml(),
 		Compiler.wxs(),
 		Compiler.json(),
-		Compiler.image(),
-		() => {
-			gulp.watch(u(`${src}/**/*.wya`), Compiler.wya()); // watch默认会输出一个wya格式的代码
-			gulp.watch(u(`${src}/**/*.js`), Compiler.js());
-			gulp.watch(u(`${src}/**/*.{wxss,scss}`), Compiler.sass());
-			gulp.watch(u(`${src}/**/*.wxml`), Compiler.wxml());
-			gulp.watch(u(`${src}/**/*.wxs`), Compiler.wxs());
-			gulp.watch(u(`${src}/**/*.json`), Compiler.json());
-			gulp.watch(u(`${src}/**/*.{png,jpg,gif,ico,jpeg}`), Compiler.image());
-			gulp.watch(u(`${temp}/**/*.js`), Compiler.runtime());
-		}
+		Compiler.image()
 	),
-	Compiler.runtime()
+	Compiler.runtime(),
+	function watch() {
+		let fn = (globs, generateTask) => {
+			gulp.watch(u(globs)).on('all', (type, path) => {
+				const globs = path.replace(new RegExp(src, 'g'), '');
+				const run = generateTask({ globs });
+
+				run();
+				// 日志输出
+				console.log(chalk`{green ${type}}: {rgb(97,174,238) ${globs}}`);
+				console.log(chalk`{green from}: {rgb(255,131,0) ${u(path)}}`);
+				console.log(chalk`{green to}: {rgb(255,131,0) ${u(dist + globs)}}`);
+
+			});
+		};
+
+		fn(`${src}/**/*.wya`, Compiler.wya);
+		fn(`${src}/**/*.js`, Compiler.js);
+		fn(`${src}/**/*.{wxss,scss}`, Compiler.sass);
+		fn(`${src}/**/*.wxml`, Compiler.wxml);
+		fn(`${src}/**/*.wxs`, Compiler.wxs);
+		fn(`${src}/**/*.json`, Compiler.json);
+		fn(`${src}/**/*.{png,jpg,gif,ico,jpeg}`, Compiler.image);
+		fn(`${temp}/**/*.js`, Compiler.runtime);
+	}
 );

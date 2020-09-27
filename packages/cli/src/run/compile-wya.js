@@ -19,7 +19,6 @@ module.exports = (options) => {
 	from = upath.normalize(from);
 	to = upath.normalize(to);
 	return through.obj(function (file, enc, cb) {
-
 		try {
 			// 如果文件为空，不做任何操作，转入下一个操作，即下一个 .pipe()
 			if (file.isNull()) {
@@ -43,7 +42,7 @@ module.exports = (options) => {
 				config: $('config').html()
 			};
 
-			let fn = (ext) => {
+			let write = (ext, data) => {
 				let regex = new RegExp(from);
 				let fullpath = upath
 					.normalize(file.path)
@@ -54,7 +53,15 @@ module.exports = (options) => {
 					throw new Error('路径解析错误');
 				}
 
-				return resolve(fullpath);
+				fullpath = resolve(fullpath);
+
+				/**
+				 * http://nodejs.cn/api/fs.html#fs_file_system_flags
+				 * 修改文件而不是覆盖文件，则 flag 选项需要被设置为 'r+' 而不是默认的 'w'。
+				 */
+				fs.outputFileSync(fullpath, data, {
+					flags: 'rs+'
+				});
 			};
 			// script
 			babel.transform(
@@ -67,24 +74,15 @@ module.exports = (options) => {
 					if (err) {
 						throw err;
 					}
-					fs.outputFileSync(
-						fn('js'), 
-						result.code
-					);
+					write('js', result.code);
 				}
 			);
 
 			// json
-			content.config && fs.outputFileSync(
-				fn('json'), 
-				content.config,
-			);
+			content.config && write('json', content.config);
 
 			// template
-			fs.outputFileSync(
-				fn('wxml'),
-				content.template,
-			);
+			write('wxml', content.template);
 
 			// style
 			let imports = '';
@@ -105,10 +103,7 @@ module.exports = (options) => {
 				}
 			});
 			// style
-			fs.outputFileSync(
-				fn('wxss'),
-				imports + css
-			);
+			write('wxss', imports + css);
 		} catch (e) {
 			console.log(e);
 		}

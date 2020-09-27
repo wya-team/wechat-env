@@ -207,22 +207,29 @@ exports.dev = gulp.series(
 	function watch() {
 		let fn = (globs, generateTask) => {
 			gulp.watch(u(globs)).on('all', (type, fullpath) => {
+				try {
+					const realPath = fullpath.replace(new RegExp(src, 'g'), '');
+					if (type !== 'unlink') {
+						const run = generateTask({ 
+							single: {
+								from: fullpath,
+								to: path.dirname(fullpath).replace(new RegExp(src, 'g'), dist)
+							}, 
+							gulpOpts: {}
+						 });
 
-				const run = generateTask({ 
-					single: {
-						from: fullpath,
-						to: path.dirname(fullpath).replace(new RegExp(src, 'g'), dist)
-					}, 
-					gulpOpts: {}
-				 });
+						run();
+					} else {
+						fs.removeSync(u(dist + realPath));
+					}
 
-				run();
-
-				const realPath = fullpath.replace(new RegExp(src, 'g'), '');
-				// 日志输出
-				console.log(chalk`{green ${type}}: {rgb(97,174,238) ${realPath}}`);
-				console.log(chalk`{green from}: {rgb(255,131,0) ${u(fullpath)}}`);
-				console.log(chalk`{green to}: {rgb(255,131,0) ${u(dist + realPath)}}`);
+					// 日志输出
+					console.log(chalk`{green ${type}}: {rgb(97,174,238) ${realPath}}`);
+					console.log(chalk`{green from}: {rgb(255,131,0) ${u(fullpath)}}`);
+					console.log(chalk`{green to}: {rgb(255,131,0) ${u(dist + realPath)}}`);
+				} catch (e) {
+					console.log(e);
+				}
 			});
 		};
 

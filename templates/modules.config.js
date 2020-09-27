@@ -4,6 +4,6 @@ const routes = require('./modules/root');
 
 module.exports = {
 	dir: `${process.cwd()}/src/`, 
-	project: 'is',
+	project: 'repo', // 项目名字
 	routes
 };

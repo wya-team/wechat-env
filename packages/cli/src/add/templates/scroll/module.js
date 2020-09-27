@@ -13,7 +13,7 @@ exports.module = (content, opts = {}) => {
 
 		let contents = '';
 
-		contents += `import { initScroll } from '../../../utils/util';\n\n`;
+		contents += `import { initScroll } from '../../../utils/utils';\n\n`;
 		contents += `const initialState = {\n`;
 		contents += `	listInfo: {\n`;
 		switch (type) {

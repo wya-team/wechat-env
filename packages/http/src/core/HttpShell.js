@@ -75,6 +75,7 @@ class HttpShell {
 					cancel,
 					new Promise((_, reject) => {
 						setTimeout(() => {
+							// TODO: 超时依然走catch 或者 不执行任何操作(delete opts.setOver); 
 							this._beforeOver(opts);
 							reject(new HttpError({
 								code: ERROR_CODE.HTTP_REQUEST_TIMEOUT,

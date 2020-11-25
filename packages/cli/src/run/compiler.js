@@ -72,6 +72,11 @@ class Compiler {
 			return gulp
 				.src(single.from || u(`${from}${globs}`), gulpOpts || getEntryConfig())
 				.pipe(babel(babelConfig({ from, to })))
+				.on('error', function (e) {
+					console.log('>>> ERROR', e);
+					// emit here
+					this.emit('end');
+				})
 				.pipe(gulp.dest(single.to || to));
 		};
 	}

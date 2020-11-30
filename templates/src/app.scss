@@ -3,19 +3,30 @@
 
 /**app.wxss**/
 .g-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 200rpx 0;
-  box-sizing: border-box;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	padding: 200rpx 0;
+	box-sizing: border-box;
 } 
 
 page {
-  background: #f2f2f2;
-  color: #333;
-  font-size: 24rpx;
+	background: #f2f2f2;
+	color: #333;
+	font-size: 24rpx;
+}
+
+view {
+	box-sizing: border-box;
+	word-break: break-all;
+	word-wrap: word-break;
+}
+
+text {
+	word-break: break-all;
+	word-wrap: word-break;
 }
 
 button::after{

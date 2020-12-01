@@ -19,7 +19,7 @@ page {
 }
 
 view {
-	box-sizing: border-box;
+	box-sizing: border-box; // 可能会影响自定义的tabbar, 新项目留着
 	word-break: break-all;
 	word-wrap: word-break;
 }

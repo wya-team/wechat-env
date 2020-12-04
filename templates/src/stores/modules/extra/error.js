@@ -3,12 +3,12 @@ const initialState = {
 };
 
 const mutations = {
-	LOGS_MAIN_POST_SUCCESS(state, { data, param }) {
+	EXTRA_ERROR_GET_SUCCESS(state, { data, param }) {
 		state.user = data.user;
 	}
 };
 
-export const logsMain = {
+export const extraError = {
 	state: { ...initialState },
 	mutations,
 };

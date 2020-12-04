@@ -1,28 +1,54 @@
 import { RegEx } from '@wya/mp-utils';
 import _common from './_common';
-import logs from './logs';
-import index from './index';
+import extra from './extra';
+import home from './home';
 
 const API = {
 	..._common,
-	...logs,
-	...index
+	...extra,
+	...home
 };
 
-let baseUrl;
+class APIManager {
+	constructor() {
+		const baseUrl = process.env.NODE_ENV === 'development' 
+			? 'https://apis.development.com'
+			: 'https://apis.production.com';
 
-/* global __DEV__ */
-if (process.env.NODE_ENV === 'development') {
-	baseUrl = 'https://gateway.wyawds.com';
-} else {
-	// 生产环境
-	baseUrl = 'https://gateway.wyawds.com';
-}
-for (let i in API) {
-	if (RegEx.URLScheme.test(API[i])) {
-		API[i] = API[i];
-	} else {
-		API[i] = baseUrl + API[i];
+		// this.baseUrl
+		Object.defineProperty(this, 'baseUrl', {
+			value: baseUrl,
+			writable: false
+		});
+
+		// this.inject
+		Object.defineProperty(this, 'inject', {
+			value: this.inject,
+			writable: false
+		});
+
+		if (process.env.NODE_ENV === 'development') {
+			setTimeout(() => (getApp().APIManager = this), 1000);
+		}
+	}
+
+
+	/**
+	 * 用于异步的apis注入或者子包apis的注入
+	 */
+	inject(target) {
+		for (let i in target) {
+			if (process.env.NODE_ENV === 'development') {
+				this[i] && console.warn(`[@stores/apis]: key重复注入 ${i}`);
+			}
+
+			this[i] = RegEx.URLScheme.test(target[i]) 
+				? target[i]
+				: this.baseUrl + target[i];
+		}
+
+		return this;
 	}
 }
-export default API;
+
+export default new APIManager().inject(API);

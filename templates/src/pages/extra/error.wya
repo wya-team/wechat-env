@@ -1,0 +1,71 @@
+<template>
+	<view class="v-extra-error">
+		<image 
+			wx:if="{{ image }}"
+			src="{{ image }}" 
+			mode="widthFix" 
+			class="v-extra-error__image"
+		/>
+		<text class="v-extra-error__text">{{ message }}</text>
+	</view>
+</template>
+
+<script>
+import Page from '../../common/page';
+
+const MAP = {
+	close: {
+		message: '',
+		image: ''
+	}
+};
+Page({
+	data: {
+		// 自定义
+		message: '',
+		image: ''
+	},
+	onShow() {
+	},
+	onLoad(query = {}) {
+		let { message, image } = MAP[query.type] || {};
+
+		this.setData({
+			message: message || query.message || '~',
+			image: image || query.image || ''
+		});
+	},
+});
+</script>
+
+<style lang="scss">
+@import '../../assets/css/bem.scss';
+$block: v-extra-error;
+
+@include block($block) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: 100vw;
+	height: 100vh;
+	background: white;
+	@include element(image) {
+		width: 348rpx;
+		margin-top: -200rpx;
+	}
+	@include element(text) {
+		margin-top: 52rpx;
+		font-size: 24rpx;
+		color: rgba(134, 134, 134, 1);
+	}
+}
+
+</style>
+
+<config>
+{
+	"navigationBarTitleText": "",
+	"usingComponents": {}
+}
+</config>

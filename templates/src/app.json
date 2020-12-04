@@ -1,14 +1,14 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/home/main",
+    "pages/extra/error",
+    "pages/extra/web"
   ],
   "subpackages": [
 		{
-			"root": "package-sub",
+			"root": "a-sub",
 			"pages": [
-				"pages/setting/index",
-				"pages/home/index"
+				"pages/home/main"
 			]
 		}
 	],

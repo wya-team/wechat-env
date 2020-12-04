@@ -1,0 +1,29 @@
+<template>
+	<web-view wx:if="{{ url }}" src="{{ url }}" />
+</template>
+
+<script>
+import { URL } from '@wya/mp-utils';
+
+const app = getApp();
+Page({
+	data: {
+		url: ''
+	},
+	onLoad(query) {
+		this.setData({
+			url: query && decodeURIComponent(query.url)
+		});
+	},
+});
+</script>
+
+<style lang="scss">
+</style>
+
+<config>
+{
+	"navigationBarTitleText": "",
+	"usingComponents": {}
+}
+</config>

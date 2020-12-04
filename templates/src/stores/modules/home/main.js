@@ -3,16 +3,16 @@ const initialState = {
 };
 
 const mutations = {
-	INDEX_MAIN_POST_SUCCESS(state, { data, param }) {
+	HOME_MAIN_POST_SUCCESS(state, { data, param }) {
 		state.user = data.user;
 	},
 
-	INDEX_MAIN_CHANGE_USER(state, { user }) {
+	HOME_MAIN_CHANGE_USER(state, { user }) {
 		state.user = user;
 	}
 };
 
-export const indexMain = {
+export const homeMain = {
 	state: { ...initialState },
 	mutations,
 };

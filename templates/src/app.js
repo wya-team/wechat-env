@@ -6,7 +6,7 @@ import API_ROOT from './stores/apis/root';
 import Enhancer from './utils/enhancer';
 import { storeConfig } from './stores/root';
 import { decodeScene, createSchedule } from './utils/utils';
-import { USER_KEY } from './constants/constants';
+import { USER_KEY } from './constants/index';
 import { config } from './mc.config';
 
 Enhancer.invoke(wx, {

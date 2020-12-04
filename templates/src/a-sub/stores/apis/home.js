@@ -2,6 +2,6 @@ const api = {
 	/**
 	 * 请注释模块内容
 	 */
-	INDEX_MAIN_POST: '/test'
+	A_SUB_HOME_MAIN_POST: '/test'
 };
 export default api;

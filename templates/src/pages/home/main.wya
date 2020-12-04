@@ -1,0 +1,111 @@
+<template>
+	<view class="g-container">
+		<mc-button class="v-home-main__userinfo" bind:tap="handleViewTap">
+			<text>前往子包</text>
+		</mc-button>
+		<view class="v-home-main__usermotto" bind:tap="handleViewTap1">
+			<text>{{ motto }}：</text>
+			<text>{{ user }}</text>
+		</view>
+
+		<view class="v-home-main__network" bind:tap="handleViewTap2">
+			<text>网络请求[$request]: </text>
+			<text>{{ user }}</text>
+		</view>
+
+		<view class="v-home-main__network" bind:tap="handleViewTap3">
+			<text>网络请求[request]: </text>
+			<text>{{ user }}</text>
+		</view>
+	</view>
+</template>
+
+<script>
+import { Utils } from '@wya/mp-utils';
+import Page from '../../common/page';
+
+const app = getApp();
+Page({
+	mapState: (state) => {
+		return {
+			user: state.homeMain.user
+		};
+	},
+	data: {
+		motto: '你好，小程序'
+	},
+
+	onLoad() {
+	},
+
+	// 事件处理函数
+	handleViewTap() {
+		wx.navigateAuto({
+			url: '/a-sub/pages/home/main'
+		});
+	},
+
+	// 事件处理函数
+	handleViewTap1() {
+		this.$store.commit('HOME_MAIN_CHANGE_USER', { user: Math.random() });
+	},
+
+	async handleViewTap2() {
+		const res = await this.$request({
+			localData: {
+				status: 1,
+				data: {
+					user: '$request'
+				}
+			}
+		});
+
+		this.$store.commit('HOME_MAIN_CHANGE_USER', { user: res.data.user });
+	},
+
+	async handleViewTap3() {
+		await this.request({
+			url: 'HOME_MAIN_POST',
+			localData: {
+				status: 1,
+				data: {
+					user: 'request'
+				}
+			}
+		});
+	}
+});
+</script>
+
+<style lang="scss">
+.v-home-main {
+	&__userinfo {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		&--avatar {
+			width: 128rpx;
+			height: 128rpx;
+			margin: 20rpx;
+			border-radius: 50%;
+		}
+		&--nickname {
+			color: #aaa;
+		}
+	}
+	&__usermotto {
+		margin-top: 100px;
+	}
+
+	&__network {
+		margin-top: 20px;
+	}
+}
+</style>
+
+<config>
+{
+	"navigationBarTitleText": "首页",
+	"usingComponents": {}
+}
+</config>

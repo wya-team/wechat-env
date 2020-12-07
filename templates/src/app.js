@@ -128,7 +128,7 @@ App({
 		) {
 			wx.reLaunch({ url: `/pages/home/index` });
 		} else {
-			page.onLoad();
+			page.onLoad(page.options);
 			page.onShow();
 		}
 	},

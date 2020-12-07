@@ -12,8 +12,12 @@ exports.module = (content, opts = {}) => {
 		}
 
 		let contents = '';
-
-		contents += `import { initScroll } from '../../../utils/utils';\n\n`;
+		if (packageName === 'pages') { 
+			contents += `import { initScroll } from '../../../utils/utils';\n\n`;
+		} else {
+			contents += `import { initScroll } from '../../../../utils/utils';\n\n`;
+		}
+		
 		contents += `const initialState = {\n`;
 		contents += `	listInfo: {\n`;
 		switch (type) {

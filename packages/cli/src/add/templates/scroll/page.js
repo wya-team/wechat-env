@@ -1,12 +1,11 @@
-const { getNewContent, getExtra, getMutationType } = require('../utils/helper');
+const { getNewContent, getStoreKey, getMutationType } = require('../utils/helper');
 
 exports.page = (content, opts = {}) => {
 	const { mutation, pathArr, project, packageName, obj, pagingMode: mode, pagingType: type, route, title } = opts;
-	let extra = getExtra(pathArr);
+	let storeKey = getStoreKey(pathArr, packageName);
 
 	let mutationType = `${getMutationType(pathArr, packageName)}`;
 	let pagingType = mutationType + '_LIST';
-	const relativePath = packageName !== 'pages' ? '../' : '';
 
 	try {
 		let contents = '';
@@ -58,14 +57,20 @@ exports.page = (content, opts = {}) => {
 		}
 		contents += `\n`;
 		contents += `<script>\n`;
-		contents += `import Page from '../../${relativePath}common/page';\n`;
+
+		if (packageName === 'pages') { 
+			contents += `import Page from '../../common/page';\n\n`;
+		} else {
+			contents += `import { Page } from '../../index';\n\n`;
+		}
+
 		contents += `\n`;
 		contents += `Page({\n`;
 		contents += `	navigator: '${mutationType}',\n`;
 		contents += `	mapState(state) {\n`;
-		contents += `		const { ${mutation}${extra} } = state;\n`;
+		contents += `		const { ${storeKey} } = state;\n`;
 		contents += `		return {\n`;
-		contents += `			listInfo: ${mutation}${extra}.listInfo\n`;
+		contents += `			listInfo: ${storeKey}.listInfo\n`;
 		contents += `		};\n`;
 		contents += `	},\n`;
 		contents += `	data: {\n`;

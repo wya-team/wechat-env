@@ -1,11 +1,9 @@
-const { getNewContent, getExtra } = require('../utils/helper');
+const { getNewContent, getStoreKey } = require('../utils/helper');
 
 exports.rootApi = (content, opts = {}) => {
 	const { mutation, pathArr, componentArr, obj } = opts;
 	try {
-		let extra = getExtra(pathArr);
 		let pathName = `${pathArr.slice(1).join('-')}`;
-		let moduleName = `${mutation}${extra}`;
 
 		let importContent = `import ${mutation} from './${mutation}';`;
 		let injectContent = `	...${mutation}`;

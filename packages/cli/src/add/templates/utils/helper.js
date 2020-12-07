@@ -58,17 +58,50 @@ exports.getNewContent = (opts = {}) => {
 	}
 };
 
+/**
+ * /test/for -> ['' , 'test', 'for'] -> For
+ */
 exports.getExtra = (pathArr) => {
 	return pathArr.slice(1).map(item => {
 		return item.split('-').map((it) => `${it[0].toUpperCase()}${it.slice(1)}`).join('');
 	}).join('');
 };
 
-exports.getMutationType = (pathArr, packageName) => {
+const getPathArrByPackage = (pathArr, packageName) => {
 	const arr = [...pathArr];
 	if (packageName !== 'pages') {
-		const extra = packageName.split('-')[1];
-		arr.unshift(extra);
+		const extra = packageName.split('-');
+		extra.reverse().forEach(item => {
+			item && arr.unshift(item);
+		});
 	}
+	return arr;
+};
+
+/**
+ * /test/for -> TEST_FOR_GET,
+ * /a-sub/test/for -> A_SUB_TEST_FOR_GET,
+ */
+exports.getMutationType = (pathArr, packageName) => {
+	const arr = getPathArrByPackage(pathArr, packageName);
 	return arr.join('_').replace(/-/g, '_').toUpperCase();
+};
+
+/**
+ * /test/for -> testFor,
+ * /a-sub/test/for -> aSubTestfor,
+ */
+exports.getStoreKey = (pathArr, packageName) => {
+	const arr = getPathArrByPackage(pathArr, packageName);
+
+	return arr
+		.map(
+			(item, index) => {
+				if (item && index != 0) {
+					return item.charAt(0).toUpperCase() + item.slice(1);
+				}
+				return item;
+			}
+		)
+		.join('');
 };

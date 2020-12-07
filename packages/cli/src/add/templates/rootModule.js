@@ -1,11 +1,10 @@
-const { getNewContent, getExtra } = require('./utils/helper');
+const { getNewContent, getStoreKey } = require('./utils/helper');
 
 exports.rootModule = (opts = {}) => {
-	const { mutation, pathArr, componentArr, obj } = opts;
+	const { mutation, packageName, pathArr, componentArr, obj } = opts;
 
-	let extra = getExtra(pathArr);
 	let pathName = `${pathArr.slice(1).join('-')}`;
-	let moduleName = `${mutation}${extra}`;
+	let moduleName = getStoreKey(pathArr, packageName);
 
 	let contents = '';
 	contents += `import { ${moduleName} } from './${pathName}';\n`;
@@ -16,11 +15,10 @@ exports.rootModule = (opts = {}) => {
 };
 
 exports.rootModuleOverride = (content, opts = {}) => {
-	const { mutation, pathArr, componentArr, obj } = opts;
+	const { mutation, packageName, pathArr, componentArr, obj } = opts;
 	try {
-		let extra = getExtra(pathArr);
 		let pathName = `${pathArr.slice(1).join('-')}`;
-		let moduleName = `${mutation}${extra}`;
+		let moduleName = getStoreKey(pathArr, packageName);
 		
 		let importContent = `import { ${moduleName} } from './${pathName}';`;
 		let injectContent = `	${moduleName},`;

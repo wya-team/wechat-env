@@ -1,23 +1,27 @@
-const { getNewContent, getExtra } = require('./utils/helper');
+const { getNewContent, getStoreKey } = require('./utils/helper');
 
 exports.page = (opts = {}) => {
 	const { mutation, packageName, pathArr, project, obj, title } = opts;
-	let extra = getExtra(pathArr);
+	let storeKey = getStoreKey(pathArr, packageName);
 	let contents = '';
-	const relativePath = packageName !== 'pages' ? '../' : '';
 
 	contents += `<template>\n`;
 	contents += `	<view>\n`;
-	contents += `		__tpl__, ${pathArr.join('-')} ${title}\n`;
+	contents += `		__tpl__, ${pathArr.join('-')} ${title} ${storeKey}\n`;
 	contents += `	</view>\n`;
 	contents += `</template>\n\n`;
 
 	contents += `<script>\n`;
-	contents += `import Page from '../../${relativePath}common/page';\n\n`;
+	if (packageName === 'pages') { 
+		contents += `import Page from '../../common/page';\n\n`;
+	} else {
+		contents += `import { Page } from '../../index';\n\n`;
+	}
+	
 	contents += `Page({\n`;
 	contents += `	mapState(state) {\n`;
 	contents += `		return {\n`;
-	contents += `			...state.${mutation}${extra}\n`;
+	contents += `			...state.${storeKey}\n`;
 	contents += `		};\n`;
 	contents += `	},\n`;
 	contents += `	data: {\n`;

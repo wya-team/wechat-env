@@ -2,7 +2,6 @@ exports.page = (content, opts = {}) => {
 	const { mutation, pathArr, project, packageName, obj, title } = opts;
 	try {
 		let contents = '';
-		const relativePath = packageName !== 'pages' ? '../' : '';
 
 		contents += `<template>\n`;
 		contents += `	<mc-form\n`;
@@ -24,11 +23,17 @@ exports.page = (content, opts = {}) => {
 		contents += `			/>\n`;
 		contents += `		</mc-form-item>\n`;
 		contents += `	</mc-form>\n`;
-		contents += `	<view bindtap="handleSubmit">提交</view>\n`;
+		contents += `	<view bind:tap="handleSubmit">提交</view>\n`;
 		contents += `</template>\n\n`;
 
 		contents += `<script>\n`;
-		contents += `import Page from '../../${relativePath}common/page';\n\n`;
+
+		if (packageName === 'pages') { 
+			contents += `import Page from '../../common/page';\n\n`;
+		} else {
+			contents += `import { Page } from '../../index';\n\n`;
+		}
+
 		contents += `Page({\n`;
 		contents += `	data: {\n`;
 		contents += `		dataSource: [\n`;

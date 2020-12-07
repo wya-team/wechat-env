@@ -1,9 +1,9 @@
-const { getNewContent, getExtra, getMutationType } = require('../utils/helper');
+const { getNewContent, getStoreKey, getMutationType } = require('../utils/helper');
 
 exports.module = (content, opts = {}) => {
 	const { mutation, pathArr, packageName, project, obj, pagingType: type } = opts;
 	try {
-		let extra = getExtra(pathArr);
+		let storeKey = getStoreKey(pathArr, packageName);
 		let mutationType = `${getMutationType(pathArr, packageName)}`;
 		let pagingType = mutationType;
 
@@ -94,7 +94,7 @@ exports.module = (content, opts = {}) => {
 		contents += `		};\n`;
 		contents += `	},\n`;
 		contents += `};\n\n`;
-		contents += `export const ${mutation}${extra} = {\n`;
+		contents += `export const ${storeKey} = {\n`;
 		contents += `	state: { ...initialState },\n`;
 		contents += `	mutations,\n`;
 		contents += `};\n`;

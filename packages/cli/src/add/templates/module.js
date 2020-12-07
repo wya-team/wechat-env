@@ -1,9 +1,9 @@
-const { getExtra, getMutationType } = require('./utils/helper');
+const { getStoreKey, getMutationType } = require('./utils/helper');
 
 exports.module = (opts = {}) => {
 	const { mutation, pathArr, packageName, project, obj } = opts;
 
-	let extra = getExtra(pathArr);
+	let storeKey = getStoreKey(pathArr, packageName);
 
 	let contents = '';
 
@@ -18,7 +18,7 @@ exports.module = (opts = {}) => {
 	contents += `		};\n`;
 	contents += `	}\n`;
 	contents += `};\n\n`;
-	contents += `export const ${mutation}${extra} = {\n`;
+	contents += `export const ${storeKey} = {\n`;
 	contents += `	state: { ...initialState },\n`;
 	contents += `	mutations,\n`;
 	contents += `};\n`;

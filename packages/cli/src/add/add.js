@@ -79,6 +79,18 @@ module.exports = (opts = {}) => {
 		}
 	};
 
+	if (isSubPackage) {
+		rootConfig = {
+			...rootConfig,
+			rootStore: {
+				path: upath.normalize(`${dir}${packagePath}stores/root.js`)
+			},
+			rootEntry: {
+				path: upath.normalize(`${dir}${packagePath}/index.js`)
+			}
+		};
+	}
+
 	let formConfig = {
 		page: basicConfig.page,
 	};
@@ -140,6 +152,14 @@ module.exports = (opts = {}) => {
 			let _key = key.replace(/_/g, '');
 
 			let fullpath = join(path);
+
+			if (!fs.existsSync(fullpath) && typeof rootTpl[`${_key}Initial`] === 'function') {
+				fs.outputFileSync(
+					fullpath,
+					rootTpl[`${_key}Initial`]()
+				);
+			}
+
 			if (fs.existsSync(fullpath) && typeof rootTpl[_key] === 'function') {
 				// 文件存在，重写相关
 				log(chalk`{yellow ${key}}: {rgb(255,131,0) override}`);
@@ -151,7 +171,6 @@ module.exports = (opts = {}) => {
 						{ mutation, pathArr, project, packageName, module, extra, title, route }
 					)
 				);
-				
 			}
 		});
 

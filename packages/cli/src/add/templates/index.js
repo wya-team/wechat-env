@@ -3,7 +3,7 @@ let targets = {
 	...require('./page'),
 	...require('./mutation'),
 	...require('./module'),
-	...require('./rootModule'),
+	...require('./rootModule')
 };
 
 Object.keys(targets).forEach((key) => {

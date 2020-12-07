@@ -6,6 +6,6 @@ const master = require('./master');
 
 module.exports = [
 	...aOne,
-	...master,
+	...aTwo,
 	...master
 ];

@@ -1,13 +1,10 @@
-const { getExtra } = require('../utils/helper');
-
 exports.item = (content, opts = {}) => {
 	const { mutation, pathArr, packageName, project, obj, title } = opts;
-	let extra = getExtra(pathArr);
 	let contents = '';
 
 	contents += `<template>\n`;
 	contents += `	<view>\n`;
-	contents += `		__tpl__`;
+	contents += `		__tpl__\n`;
 	contents += `	</view>\n`;
 	contents += `</template>\n\n`;
 	contents += `<script>\n`;

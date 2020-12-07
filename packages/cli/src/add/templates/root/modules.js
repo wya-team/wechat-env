@@ -1,5 +1,15 @@
 const { getNewContent } = require('../utils/helper');
 
+// 创建文件，子包使用
+exports.rootModulesInitial = (content, opts = {}) => {
+	let contents = '';
+	contents += `\n\nexport default {`;
+	contents += `\n	// ...[modules]`;
+	contents += `\n};\n`;
+	
+	return contents;
+};
+
 exports.rootModules = (content, opts = {}) => {
 	const { mutation, pathArr, componentArr, obj } = opts;
 	try {

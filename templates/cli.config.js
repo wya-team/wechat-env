@@ -19,5 +19,15 @@ module.exports = {
 				ignore: ['echarts']
 			}
 		}
+	],
+	// 第三方库采用子包形式加载，挂入getApp().require('echarts')
+	subpackages: [
+		{
+			name: 'a-echarts',
+			// [exports]: [node_modules/~]
+			dependencies: {
+				echarts: 'echarts/dist/echarts.min'
+			}
+		}
 	]
 };

@@ -1,7 +1,7 @@
 const { getNewContent, getExtra, getMutationType } = require('../utils/helper');
 
 exports.page = (content, opts = {}) => {
-	const { mutation, humpMutation, pathArr, project, packageName, obj, pagingMode: mode, pagingType: type, route, title } = opts;
+	const { mutation, pathArr, project, packageName, obj, pagingMode: mode, pagingType: type, route, title } = opts;
 	let extra = getExtra(pathArr);
 
 	let mutationType = `${getMutationType(pathArr, packageName)}`;
@@ -63,9 +63,9 @@ exports.page = (content, opts = {}) => {
 		contents += `Page({\n`;
 		contents += `	navigator: '${mutationType}',\n`;
 		contents += `	mapState(state) {\n`;
-		contents += `		const { ${humpMutation}${extra} } = state;\n`;
+		contents += `		const { ${mutation}${extra} } = state;\n`;
 		contents += `		return {\n`;
-		contents += `			listInfo: ${humpMutation}${extra}.listInfo\n`;
+		contents += `			listInfo: ${mutation}${extra}.listInfo\n`;
 		contents += `		};\n`;
 		contents += `	},\n`;
 		contents += `	data: {\n`;

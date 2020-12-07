@@ -1,7 +1,7 @@
 const { getNewContent, getExtra } = require('./utils/helper');
 
 exports.page = (opts = {}) => {
-	const { mutation, humpMutation, packageName, pathArr, project, obj, title } = opts;
+	const { mutation, packageName, pathArr, project, obj, title } = opts;
 	let extra = getExtra(pathArr);
 	let contents = '';
 	const relativePath = packageName !== 'pages' ? '../' : '';
@@ -17,7 +17,7 @@ exports.page = (opts = {}) => {
 	contents += `Page({\n`;
 	contents += `	mapState(state) {\n`;
 	contents += `		return {\n`;
-	contents += `			...state.${humpMutation}${extra}\n`;
+	contents += `			...state.${mutation}${extra}\n`;
 	contents += `		};\n`;
 	contents += `	},\n`;
 	contents += `	data: {\n`;

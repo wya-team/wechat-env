@@ -49,11 +49,6 @@ module.exports = (opts = {}) => {
 	 * container mutation reducer component
 	 */
 	let mutation = pathArr[0];
-	let mutationWithPackage = packageName === 'pages' ? pathArr[0] : `${packageName.split('-')[1]}-${pathArr[0]}`;
-	let humpMutation = mutationWithPackage
-		.split('-')
-		.map((it, index) => (index === 0 ? it : `${it[0].toUpperCase()}${it.slice(1)}`))
-		.join('');
 	let module = pathArr.slice(1).join('-');
 
 	const packagePath = isSubPackage ? `${packageName}/` : '';
@@ -62,22 +57,22 @@ module.exports = (opts = {}) => {
 			path: upath.normalize(`${dir}${packagePath}pages/${pathArr[0]}/${module}.wya`)
 		},
 		api: {
-			path: upath.normalize(`${dir}stores/apis/${mutationWithPackage}.js`)
+			path: upath.normalize(`${dir}${packagePath}stores/apis/${pathArr[0]}.js`)
 		},
 		module: {
-			path: upath.normalize(`${dir}stores/modules/${mutationWithPackage}/${module}.js`)
+			path: upath.normalize(`${dir}${packagePath}stores/modules/${pathArr[0]}/${module}.js`)
 		},
 		rootModule: {
-			path: upath.normalize(`${dir}stores/modules/${mutationWithPackage}/root.js`)
+			path: upath.normalize(`${dir}${packagePath}stores/modules/${pathArr[0]}/root.js`)
 		}
 	};
 
 	let rootConfig = {
 		rootApi: {
-			path: upath.normalize(`${dir}stores/apis/root.js`)
+			path: upath.normalize(`${dir}${packagePath}stores/apis/root.js`)
 		},
 		rootModules: {
-			path: upath.normalize(`${dir}stores/modules/root.js`)
+			path: upath.normalize(`${dir}${packagePath}stores/modules/root.js`)
 		},
 		rootApp: {
 			path: upath.normalize(`${dir}app.json`)
@@ -124,7 +119,7 @@ module.exports = (opts = {}) => {
 				fs.outputFileSync(
 					fullpath,
 					typeof tpl[key] === 'function'
-						? tpl[key]({ mutation, humpMutation, mutationWithPackage, route, pathArr, project, packageName, module, extra, title })
+						? tpl[key]({ mutation, route, pathArr, project, packageName, module, extra, title })
 						: content
 				);
 			} else if (typeof tpl[`${key}Override`] === 'function') {
@@ -134,7 +129,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					tpl[`${key}Override`](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, humpMutation, mutationWithPackage, route, pathArr, project, packageName, module, extra, title }
+						{ mutation, route, pathArr, project, packageName, module, extra, title }
 					)
 				);
 			}
@@ -153,7 +148,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					rootTpl[_key](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, humpMutation, mutationWithPackage, pathArr, project, packageName, module, extra, title, route }
+						{ mutation, pathArr, project, packageName, module, extra, title, route }
 					)
 				);
 				
@@ -173,7 +168,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						scrollTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, humpMutation, pathArr, project, packageName, module, pagingType, extra, title, route }
+							{ mutation, pathArr, project, packageName, module, pagingType, extra, title, route }
 						)
 					);
 					
@@ -194,7 +189,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						formTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, humpMutation, pathArr, project, packageName, module, extra, title }
+							{ mutation, pathArr, project, packageName, module, extra, title }
 						)
 					);
 					

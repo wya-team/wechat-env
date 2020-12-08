@@ -1,11 +1,11 @@
 <template>
-	<view wx:if="{{ !!ecahrts }}" class="g-container">
+	<view wx:if="{{ !!echarts }}" class="g-container">
 		<mc-button class="v-home-main__userinfo" bind:tap="handleViewTap">
 			<text>前往子包（a-sub）</text>
 		</mc-button>
 		<view class="v-home-main__userinfo">
 			<text>echarts资源由子包(a-echarts)加载</text>
-			<text>ecahrts version: {{ ecahrts.version }}</text>
+			<text>echarts version: {{ echarts.version }}</text>
 			<mc-echarts 
 				elementId="chart" 
 				options="{{ chartOptions }}" 
@@ -42,7 +42,7 @@ Page({
 	},
 	data: {
 		motto: '你好，小程序',
-		ecahrts: '',
+		echarts: '',
 		chartOptions: {
 			backgroundColor: "#ffffff",
 			color: ["#37A2DA", "#32C5E9", "#67E0E3", "#91F2DE", "#FFDB5C", "#FF9F7F"],
@@ -83,10 +83,9 @@ Page({
 
 	onLoad() {
 		this.setData({
-			ecahrts: getApp().require('echarts')
+			echarts: getApp().require('echarts')
 		});
 
-		// echarts异步加载后再显示title
 		this.data.echarts && wx.setNavigationBarTitle({
 			title: '首页'
 		});

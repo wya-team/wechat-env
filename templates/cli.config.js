@@ -16,18 +16,24 @@ module.exports = {
 			from: resolve(__dirname, './node_modules/@wya/mc', './src/'),
 			to: resolve(__dirname, './dist', './libs/mc'),
 			options: {
-				ignore: ['echarts']
+				// ignore: ['rich-text', 'echarts']
 			}
 		}
 	],
-	// 第三方库采用子包形式加载，挂入getApp().require('echarts')
+	/**
+	 * 1. 第三方库加载的方式
+	 * 设计方式：redirect进入子包 -> 挂载getApp().$modules -> redirect到原前页
+	 * 
+	 * 调用方式如： getApp().require('echarts')
+	 *
+	 * 2. 针对子包的第三方单独打包（配置即可）
+	 */
 	subpackages: [
 		{
 			name: 'a-echarts',
-			// [exports]: [node_modules/~]
-			dependencies: {
-				echarts: 'echarts/dist/echarts.min'
-			}
+			dependencies: [
+				'echarts/dist/echarts.min'
+			]
 		}
 	]
 };

@@ -36,7 +36,9 @@ module.exports = (options) => {
 			return cb();
 		}
 
-		const { base } = parse(file.path);
+		const { base, dir } = parse(file.path);
+		const relativePath = dir.replace(new RegExp(temp), '');
+
 		rollup({
 			input: file.path,
 			plugins: [
@@ -57,7 +59,7 @@ module.exports = (options) => {
 		}).then((minJS) => {
 			return minJS.write({
 				output: {
-					file: `${dist}/libs/${base}`,
+					file: `${dist}${relativePath}/libs/${base}`,
 					format: 'cjs',
 					exports: 'named'
 				}

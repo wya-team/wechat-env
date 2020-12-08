@@ -3,35 +3,43 @@ const upath = require('upath');
 const fs = require('fs-extra');
 const { resolvePackage } = require('./utils');
 
+const MASTER_PACKAGE_NAME = 'pages';
+
 let __cwd = process.env.SOURCE_DIR;
 let src = process.env.REPO_SOURCE_DIR;
 let dist = process.env.REPO_DIST_DIR;
 let temp = process.env.TEMP_DIR;
+let configFile = process.env.CONFIG_FILE_PATH;
+let { subpackages = {} } = require(configFile); // eslint-disable-line
+
 let hasRegenerator = fs.pathExistsSync(resolve(__cwd, './node_modules/regenerator-runtime'))
 	|| fs.pathExistsSync(resolve(__cwd, '../node_modules/regenerator-runtime'));
 
 let count = 0;
 let cache = {}; // TODO: 前置编译 { '@wya/mp-polyfill': 'xx' }
-let getModuleId = (key) => {
-
+let getModuleId = (key, packageName) => {
 	// 0.13.5的版本微信无法执行
 	if (hasRegenerator && key === '@babel/runtime/regenerator') {
 		key = 'regenerator-runtime';
 	}
 
-	if (!cache[key]) {
-		cache[key] = `m${count++}`;
+	if (!cache[packageName]) {
+		cache[packageName] = {};
+	}
+
+	if (!cache[packageName][key]) {
+		cache[packageName][key] = `m${count++}`;
 
 		// 副作用：写入文件
 		fs.outputFileSync(
-			`${temp}/@@runtime.js`,
-			Object.keys(cache).reduce((pre, cur) => {
-				pre += `exports.${cache[cur]} = require('${cur}');\n`;
+			`${temp}/${packageName !== MASTER_PACKAGE_NAME ? `${packageName}/` : ''}@@runtime.js`,
+			Object.keys(cache[packageName]).reduce((pre, cur) => {
+				pre += `exports.${cache[packageName][cur]} = require('${cur}');\n`;
 				return pre;
 			}, '')
 		);
 	}
-	return cache[key];
+	return cache[packageName][key];
 };
 
 let runtimePlugins = (from, to) => ([
@@ -56,13 +64,26 @@ let runtimePlugins = (from, to) => ([
 							&& !moduleName.includes('@@runtime.js')
 						) {
 
-							let base = 'libs/@@runtime.js';
+							let packageName = MASTER_PACKAGE_NAME;
+							if (subpackages.length && !/node_modules/.test(filename)) {
+								for (let i = 0; i < subpackages.length; i++) {
+									let { name, dependencies = [] } = subpackages[i];
+									if (
+										filename.includes(`${from}/${name}`) 
+										&& dependencies.some(i => i === moduleName)
+									) {
+										packageName = name;
+									}
+								}
+							}
+
+							let base = `${packageName !== MASTER_PACKAGE_NAME ? `${packageName}/` : ''}libs/@@runtime.js`;
 							let fullpath = upath.normalize(relative(dirname(filename), resolve(from, relative(to, dist), base)));
 
 							path.replaceWith(
 								t.memberExpression(
 									t.callExpression(t.identifier('require'), [t.stringLiteral(fullpath)]),
-									t.identifier(getModuleId(moduleName))
+									t.identifier(getModuleId(moduleName, packageName))
 								)
 							);
 						}

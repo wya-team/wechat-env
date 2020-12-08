@@ -5,6 +5,12 @@
     "pages/extra/web"
   ],
   "subpackages": [
+    {
+      "root": "a-echarts",
+      "pages": [
+        "pages/load"
+      ]
+    },
 		{
 			"root": "a-sub",
 			"pages": [
@@ -26,6 +32,7 @@
     "mc-collapse": "./libs/mc/collapse/index",
     "mc-collapse-item": "./libs/mc/collapse/collapse-item",
     "mc-count-down": "./libs/mc/count-down/index",
+    "mc-echarts": "./libs/mc/echarts/index",
     "mc-form": "./libs/mc/form/index",
     "mc-form-item": "./libs/mc/form/form-item",
     "mc-icon": "./libs/mc/icon/index",

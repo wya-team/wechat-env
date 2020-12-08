@@ -1,0 +1,33 @@
+<template></template>
+<script>
+import * as echarts from 'echarts/dist/echarts.min';
+
+Page({
+	onLoad(options) {
+		this.options = options;
+	},
+	onReady() {
+		try {
+			getApp().$modules.echarts = echarts;
+		
+			let { url } = this.options;
+			
+			wx.nextTick(() => {
+				wx.navigateAuto({
+					url: decodeURIComponent(url),
+					redirect: true
+				});
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	}
+});
+</script>
+
+<config>
+{
+	"navigationBarTitleText": "",
+	"usingComponents": {}
+}
+</config>

@@ -1,19 +1,28 @@
 <template>
-	<view class="g-container">
+	<view wx:if="{{ !!ecahrts }}" class="g-container">
 		<mc-button class="v-home-main__userinfo" bind:tap="handleViewTap">
-			<text>前往子包</text>
+			<text>前往子包（a-sub）</text>
 		</mc-button>
-		<view class="v-home-main__usermotto" bind:tap="handleViewTap1">
+		<view class="v-home-main__userinfo">
+			<text>echarts资源由子包(a-echarts)加载</text>
+			<text>ecahrts version: {{ ecahrts.version }}</text>
+			<mc-echarts 
+				elementId="chart" 
+				options="{{ chartOptions }}" 
+				style="width: 40vw; height: 40vw"
+			/>
+		</view>
+		<view class="v-home-main__usermotto" bind:tap="handleChangeByCommit">
 			<text>{{ motto }}：</text>
 			<text>{{ user }}</text>
 		</view>
 
-		<view class="v-home-main__network" bind:tap="handleViewTap2">
+		<view class="v-home-main__network" bind:tap="handleChangeBy$Request">
 			<text>网络请求[$request]: </text>
 			<text>{{ user }}</text>
 		</view>
 
-		<view class="v-home-main__network" bind:tap="handleViewTap3">
+		<view class="v-home-main__network" bind:tap="handleChangeByRequest">
 			<text>网络请求[request]: </text>
 			<text>{{ user }}</text>
 		</view>
@@ -32,10 +41,55 @@ Page({
 		};
 	},
 	data: {
-		motto: '你好，小程序'
+		motto: '你好，小程序',
+		ecahrts: '',
+		chartOptions: {
+			backgroundColor: "#ffffff",
+			color: ["#37A2DA", "#32C5E9", "#67E0E3", "#91F2DE", "#FFDB5C", "#FF9F7F"],
+			series: [{
+				label: {
+					normal: {
+						fontSize: 14
+					}
+				},
+				type: 'pie',
+				center: ['50%', '50%'],
+				radius: ['40%', '60%'],
+				data: [
+					{
+						value: 55,
+						name: '北京'
+					}, 
+					{
+						value: 20,
+						name: '武汉'
+					}, 
+					{
+						value: 10,
+						name: '杭州'
+					}, 
+					{
+						value: 20,
+						name: '广州'
+					}, 
+					{
+						value: 38,
+						name: '上海'
+					}
+				]
+			}]
+		},
 	},
 
 	onLoad() {
+		this.setData({
+			ecahrts: getApp().require('echarts')
+		});
+
+		// echarts异步加载后再显示title
+		this.data.echarts && wx.setNavigationBarTitle({
+			title: '首页'
+		});
 	},
 
 	// 事件处理函数
@@ -46,11 +100,11 @@ Page({
 	},
 
 	// 事件处理函数
-	handleViewTap1() {
+	handleChangeByCommit() {
 		this.$store.commit('HOME_MAIN_CHANGE_USER', { user: Math.random() });
 	},
 
-	async handleViewTap2() {
+	async handleChangeBy$Request() {
 		const res = await this.$request({
 			localData: {
 				status: 1,
@@ -63,7 +117,7 @@ Page({
 		this.$store.commit('HOME_MAIN_CHANGE_USER', { user: res.data.user });
 	},
 
-	async handleViewTap3() {
+	async handleChangeByRequest() {
 		await this.request({
 			url: 'HOME_MAIN_POST',
 			localData: {
@@ -94,18 +148,18 @@ Page({
 		}
 	}
 	&__usermotto {
-		margin-top: 100px;
+		margin-top: 20rpx;
 	}
 
 	&__network {
-		margin-top: 20px;
+		margin-top: 20rpx;
 	}
 }
 </style>
 
 <config>
 {
-	"navigationBarTitleText": "首页",
+	"navigationBarTitleText": "",
 	"usingComponents": {}
 }
 </config>

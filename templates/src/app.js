@@ -19,6 +19,8 @@ const { log } = console;
 
 App({
 	$mc: {},
+	// 如果项目中不是第三方库子包加载，直接放到这里
+	$modules: {},
 	userData: null,
 	userInfo: {},
 	async onShow(options) {
@@ -130,6 +132,35 @@ App({
 		} else {
 			page.onLoad(page.options);
 			page.onShow();
+		}
+	},
+
+	/**
+	 * 第三方库加载的方式
+	 * 设计方式：redirect进入子包 -> 挂载getApp().$modules -> redirect到原前页
+	 * 
+	 * 调用方式如： getApp().require('echarts')
+	 */
+	require(pkg, opts = {}) {
+		if (this.$modules[pkg]) {
+			return this.$modules[pkg]; 
+		} else {
+			const { path = `/a-${pkg}/pages/load`, replace = true } = opts;
+			const { route, options } = getCurrentPages().pop();
+			replace && wx.navigateAuto({
+				url: URL.merge({
+					path,
+					query: {
+						url: URL.merge({
+							path: `/${route}`,
+							query: options
+						})
+					}
+				}),
+				redirect: true
+			});
+
+			return false;
 		}
 	},
 

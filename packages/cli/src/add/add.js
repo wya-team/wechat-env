@@ -27,6 +27,27 @@ module.exports = (opts = {}) => {
 		force
 	} = opts;
 
+	// 是否在子包内创建
+	const isSubPackage = packageName !== 'pages';
+
+	// home/main -> /home/main
+	if (path[0] !== '/') {
+		path = `/${path}`;
+	}
+
+	// /home/main/list -> /home/main-list
+	let $path = path.split('/');
+	if ($path.length > 3) {
+		$path.splice(2, $path.length - 2, $path.slice(2).join('-'));
+		path = $path.join('/');
+	}
+
+	// /pages/home/main -> /home/main
+	const regex = new RegExp(`^\\/?${isSubPackage ? `${packageName}/pages` : 'pages'}`);
+	if (regex.test(path)) {
+		path = path.replace(regex, '');
+	} 
+
 	let pathArr = path.replace(/\({0,}\//g, '#')
 		.replace(/([a-z\dA-Z])([A-Z])/g, '$1#$2')
 		.toLowerCase()
@@ -42,8 +63,6 @@ module.exports = (opts = {}) => {
 		pathArr[1] = 'main';
 		route = `${path}/main`;
 	}
-	// 是否在子包内创建
-	const isSubPackage = packageName !== 'pages';
 
 	/**
 	 * container mutation reducer component

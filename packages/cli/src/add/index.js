@@ -25,7 +25,7 @@ module.exports = class AddManager {
 			{
 				type: 'input',
 				name: 'project',
-				message: 'Project Name:',
+				message: 'Project Name（项目名）:',
 				validate(val) {
 					if (val === '') {
 						return 'Project Name is required!';
@@ -37,7 +37,7 @@ module.exports = class AddManager {
 			{
 				type: 'input',
 				name: 'packageName',
-				message: 'Package Name:',
+				message: 'Package Name（子包）:',
 				validate(val) {
 					if (val === '') {
 						return 'Package Name is required!';
@@ -74,15 +74,15 @@ module.exports = class AddManager {
 			{
 				type: 'input',
 				name: 'path',
-				message: 'RoutePath is required:',
-				default: '/home',
+				message: 'RoutePath（路由, 前缀pages不需要）:',
+				default: '/home/main',
 				when: (answers) => answers.type !== 'none',
 				validate(val) {
 					if (val === '') {
-						return 'Name is required!';
-					} else {
-						return true;
-					}
+						return 'RoutePath is required!';
+					} 
+
+					return true;
 				}
 			},
 			{

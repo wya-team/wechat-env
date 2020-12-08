@@ -219,7 +219,6 @@ module.exports = (opts = {}) => {
 			Object.keys(formConfig).forEach(key => {
 				let { path } = formConfig[key];
 				let fullpath = join(path);
-				console.log(formTpl, typeof formTpl[key] === 'function');
 				if (typeof formTpl[key] === 'function') {
 					log(chalk`{yellow ${key}}: {rgb(255,131,0) ${fs.existsSync(fullpath) ? 'override' : 'created'}}`);
 

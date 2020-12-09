@@ -21,12 +21,14 @@ module.exports = (opts = {}) => {
 		packageName,
 		pagingMode,
 		pagingType,
+		store = false,
 		extra = '',
 		title = '',
 		components,
 		force
 	} = opts;
 
+	const hasStore = /(scroll)/.test(template) || store;
 	// 是否在子包内创建
 	const isSubPackage = packageName !== 'pages';
 
@@ -77,26 +79,38 @@ module.exports = (opts = {}) => {
 		},
 		api: {
 			path: upath.normalize(`${dir}${packagePath}stores/apis/${pathArr[0]}.js`)
-		},
-		module: {
-			path: upath.normalize(`${dir}${packagePath}stores/modules/${pathArr[0]}/${module}.js`)
-		},
-		rootModule: {
-			path: upath.normalize(`${dir}${packagePath}stores/modules/${pathArr[0]}/root.js`)
 		}
 	};
+
+	if (hasStore) {
+		basicConfig = {
+			...basicConfig,
+			module: {
+				path: upath.normalize(`${dir}${packagePath}stores/modules/${pathArr[0]}/${module}.js`)
+			},
+			rootModule: {
+				path: upath.normalize(`${dir}${packagePath}stores/modules/${pathArr[0]}/root.js`)
+			}
+		};
+	}
 
 	let rootConfig = {
 		rootApi: {
 			path: upath.normalize(`${dir}${packagePath}stores/apis/root.js`)
 		},
-		rootModules: {
-			path: upath.normalize(`${dir}${packagePath}stores/modules/root.js`)
-		},
 		rootApp: {
 			path: upath.normalize(`${dir}app.json`)
 		}
 	};
+
+	if (hasStore) {
+		rootConfig = {
+			...rootConfig,
+			rootModules: {
+				path: upath.normalize(`${dir}${packagePath}stores/modules/root.js`)
+			}
+		};
+	}
 
 	if (isSubPackage) {
 		rootConfig = {

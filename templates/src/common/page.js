@@ -8,15 +8,45 @@ let PageEnhancer = Utils.compose(
 	storeMiddleware,
 	// 其他注入
 )(Page);
-export default function (options = {}) {
-	return PageEnhancer({
-		onShareAppMessage() {
-			return {
-				title: ''
-			};
-		},
+export default (options = {}) => {
+	const { share, onShareAppMessage, ...rest } = options;
+	let opts = {
 		$request: net.ajax,
 		...mapActions(['request']),
-		...options
-	});
-}
+		...rest,
+	};
+	if (share || onShareAppMessage) {
+		opts.onShareAppMessage = function (opt) {
+			let title = '';
+			let imageUrl;
+			let path;
+			let query;
+
+			if (onShareAppMessage) {
+				const it = onShareAppMessage.call(this, opt) || {};
+				title = it.title;
+				imageUrl = it.imageUrl;
+				path = it.path;
+			}
+
+			if (path) {
+				const it = URL.parse(path);
+				path = it.path;
+				query = it.query;
+			} else {
+				let page = getCurrentPages().pop();
+				path = page.route;
+				query = page.options;
+			}
+
+			// 这里可以带全局的参数
+			path = URL.merge({ path, query });
+			return {
+				title,
+				path,
+				imageUrl
+			};
+		};
+	}
+	return PageEnhancer(opts);
+};

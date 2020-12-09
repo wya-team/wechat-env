@@ -72,6 +72,13 @@ module.exports = class AddManager {
 				default: 'basic'
 			},
 			{
+				type: 'confirm',
+				name: 'store',
+				message: 'use store(mp-store):',
+				when: (answers) => !(/(scroll)/.test(answers.template)),
+				default: false
+			},
+			{
 				type: 'input',
 				name: 'path',
 				message: 'RoutePath（路由, 前缀pages不需要）:',

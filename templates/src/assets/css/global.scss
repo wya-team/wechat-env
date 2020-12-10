@@ -59,6 +59,9 @@
 .g-bg-main {
 	background-color: $main;
 }
+.g-bg-white {
+	background-color: white;
+}
 .g-bg-f2 {
 	background-color: #f2f2f2;
 }
@@ -658,4 +661,23 @@
 
 .g-content-box {
 	box-sizing: content-box;
+}
+
+.g-wb-ba {
+	word-break: break-all;
+}
+
+.g-disabled {
+	pointer-events: none;
+}
+
+.g-notice-tip {
+	padding: 0 24rpx;
+	background: #fdfbec;
+	color: #FF7135;
+	display: flex;
+	align-items: center;
+	// justify-content: center;
+	height: 70rpx;
+	font-size: 30rpx;
 }

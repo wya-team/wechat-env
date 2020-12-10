@@ -68,7 +68,7 @@ exports.getExtra = (pathArr) => {
 };
 
 const getPathArrByPackage = (pathArr, packageName) => {
-	const arr = [...pathArr];
+	const arr = pathArr.join('/').replace(/-/g, '/').split('/');
 	if (packageName !== 'pages') {
 		const extra = packageName.split('-');
 		extra.reverse().forEach(item => {

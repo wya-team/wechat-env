@@ -78,7 +78,7 @@ const getPathArrByPackage = (pathArr, packageName) => {
 	return arr;
 };
 
-exports.camelCase = (v) => {
+const camelCase = (v) => {
 	v = v instanceof Array ? v : v.split('-');
 	return v.map((item, index) => {
 		if (item && index != 0) {
@@ -87,6 +87,9 @@ exports.camelCase = (v) => {
 		return item;
 	}).join('');
 };
+
+exports.camelCase = camelCase;
+
 /**
  * /test/for -> TEST_FOR_GET,
  * /a-sub/test/for -> A_SUB_TEST_FOR_GET,

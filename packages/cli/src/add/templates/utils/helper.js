@@ -78,6 +78,15 @@ const getPathArrByPackage = (pathArr, packageName) => {
 	return arr;
 };
 
+exports.camelCase = (v) => {
+	v = v instanceof Array ? v : v.split('-');
+	return v.map((item, index) => {
+		if (item && index != 0) {
+			return item.charAt(0).toUpperCase() + item.slice(1);
+		}
+		return item;
+	}).join('');
+};
 /**
  * /test/for -> TEST_FOR_GET,
  * /a-sub/test/for -> A_SUB_TEST_FOR_GET,
@@ -93,15 +102,6 @@ exports.getMutationType = (pathArr, packageName) => {
  */
 exports.getStoreKey = (pathArr, packageName) => {
 	const arr = getPathArrByPackage(pathArr, packageName);
-
-	return arr
-		.map(
-			(item, index) => {
-				if (item && index != 0) {
-					return item.charAt(0).toUpperCase() + item.slice(1);
-				}
-				return item;
-			}
-		)
-		.join('');
+	return camelCase(arr);
 };
+

@@ -1,4 +1,4 @@
-const { getNewContent } = require('../utils/helper');
+const { getNewContent, camelCase } = require('../utils/helper');
 
 // 创建文件，子包使用
 exports.rootModulesInitial = (content, opts = {}) => {
@@ -12,9 +12,10 @@ exports.rootModulesInitial = (content, opts = {}) => {
 
 exports.rootModules = (content, opts = {}) => {
 	const { mutation, pathArr, componentArr, obj } = opts;
+	const key = camelCase(mutation);
 	try {
-		let importContent = `import ${mutation} from './${mutation}/root';`;
-		let injectContent = `	...${mutation}`;
+		let importContent = `import ${key} from './${mutation}/root';`;
+		let injectContent = `	...${key}`;
 
 		let importSplit = `\nexport default {\n`;
 		let injectSplit = `\n};\n`;

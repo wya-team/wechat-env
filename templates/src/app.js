@@ -23,12 +23,14 @@ App({
 	$modules: {},
 	userData: null,
 	userInfo: {},
+	loginScheduleQueue: [],
 	async onShow(options) {
 		this.$mc.config = config;
 		
 		const { query = {} } = wx.getEnterOptionsSync && wx.getEnterOptionsSync() || {};
 
 		this.loginSchedule = createSchedule();
+		this.loginScheduleQueue.push(this.loginSchedule);
 
 		// 根据用户
 		this.userData = Storage.get(USER_KEY);
@@ -111,6 +113,14 @@ App({
 			$config: this.configData
 		});
 
+		this.loginScheduleQueue.reduceRight((_, loginSchedule) => {
+			if (typeof loginSchedule == 'object' && loginSchedule.complete) {
+				loginSchedule.complete(this.userData);
+			}
+			return;
+		}, '');
+		this.loginScheduleQueue = [];
+
 		// 可以重复执行
 		this.loginSchedule.complete(this.userData);
 	},
@@ -118,6 +128,7 @@ App({
 	async clearLoginAuth() {
 		HttpHelper.cancelAll();
 		this.loginSchedule = createSchedule();
+		this.loginScheduleQueue.push(this.loginSchedule);
 
 		let userData = await this._login();
 		this.updateUser(userData);

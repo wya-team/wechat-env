@@ -15,7 +15,9 @@ Enhancer.invoke(wx, {
 	// 需要授权的页面
 	authorizes: []
 });
-const { log } = console;
+const log = (...rest) => {
+	console.log(`%c [App.js]`, 'color: red; font-weight: bold', ...rest);
+};
 
 App({
 	$mc: {},

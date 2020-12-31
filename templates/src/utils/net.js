@@ -32,6 +32,13 @@ const beforeFn = ({ options }) => {
 	// let token = JSON.stringify(Storage.get(TOKEN_KEY) || options.headers.token);
 	let token = {};
 	return new Promise(async (resolve, reject) => {
+		// 所有接口等待登录完成之后触发
+		// try {
+		// 	await getApp().loginSchedule.target;
+		// } catch (e) {
+		// 	e && console.log(e);
+		// }
+		
 		// options优先级更高
 		resolve({
 			...options,

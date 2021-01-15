@@ -1,4 +1,5 @@
 const path = require('path');
+const upath = require('upath');
 const fs = require('fs-extra');
 const del = require('del');
 const through = require('through2');
@@ -37,7 +38,8 @@ module.exports = (options) => {
 		}
 
 		const { base, dir } = parse(file.path);
-		const relativePath = dir.replace(new RegExp(temp), '');
+		const relativePath = upath.normalize(dir)
+			.replace(new RegExp(upath.normalize(temp)), '');
 
 		rollup({
 			input: file.path,

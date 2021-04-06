@@ -29,6 +29,14 @@ const builds = {
 			format: 'cjs'
 		}
 	},
+	ps: {
+		script: 'babel packages/ps/src --out-dir packages/ps/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		rollup: {
+			entry: 'packages/ps/src/index.js',
+			dest: 'packages/ps/dist/ps.min.js',
+			format: 'cjs'
+		}
+	},
 	utils: {
 		script: 'babel packages/utils/src --out-dir packages/utils/dist --copy-files --ignore **.test.js,**.md,examples/**',
 		rollup: {

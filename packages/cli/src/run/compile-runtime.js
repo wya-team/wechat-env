@@ -9,7 +9,7 @@ const commonjs = require('@rollup/plugin-commonjs');
 const replace = require('@rollup/plugin-replace');
 const nodeResolve = require('@rollup/plugin-node-resolve');
 const alias = require('@rollup/plugin-alias');
-const { uglify } = require('rollup-plugin-uglify');
+const { terser } = require('rollup-plugin-terser');
 
 let { resolve, dirname, parse } = path;
 let __cwd = process.env.SOURCE_DIR;
@@ -57,7 +57,7 @@ module.exports = (options) => {
 					'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
 					preventAssignment: false
 				}),
-				process.env.NODE_ENV === 'production' && uglify()
+				process.env.NODE_ENV === 'production' && terser()
 			]
 		}).then((minJS) => {
 			return minJS.write({

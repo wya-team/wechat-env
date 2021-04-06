@@ -29,7 +29,6 @@
   "scripts-info": {
     "bootstrap": "npm install 保持依赖不在root下"
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
@@ -56,7 +55,7 @@
     "lint-staged": "^10.0.7",
     "regenerator-runtime": "0.12.1",
     "rollup": "^2.17.1",
-    "rollup-plugin-uglify": "^6.0.4"
+    "rollup-plugin-terser": "^7.0.2"
   },
   "husky": {
     "hooks": {

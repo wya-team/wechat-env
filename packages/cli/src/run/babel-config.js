@@ -144,7 +144,9 @@ const babelConfig = (opts = {}) => {
 			[	
 				resolvePackage('@babel/plugin-proposal-class-properties'),
 				{
-					"loose": true
+					"assumptions": {
+						"setPublicClassFields": true
+					}
 				}
 			]
 		].concat(runtimeHelpers ? runtimePlugins(from, to) : [])

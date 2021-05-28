@@ -95,7 +95,9 @@ class EventEmitter {
 			this.__events__[event] = this.__events__[event].filter(item => item !== callback);
 			this.__events__[event].length === 0 && delete this.__events__[event];
 		} else if (typeof event === 'undefined') {
-			this.__listeners__ = [];
+			Object.defineProperty(this, '__listeners__', {
+				value: []
+			});
 		}
 
 		this.$emit.call(this, 'off', event, callback);

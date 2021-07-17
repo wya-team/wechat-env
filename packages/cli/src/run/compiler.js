@@ -212,13 +212,14 @@ exports.dev = gulp.series(
 	function watch() {
 		let fn = (globs, generateTask) => {
 			gulp.watch(u(globs)).on('all', (type, fullpath) => {
+				fullpath = u(fullpath);
 				try {
-					const realPath = fullpath.replace(new RegExp(src, 'g'), '');
+					const realPath = fullpath.replace(new RegExp(u(src), 'g'), '');
 					if (type !== 'unlink') {
 						const run = generateTask({ 
 							single: {
 								from: fullpath,
-								to: path.dirname(fullpath).replace(new RegExp(src, 'g'), dist)
+								to: path.dirname(fullpath).replace(new RegExp(u(src), 'g'), dist)
 							}, 
 							gulpOpts: {}
 						 });

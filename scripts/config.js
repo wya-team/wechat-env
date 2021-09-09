@@ -1,5 +1,4 @@
 const path = require('path');
-const buble = require('@rollup/plugin-buble');
 const replace = require('@rollup/plugin-replace');
 const commonjs = require('@rollup/plugin-commonjs');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
@@ -74,17 +73,14 @@ class Config {
 				nodeResolve(), 
 				babel({
 					babelrc: true,
-					exclude: 'node_modules/**',
+					// 如果没有被external, 又加载了第三方的包，确保第三方包的兼容性，重新编译
+					// exclude: 'node_modules/**',
 					babelHelpers: 'runtime'
 				}),
 				commonjs({}), 
-
-				// TODO: 移除buble, 仅用babel, 问题可参考@wya/vm
-				buble({
-					objectAssign: 'Object.assign' // ...Object spread and rest
-				}),
 				replace({
 					'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+					preventAssignment: false
 				})
 				// process.env.NODE_ENV === 'production' && terser()
 			],

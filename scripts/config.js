@@ -78,6 +78,8 @@ class Config {
 					babelHelpers: 'runtime'
 				}),
 				commonjs({}), 
+
+				// TODO: 移除buble, 仅用babel, 问题可参考@wya/vm
 				buble({
 					objectAssign: 'Object.assign' // ...Object spread and rest
 				}),

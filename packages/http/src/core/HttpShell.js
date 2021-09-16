@@ -232,7 +232,7 @@ class HttpShell {
 					reject(response);
 					return;
 				default:
-					let other = onOther && onOther({ response, resolve, reject }); // eslint-disable-line
+					let other = onOther && onOther({ response, resolve, reject, options }); // eslint-disable-line
 					if (!other || typeof other !== 'object' || !other.then) {
 						let error = {
 							...new HttpError({

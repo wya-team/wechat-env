@@ -191,6 +191,43 @@ export const getSelectedData = (value = [], source = [], opts = {}) => {
 	};
 };
 
+/**
+ * console.log() prettier
+ * @param {*} source 
+ * @param  {...any} rest 
+ */
+export const logger = (source, ...rest) => {
+	console.log(`%c [${source}]`, 'color: red; font-weight: bold', ...rest);
+};
+
+/**
+ * 微信版本较低导致某些API不支持时，引导升级版本
+ * @param {*} source 
+ * @param  {...any} rest 
+ */
+export const lowVersionGuide = () => {
+	wx.showModal({
+		title: '温馨提示',
+		content: '微信版本过低，请升级最新版本以获得更优体验~',
+		showCancel: false,
+		confirmText: '好的'
+	});
+};
+
+/**
+ * wx.canIUse 的一层封装，API不支持时可提示引导升级微信版本
+ * @param {*} api 
+ * @param {*} guide 
+ * @returns 
+ */
+export const canIUse = (api, guide = true) => {
+	const ok = wx.canIUse(api);
+	if (!ok && guide) {
+		lowVersionGuide();
+	}
+	return ok;
+};
+
 // 方便调用
 Utils.set({
 	formatTime,

@@ -27,6 +27,7 @@ exports.page = (content, opts = {}) => {
 				contents += `				show="{{ item.value == type }}"\n`;
 				contents += `				height="100%"\n`;
 				contents += `				total="{{ listInfo[item.value].total }}"\n`;
+				contents += `				current="{{ listInfo[item.value].current }}"\n`;
 				contents += `				bind:loadData="loadData"\n`;
 				contents += `			>\n`;
 				contents += `				<${project}-item \n`;
@@ -44,6 +45,7 @@ exports.page = (content, opts = {}) => {
 				contents += `	<mc-recycle-list\n`;
 				contents += `		height="100%"\n`;
 				contents += `		total="{{ listInfo.total }}"\n`;
+				contents += `		current="{{ listInfo.current }}"\n`;
 				contents += `		bind:loadData="loadData"\n`;
 				contents += `	>\n`;
 				contents += `		<${project}-item \n`;

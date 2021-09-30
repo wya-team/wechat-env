@@ -2,7 +2,7 @@ import '@wya/mp-polyfill';
 import { Store } from '@wya/mp-store';
 import { URL } from '@wya/mp-utils';
 import { createApp, init } from './framework/index';
-import plugins from './app.plugin';
+import helpers from './helper.config';
 
 import Enhancer from './utils/enhancer';
 import { storeConfig } from './stores/root';
@@ -22,8 +22,8 @@ const log = (...rest) => {
 
 
 createApp({
-	// 小程序初始化时要注册的插件
-	plugins,
+	// 小程序初始化时要注册的helpers
+	helpers,
 
 	$mc: {},
 	// 如果项目中不是第三方库子包加载，直接放到这里

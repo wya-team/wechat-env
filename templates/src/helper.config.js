@@ -1,5 +1,9 @@
+/**
+ * 该文件为 app 的helper
+ */
+
 import { ajax } from '@wya/mp-http';
-import { updateManager, queryParser, authorizeManager } from './plugins/index';
+import { updateManager, queryParser, authorizeManager } from './helpers/index';
 import { USER_KEY } from './constants/index';
 import API_ROOT from './stores/apis/root';
 

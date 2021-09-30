@@ -73,6 +73,7 @@ export default (next) => userOptions => {
 				
 				if (shouldSubscribe) {
 					this[UNSUBSCRIBE] = this.$store.subscribe(handleChange.bind(this, options));
+					handleChange.call(this, options);
 				}
 				this[HAS_SUBSCRIBE] = true;
 			}
@@ -96,12 +97,18 @@ export default (next) => userOptions => {
 		};
 	};
 
+	let $data;
+	const mappedState = getMappedState();
+
+	if (data && mappedState) {
+		$data = { ...data, ...mappedState };
+	} else if ($data || mappedState) {
+		$data = { ...(data || mappedState) };
+	}
+
 	return next({
 		...rest,
-		data: {
-			...(data || {}),
-			...getMappedState()
-		},
+		data: $data,
 		onLoad: on(onLoad), 
 		onShow: on(onShow), 
 		onUnload: off(onUnload),

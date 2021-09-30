@@ -24,12 +24,8 @@ export default (next) => userOptions => {
 
 	const shouldSubscribe = Boolean(mapState);
 
-	function handleChange(options) {
-		if (!this[UNSUBSCRIBE]) {
-			return;
-		}
-
-		const state = this.$store.getState();
+	function getMappedState(options) {
+		const state = store.getState();
 		let mappedState;
 
 		if (typeof mapState === 'function') {
@@ -38,6 +34,15 @@ export default (next) => userOptions => {
 		} else if (mapState instanceof Array) {
 			mappedState = defaultMapStates(mapState, state, options);
 		}
+		return mappedState;
+	}
+
+	function handleChange(options) {
+		if (!this[UNSUBSCRIBE]) {
+			return;
+		}
+
+		let mappedState = getMappedState(options);
 		
 		if (!this.data || !mappedState || shallowEqual(this.data, mappedState)) {
 			return;
@@ -46,6 +51,7 @@ export default (next) => userOptions => {
 	}
 
 	const {
+		data,
 		// Page
 		onLoad,
 		onUnload,
@@ -67,7 +73,6 @@ export default (next) => userOptions => {
 				
 				if (shouldSubscribe) {
 					this[UNSUBSCRIBE] = this.$store.subscribe(handleChange.bind(this, options));
-					handleChange.call(this, options);
 				}
 				this[HAS_SUBSCRIBE] = true;
 			}
@@ -93,6 +98,10 @@ export default (next) => userOptions => {
 
 	return next({
 		...rest,
+		data: {
+			...(data || {}),
+			...getMappedState()
+		},
 		onLoad: on(onLoad), 
 		onShow: on(onShow), 
 		onUnload: off(onUnload),

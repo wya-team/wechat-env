@@ -8,7 +8,7 @@ export default (next) => userOptions => {
 	const proxy = hook => {
 		return navigator
 			? options => {
-				this.$store.commit(`${navigator}_ROUTE_CHANGE`);
+				wx.nextTick(() => this.$store.commit(`${navigator}_ROUTE_CHANGE`));
 				hook && hook.call(this, options);
 			}
 			: hook;

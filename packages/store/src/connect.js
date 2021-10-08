@@ -102,7 +102,7 @@ export default (next) => userOptions => {
 
 	if (data && mappedState) {
 		$data = { ...data, ...mappedState };
-	} else if ($data || mappedState) {
+	} else if (data || mappedState) {
 		$data = { ...(data || mappedState) };
 	}
 

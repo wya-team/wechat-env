@@ -1,3 +1,7 @@
+/**
+ * 非特殊情况尽量不在该文件里“直接”加业务逻辑，首先应考虑是否可通过 createOptions 中合理扩展配置进行支持
+ */
+
 import createHttpClient from '@wya/mp-http';
  
 // 接口返回 status 为 -1 时，最大重试次数

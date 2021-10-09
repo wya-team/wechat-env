@@ -4,9 +4,10 @@
 
 <script>
 import { URL } from '@wya/mp-utils';
+import { core } from '../../framework/index.js';
 
 const app = getApp();
-Page({
+core.page({
 	data: {
 		url: ''
 	},

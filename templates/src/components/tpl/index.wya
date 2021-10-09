@@ -3,8 +3,9 @@
 </template>
 
 <script>
+import { core } from '../../framework/index.js';
 
-Component({
+core.component({
 
 });
 </script>

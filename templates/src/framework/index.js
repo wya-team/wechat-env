@@ -1,15 +1,16 @@
 import createApp from './app';
-import createPage from './page';
-import createComponent from './component';
-import { net } from './network/index';
+import bootstrapPage from './page';
+import bootstrapComponent from './component';
 
-const init = () => {
-	Page = createPage;
-	Component = createComponent;
+const core = {};
+
+const bootstrap = options => {
+	core.page = bootstrapPage(options.page);
+	core.component = bootstrapComponent(options.component);
 };
 
 export {
 	createApp,
-	init,
-	net
+	bootstrap,
+	core
 };

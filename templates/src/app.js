@@ -1,14 +1,16 @@
 import '@wya/mp-polyfill';
 import { Store } from '@wya/mp-store';
 import { URL } from '@wya/mp-utils';
-import { createApp, init } from './framework/index';
+import { createApp } from './framework/index';
 import helpers from './helper.config';
 
 import Enhancer from './utils/enhancer';
 import { storeConfig } from './stores/root';
 import { config } from './mc.config';
 
-init();
+import bootstrap from './bootstrap';
+
+bootstrap();
 
 Enhancer.invoke(wx, {
 	// 导航页

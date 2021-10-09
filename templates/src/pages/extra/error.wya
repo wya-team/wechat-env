@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { core } from '../../framework/index.js';
 
 const MAP = {
 	close: {
@@ -18,7 +19,7 @@ const MAP = {
 		image: ''
 	}
 };
-Page({
+core.page({
 	data: {
 		// 自定义
 		message: '',

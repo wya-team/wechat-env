@@ -1,8 +1,9 @@
 <template></template>
 <script>
 import * as echarts from 'echarts/dist/echarts.min';
+import { core } from '../../framework/index.js';
 
-Page({
+core.page({
 	onLoad(options) {
 		this.options = options;
 	},

@@ -1,6 +1,5 @@
 
 const createApp = createOptions => {
-
 	const { helpers, ...options } = createOptions;
 	const { onLaunch, onShow } = options;
 	Object.assign(options, {

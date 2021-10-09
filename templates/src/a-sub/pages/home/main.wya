@@ -23,9 +23,11 @@
 <script>
 import { Utils } from '@wya/mp-utils';
 import '../../index.js';
+import { core } from '../../../framework/index.js';
 
 const app = getApp();
-Page({
+
+core.page({
 	mapState: (state) => {
 		return {
 			user: state.aSubHomeMain.user

@@ -42,9 +42,8 @@ core.page({
 
 	// 事件处理函数
 	handleViewTap() {
-		wx.navigateAuto({
+		wx.redirectTo({
 			url: '/pages/home/main',
-			redirect: true
 		});
 	},
 

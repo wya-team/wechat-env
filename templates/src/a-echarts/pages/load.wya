@@ -14,9 +14,8 @@ core.page({
 			let { url } = this.options;
 			
 			wx.nextTick(() => {
-				wx.navigateAuto({
+				wx.redirectTo({
 					url: decodeURIComponent(url),
-					redirect: true
 				});
 			});
 		} catch (e) {

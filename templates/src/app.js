@@ -4,7 +4,6 @@ import { URL } from '@wya/mp-utils';
 import { createApp } from './framework/index';
 import helpers from './helper.config';
 
-import Enhancer from './utils/enhancer';
 import { storeConfig } from './stores/root';
 import { config } from './mc.config';
 
@@ -12,12 +11,6 @@ import bootstrap from './bootstrap';
 
 bootstrap();
 
-Enhancer.invoke(wx, {
-	// 导航页
-	tabs: [],
-	// 需要授权的页面
-	authorizes: []
-});
 const log = (...rest) => {
 	console.log(`%c [App.js]`, 'color: red; font-weight: bold', ...rest);
 };
@@ -59,7 +52,7 @@ createApp({
 		} else {
 			const { path = `/a-${pkg}/pages/load`, replace = true } = opts;
 			const { route, options } = getCurrentPages().pop();
-			replace && wx.navigateAuto({
+			replace && wx.redirectTo({
 				url: URL.merge({
 					path,
 					query: {
@@ -69,7 +62,6 @@ createApp({
 						})
 					}
 				}),
-				redirect: true
 			});
 
 			return false;

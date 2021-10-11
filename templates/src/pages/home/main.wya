@@ -92,7 +92,7 @@ Page({
 
 	// 事件处理函数
 	handleViewTap() {
-		wx.navigateAuto({
+		wx.navigateTo({
 			url: '/a-sub/pages/home/main'
 		});
 	},

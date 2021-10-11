@@ -18,6 +18,20 @@ export default () => {
 			middlewares: [
 				// 用于组件的中间件
 			]
+		},
+		wx: {
+			beforeEach: async (to, from) => {
+				if (to.path.includes('/a-sub/')) {
+					return new Promise((resolve, reject) => {
+						setTimeout(() => {
+							wx.showModal({
+								content: '跳不过去了吧，哈哈'
+							});
+							resolve(false);
+						}, 1000);
+					});
+				}
+			}
 		}
 	});
 };

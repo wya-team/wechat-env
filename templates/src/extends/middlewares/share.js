@@ -7,16 +7,16 @@
 
 import { URL } from '@wya/mp-utils';
 
-const urlParser = url => {
+const parseUrl = url => {
 	let path;
 	let query;
 	if (url) {
 		const parseResult = URL.parse(url);
-		path = parseResult.path;
+		path = parseResult.path.join('/');
 		query = parseResult.query;
 	} else {
 		const { route, options } = getCurrentPages().pop();
-		path = route;
+		path = `/${route}`;
 		query = options;
 	}
 	return { path, query };
@@ -32,7 +32,7 @@ export default (next) => userOptions => {
 			let promise;
 
 			const padPath = url => {
-				const parseResult = urlParser(url);
+				const parseResult = parseUrl(url);
 				return URL.merge({
 					path: parseResult.path,
 					query: {

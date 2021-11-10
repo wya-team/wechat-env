@@ -1,6 +1,6 @@
 import { Storage } from '@wya/mp-utils';
 import { HttpHelper } from '@wya/mp-http';
-import { logger } from '../utils/index';
+import { logger } from '../../utils/index';
 
 const log = (...rest) => logger('AuthorizeManager', ...rest);
 

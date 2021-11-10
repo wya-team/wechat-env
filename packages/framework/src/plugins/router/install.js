@@ -19,11 +19,12 @@ const parseUrl = url => {
 	return result;
 };
 
-const bootstrap = (context, options = {}) => {
+export default (dola, wxCtx, options = {}) => {
 	// 对路由跳转方法进行代理
 	const proxy = navigateFn => {
 		return async routerOpts => {
 			const { url } = routerOpts;
+			console.log(routerOpts);
 
 			// 如果和正在准备跳转的页面（path+参数）相同，则阻止掉，不做跳转
 			if (url === navigatingUrl) return;
@@ -52,11 +53,11 @@ const bootstrap = (context, options = {}) => {
 					const { type = 'navigateTo', ...beforeRest } = beforeResult;
 					// 注意：此处的跳转还是会走这些跳转检查逻辑，而非直接使用navigateFn进行跳转
 					if (type === 'switchTab') {
-						wx.switchTab(beforeRest);
+						wxCtx.switchTab(beforeRest);
 					} else if (type === 'redirectTo') {
-						wx.redirectTo(beforeRest);
+						wxCtx.redirectTo(beforeRest);
 					} else {
-						wx.navigateTo(beforeRest);
+						wxCtx.navigateTo(beforeRest);
 					}
 					return;
 				}
@@ -69,15 +70,15 @@ const bootstrap = (context, options = {}) => {
 					navigatingUrl = null;
 				},
 				fail: (...args) => {
-					outerOpts.fail && routerOpts.fail(...args);
+					routerOpts.fail && routerOpts.fail(...args);
 					navigatingUrl = null;
 					// 路由层级太深
 					if (args[0].errMsg === 'navigateTo:fail webview count limit exceed') {
-						wx.showModal({
+						wxCtx.showModal({
 							title: '温馨提醒：页面层级过深警告⚠️',
 							content: '点击“确定”将清理您之前的页面浏览记录, 跳转至目标页面, 可能会影响您的历史操作',
 							success(res) {
-								res.confirm && wx.reLaunch({ url });
+								res.confirm && wxCtx.reLaunch({ url });
 							}
 						});
 					}
@@ -86,19 +87,17 @@ const bootstrap = (context, options = {}) => {
 		};
 	};
 
-	const originalSwitchTab = context.switchTab;
-	const originalRedirectTo = context.redirectTo;
-	const originalNavigateTo = context.navigateTo;
+	const originalSwitchTab = wxCtx.switchTab;
+	const originalRedirectTo = wxCtx.redirectTo;
+	const originalNavigateTo = wxCtx.navigateTo;
 
-	Object.defineProperty(context, 'switchTab', {
+	Object.defineProperty(wxCtx, 'switchTab', {
 		value: proxy(originalSwitchTab)
 	});
-	Object.defineProperty(context, 'redirectTo', {
+	Object.defineProperty(wxCtx, 'redirectTo', {
 		value: proxy(originalRedirectTo)
 	});
-	Object.defineProperty(context, 'navigateTo', {
+	Object.defineProperty(wxCtx, 'navigateTo', {
 		value: proxy(originalNavigateTo)
 	});
 };
-
-export default bootstrap;

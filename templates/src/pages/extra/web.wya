@@ -4,10 +4,10 @@
 
 <script>
 import { URL } from '@wya/mp-utils';
-import { core } from '../../framework/index.js';
+import dola from '@wya/mp-framework'
 
 const app = getApp();
-core.page({
+dola.page({
 	data: {
 		url: ''
 	},

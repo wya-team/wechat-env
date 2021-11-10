@@ -1,4 +1,4 @@
-import { logger, canIUse } from '../utils/index';
+import { logger, canIUse } from '../../utils/index';
 
 const log = (...rest) => logger('UpdateManager', ...rest);
 /**

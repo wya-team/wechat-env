@@ -1,9 +1,9 @@
 <template></template>
 <script>
 import * as echarts from 'echarts/dist/echarts.min';
-import { core } from '../../framework/index.js';
+import dola from '@wya/mp-framework'
 
-core.page({
+dola.page({
 	onLoad(options) {
 		this.options = options;
 	},

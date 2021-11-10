@@ -26,7 +26,7 @@
 		"import/resolver": {
 			"node": {
 				"extensions": [
-				  ".js",
+				  ".js"
 				]
 			}
 		}
@@ -168,6 +168,6 @@
 				"int32Hint": false
 			}
 		],
-		"jsx-quotes": 1,
+		"jsx-quotes": 1
 	}
 }

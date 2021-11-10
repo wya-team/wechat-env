@@ -31,9 +31,10 @@
 
 <script>
 import { Utils } from '@wya/mp-utils';
+import dola from '@wya/mp-framework'
 
 const app = getApp();
-Page({
+dola.page({
 	mapState: (state) => {
 		return {
 			user: state.homeMain.user

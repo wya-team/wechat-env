@@ -24,6 +24,7 @@
   "author": "wya-team",
   "license": "MIT",
   "dependencies": {
+    
     "@wya/mc": "^1.2.0",
     "@wya/mp-http": "^1.4.0",
     "@wya/mp-polyfill": "^1.0.1",

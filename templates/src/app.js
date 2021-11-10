@@ -1,24 +1,15 @@
 import '@wya/mp-polyfill';
 import { Store } from '@wya/mp-store';
 import { URL } from '@wya/mp-utils';
-import { createApp } from './framework/index';
-import helpers from './helper.config';
-
+import dola from '@wya/mp-framework';
 import { storeConfig } from './stores/root';
 import { config } from './mc.config';
+import setup from './setup';
 
-import bootstrap from './bootstrap';
+// 对整个应用框架进行初始化配置
+setup();
 
-bootstrap();
-
-const log = (...rest) => {
-	console.log(`%c [App.js]`, 'color: red; font-weight: bold', ...rest);
-};
-
-
-createApp({
-	// 小程序初始化时要注册的helpers
-	helpers,
+dola.app({
 
 	$mc: {},
 	// 如果项目中不是第三方库子包加载，直接放到这里
@@ -26,14 +17,14 @@ createApp({
 	userData: null,
 	onLaunch() {
 		// 注册小程序更新监听
-		this.updateManager.watch();
+		dola.updateManager.watch();
 	},
 	async onShow() {
 		this.$mc.config = config;
 	},
 
 	async clearLoginAuth() {
-		this.authorizeManager.clearAuthorize();
+		dola.authorizeManager.clearAuthorize();
 		let page = getCurrentPages().pop();
 		if (!page || page.route === 'pages/auth/index') {
 			wx.reLaunch({ url: '`/pages/home/index' });

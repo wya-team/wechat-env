@@ -3,9 +3,9 @@
 </template>
 
 <script>
-import { core } from '../../framework/index.js';
+import dola from '@wya/mp-framework'
 
-core.component({
+dola.component({
 
 });
 </script>

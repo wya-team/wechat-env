@@ -1,4 +1,3 @@
-
 /**
  * 页面启动query参数解析
  * 某些场景如小程序码中携带的页面参数，由于长度存在限制，
@@ -12,7 +11,8 @@ class QueryParser {
 	// 请求实例池
 	_instancePool = {};
 
-	constructor(options) {
+	constructor(dola, options) {
+		this._dolaCtx = dola
 		this._sceneKey = options.sceneKey || 'scene';
 		this._scene2Query = options.scene2Query;
 	}
@@ -27,7 +27,7 @@ class QueryParser {
 
 		let sceneStr = query[this._sceneKey];
 
-		return new Promise(async (resolve) => {
+		const parseTask = new Promise(async (resolve) => {
 			if (query[key]) {
 				resolve(query[key]);
 				return;
@@ -48,8 +48,8 @@ class QueryParser {
 					}
 					const res = await this._instancePool[sceneStr];
 					// 缓存
-					this._cache[sceneStr] = { ...res };
-					resolve(key ? res[key] : { ...query, ...res });
+					this._cache[sceneStr] = { ...query, ...res };
+					resolve(key ? res[key] : { ...this._cache[sceneStr] });
 					this._instancePool[sceneStr] = null;
 				} catch (error) {
 					console.log('error', error);
@@ -60,12 +60,13 @@ class QueryParser {
 			}
 			resolve(query);
 		});
+		this._dolaCtx.addLifecycleWaitingTask(parseTask)
+		return parseTask
 	}
 }
 
 export default {
-	install(context, opts) {
-		const queryParser = new QueryParser(opts);
-		context.queryParser = queryParser.parse.bind(queryParser);
+	install(dola, opts) {
+		dola.queryParser = new QueryParser(dola, opts);
 	}
 };

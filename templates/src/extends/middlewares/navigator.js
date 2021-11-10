@@ -7,14 +7,12 @@ export default (next) => userOptions => {
 
 	const proxy = hook => {
 		return navigator
-			? options => {
+			? function (options) {
 				wx.nextTick(() => this.$store.commit(`${navigator}_ROUTE_CHANGE`));
 				hook && hook.call(this, options);
 			}
 			: hook;
 	};
-	return next({
-		...rest,
-		onUnload: proxy(onUnload),
-	});
+	Object.assign(rest, { onUnload: proxy(onUnload) })
+	return next(rest);
 };

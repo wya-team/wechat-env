@@ -23,11 +23,11 @@
 <script>
 import { Utils } from '@wya/mp-utils';
 import '../../index.js';
-import { core } from '../../../framework/index.js';
+import dola from '@wya/mp-framework'
 
 const app = getApp();
 
-core.page({
+dola.page({
 	mapState: (state) => {
 		return {
 			user: state.aSubHomeMain.user

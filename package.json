@@ -5,8 +5,7 @@
   "description": "",
   "main": "",
   "workspaces": [
-    "packages/*",
-    "templates"
+    "packages/*"
   ],
   "scripts": {
     "build:packages": "cross-env NODE_ENV=production node --max_old_space_size=8192 ./scripts/build.js",

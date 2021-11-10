@@ -1,4 +1,5 @@
 import createHttp from './http';
+import dola from '@wya/mp-framework'
 
 let app;
 const _getApp = () => {
@@ -17,7 +18,7 @@ const net = createHttp({
 		return !!(userData && userData.token);
 	},
 	authorize: () => {
-		return _getApp().authorizeManager.codeLogin();
+		return dola.authorizeManager.codeLogin();
 	},
 	// 无需登录的接口
 	escapeLoginUrls: []

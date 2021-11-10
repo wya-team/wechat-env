@@ -2,7 +2,7 @@ import API_ROOT from './apis/root';
 /**
  * 根级别actions
  */
-import { net } from '../framework/index';
+import { net } from '../extends/network/index';
 
 export const actions = {
 	request(store, opts = {}) {

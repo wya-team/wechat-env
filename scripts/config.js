@@ -51,6 +51,14 @@ const builds = {
 			dest: 'packages/http/dist/http.min.js',
 			format: 'cjs'
 		}
+	},
+	framework: {
+		script: 'babel packages/framework/src --out-dir packages/framework/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		rollup: {
+			entry: 'packages/framework/src/index.js',
+			dest: 'packages/framework/dist/framework.min.js',
+			format: 'cjs'
+		}
 	}
 };
 

@@ -30,7 +30,10 @@ export default class Dola {
 	 * @returns 
 	 */
 	doLifecycleWatingTasks() {
-		if (!this.lifecycleWaitingTasks.length) return;
+		if (!this.lifecycleWaitingTasks.length) {
+			this._taskChanged = false;
+			return;
+		}
 		if (this._taskChanged || !this._taskProcess) {
 			this._taskProcess = Promise.all(this.lifecycleWaitingTasks);
 			this._taskChanged = false;

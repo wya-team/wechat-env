@@ -10,11 +10,18 @@ export const patchAppLifecycle = (appOptions, dola) => {
 		let lifecycle = appOptions[it];
 		if (lifecycle) {
 			appOptions[it] = async function (...args) {
+				// 保证必要的等待任务执行完成，再执行业务逻辑
 				await dola.doLifecycleWatingTasks();
 				lifecycle.apply(this, args);
 			};
 		}
 	});
+	const onLaunch = appOptions.onLaunch;
+	appOptions.onLaunch = function (...args) {
+		// 注册 $dola
+		this.$dola = dola;
+		onLaunch && onLaunch.apply(this, args);
+	};
 };
 
 
@@ -28,6 +35,12 @@ export const patchPageLifecycle = (pageOptions, dola) => {
 			};
 		}
 	});
+	const onLoad = pageOptions.onLoad;
+	pageOptions.onLoad = function (...args) {
+		// 注册 $dola
+		this.$dola = dola;
+		onLoad && onLoad.apply(this, args);
+	};
 };
 
 export const patchComponentLifecycle = (compOptions, dola) => {
@@ -53,4 +66,10 @@ export const patchComponentLifecycle = (compOptions, dola) => {
 			}
 		});
 	}
+	const created = compOptions.created;
+	compOptions.created = function (...args) {
+		// 注册 $dola
+		this.$dola = dola;
+		created && created.apply(this, args);
+	};
 };

@@ -2,8 +2,14 @@ import Dola from './dola';
 import setupApp from './native/app';
 import setupPage from './native/page';
 import setupComponent from './native/component';
-import router from './plugins/router';
-import promisify from './plugins/promisify';
+import {
+	authorizeManager,
+	sourceManager,
+	updateManager,
+	queryParser,
+	promisify,
+	router
+} from './plugins/index';
 
 const dola = new Dola();
 
@@ -17,6 +23,10 @@ export default dola;
 
 export {
 	setup,
-	router,
-	promisify
+	authorizeManager,
+	sourceManager,
+	updateManager,
+	queryParser,
+	promisify,
+	router
 };

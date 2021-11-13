@@ -29,3 +29,11 @@ export const mergeOptions = (...optionsList) => {
 		return opts;
 	}, {});
 };
+
+/**
+ * console.log prettier
+ * @param {*} trigger 
+ */
+export const createLogger = trigger => {
+	return (...args) => console.log(`%c [${trigger}]`, 'color: #1890ff; font-weight: bold', ...args);
+};

@@ -9,7 +9,7 @@ dola.page({
 	},
 	onReady() {
 		try {
-			getApp().$modules.echarts = echarts;
+			dola.sourceManager.add('echarts', echarts)
 		
 			let { url } = this.options;
 			

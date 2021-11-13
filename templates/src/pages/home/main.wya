@@ -7,6 +7,7 @@
 			<text>echarts资源由子包(a-echarts)加载</text>
 			<text>echarts version: {{ echarts.version }}</text>
 			<mc-echarts 
+				echarts="{{ echarts }}"
 				elementId="chart" 
 				options="{{ chartOptions }}" 
 				style="width: 40vw; height: 40vw"
@@ -83,7 +84,7 @@ dola.page({
 
 	onLoad() {
 		this.setData({
-			echarts: getApp().require('echarts')
+			echarts: dola.sourceManager.require('echarts')
 		});
 
 		this.data.echarts && wx.setNavigationBarTitle({

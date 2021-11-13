@@ -1,13 +1,19 @@
 /**
  * dola插件注册相关
  */
-import dola, { router, promisify } from '@wya/mp-framework';
+import dola, {
+	authorizeManager,
+	sourceManager,
+	updateManager,
+	queryParser,
+	promisify,
+	router
+} from '@wya/mp-framework';
 import { ajax } from '@wya/mp-http';
-import { updateManager, queryParser, authorizeManager } from './extends/index';
 import { USER_KEY } from './constants/index';
 import API_ROOT from './stores/apis/root';
 
-export default () => {
+export default (app) => {
 	dola.use(promisify, wx);
 	// 注册小程序更新管理器
 	dola.use(updateManager);
@@ -34,6 +40,9 @@ export default () => {
 					reject(error);
 				}
 			});
+		},
+		onTokenChange: (tokenData) => {
+			app.userData = tokenData
 		}
 	})
 
@@ -55,12 +64,13 @@ export default () => {
 	dola.use(queryParser, {
 		scene2Query: async () => {
 			return new Promise(resolve => {
-				// 模拟接口返回解析结果，具体业务开发时需要替换
+				// 【BUSINESS】模拟接口返回解析结果，具体业务开发时需要替换
 				setTimeout(() => {
 					resolve({ a: 1, b: 2 });
 				}, 2000);
 			});
 		}
 	})
-	
+
+	dola.use(sourceManager);
 }

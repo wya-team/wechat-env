@@ -3,12 +3,10 @@ import storeMiddleware, { mapActions } from '@wya/mp-store';
 import { 
 	net, navigatorMiddleware, shareMiddleware, queryMiddleware
 } from './extends/index';
-import setupPlugin from './plugin.setup';
 
 const request = net.ajax;
 
 export default () => {
-	setupPlugin();
 	setup({
 		// 页面setup配置
 		page: {

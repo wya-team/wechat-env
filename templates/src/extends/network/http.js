@@ -73,10 +73,11 @@ export default createOptions => {
 			resolve({
 				...options,
 				param: {
+					...(createOptions.param ? await createOptions.param() : {}),
 					...options.param,
 				},
 				headers: {
-					...createOptions.headers(),
+					...(createOptions.headers ? createOptions.headers() : {}),
 					...options.headers
 				}
 			});
@@ -88,9 +89,9 @@ export default createOptions => {
 			// 登录信息失效，需要重新授权
 			case -1:
 				// 控制最大失败重发次数，防止进入无限循化
-				if (!options.maxFailCount || options.maxFailCount < MAX_FAIL_RETRY_COUNT) {
+				if (!options._failCount_ || options._failCount_ < MAX_FAIL_RETRY_COUNT) {
 					await authorize();
-					options.maxFailCount = (options.maxFailCount || 0) + 1;
+					options._failCount_ = (options._failCount_ || 0) + 1;
 					ajax(options);
 				}
 				break;

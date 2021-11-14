@@ -3,6 +3,7 @@
  */
 import dola, {
 	authorizeManager,
+	locationManager,
 	sourceManager,
 	updateManager,
 	queryParser,
@@ -10,7 +11,7 @@ import dola, {
 	router
 } from '@wya/mp-framework';
 import { ajax } from '@wya/mp-http';
-import { USER_KEY } from './constants/index';
+import { USER_KEY, LOCATION_KEY } from './constants/index';
 import API_ROOT from './stores/apis/root';
 
 export default (app) => {
@@ -70,6 +71,10 @@ export default (app) => {
 				}, 2000);
 			});
 		}
+	})
+
+	dola.use(locationManager, {
+		cacheKey: LOCATION_KEY
 	})
 
 	dola.use(sourceManager);

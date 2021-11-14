@@ -2,7 +2,7 @@ import '@wya/mp-polyfill';
 import { Store } from '@wya/mp-store';
 import dola from '@wya/mp-framework';
 import { storeConfig } from './stores/root';
-import { config } from './mc.config';
+import mcConfig from './mc.config';
 import setup from './setup';
 import setupPlugin from './plugin.setup';
 
@@ -10,16 +10,13 @@ import setupPlugin from './plugin.setup';
 setup();
 
 dola.app({
-	$mc: {},
+	$mc: { config: mcConfig },
 	userData: null,
 	onLaunch() {
 		// dola插件注册
 		setupPlugin(this);
 		// 注册小程序更新监听
 		dola.updateManager.watch();
-	},
-	async onShow() {
-		this.$mc.config = config;
 	},
 
 	async clearLoginAuth() {

@@ -1,4 +1,4 @@
-export const config = {
+export default {
 	Upload: {
 		URL_UPLOAD_IMG_POST: '',
 		URL_UPLOAD_FILE_POST: '',

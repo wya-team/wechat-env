@@ -4,6 +4,7 @@ import setupPage from './native/page';
 import setupComponent from './native/component';
 import {
 	authorizeManager,
+	locationManager,
 	sourceManager,
 	updateManager,
 	queryParser,
@@ -24,6 +25,7 @@ export default dola;
 export {
 	setup,
 	authorizeManager,
+	locationManager,
 	sourceManager,
 	updateManager,
 	queryParser,

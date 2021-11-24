@@ -38,5 +38,21 @@ export default () => {
 				storeMiddleware
 			]
 		},
+		provider() {
+			return {
+				config: {
+					configA: 'a',
+					configB: 'b',
+					configC: 'c',
+					configD: {
+						d: 'd'
+					},
+					configE: [
+						{ e: 'eee' },
+						['1234']
+					]
+				}
+			}
+		}
 	});
 };

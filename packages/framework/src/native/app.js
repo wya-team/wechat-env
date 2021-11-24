@@ -1,4 +1,4 @@
-import { patchAppLifecycle } from '../patch/index';
+import { patchAppLifecycle } from '../init/index';
 
 export default (setupOptions, dola) => {
 	return appOptions => {

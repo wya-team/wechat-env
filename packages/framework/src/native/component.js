@@ -1,5 +1,5 @@
 import { Utils } from '@wya/mp-utils';
-import { patchComponentLifecycle } from '../patch/index';
+import { patchComponentLifecycle } from '../init/index';
 import { mergeOptions } from '../shared';
 
 export default (setupOptions, dola) => {

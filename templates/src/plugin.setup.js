@@ -49,7 +49,7 @@ export default (app) => {
 
 	dola.use(router, wx, {
 		beforeEach: async (to, from) => {
-			console.log('beforeEach - to:', to)
+			// console.log('beforeEach - to:', to)
 			// if (to.path.includes('/a-sub/')) {
 			// 	return new Promise((resolve, reject) => {
 			// 		setTimeout(() => {

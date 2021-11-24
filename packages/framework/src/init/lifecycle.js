@@ -5,6 +5,8 @@ import {
 	COMPONENT_PAGE_LIFECYCLES
 } from '../shared';
 
+import { initInjector } from './injector';
+
 export const patchAppLifecycle = (appOptions, dola) => {
 	APP_LIFECYCLES.forEach(it => {
 		let lifecycle = appOptions[it];
@@ -28,10 +30,23 @@ export const patchAppLifecycle = (appOptions, dola) => {
 export const patchPageLifecycle = (pageOptions, dola) => {
 	PAGE_LIFECYCLES.forEach(it => {
 		let lifecycle = pageOptions[it];
-		if (lifecycle) {
+		const isOnload = it === 'onLoad';
+		const isOnUnload = it === 'onUnload';
+		
+		if (lifecycle || isOnUnload || isOnload) {
 			pageOptions[it] = async function (...args) {
 				await dola.doLifecycleWatingTasks();
-				lifecycle.apply(this, args);
+				lifecycle && lifecycle.apply(this, args);
+
+				if (isOnload) {
+					// 页面实例的所有watcher存放数组
+					this._watchers = [];
+					pageOptions.injector && initInjector(this, pageOptions.injector, dola.provider.get());
+				} else if (isOnUnload) {
+					this._watchers.forEach(it => {
+						it.teardown();
+					});
+				}
 			};
 		}
 	});
@@ -45,13 +60,27 @@ export const patchPageLifecycle = (pageOptions, dola) => {
 
 export const patchComponentLifecycle = (compOptions, dola) => {
 	const { lifetimes = {}, pageLifetimes } = compOptions;
+	if (!compOptions.lifetimes) {
+		compOptions.lifetimes = {};
+	}
 	
 	COMPONENT_LIFECYCLES.forEach(it => {
 		let lifecycle = lifetimes[it] || compOptions[it];
-		if (lifecycle) {
+		const isAttached = it === 'attached';
+		const isDetached = it === 'detached';
+		if (lifecycle || isAttached || isDetached) {
 			compOptions.lifetimes[it] = async function (...args) {
 				await dola.doLifecycleWatingTasks();
-				lifecycle.apply(this, args);
+				lifecycle && lifecycle.apply(this, args);
+
+				if (isAttached) {
+					this._watchers = [];
+					compOptions.injector && initInjector(this, compOptions.injector, dola.provider.get());
+				} else if (isDetached) {
+					this._watchers.forEach(it => {
+						it.teardown();
+					});
+				}
 			};
 		}
 	});

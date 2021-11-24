@@ -1,5 +1,5 @@
 import { Utils } from '@wya/mp-utils';
-import { patchPageLifecycle } from '../patch/index';
+import { patchPageLifecycle } from '../init/index';
 import { mergeOptions } from '../shared';
 
 export default (setupOptions, dola) => {

@@ -1,4 +1,4 @@
-import Dola, { Provider } from './dola/index';
+import Mol, { Provider } from './mol/index';
 import setupApp from './native/app';
 import setupPage from './native/page';
 import setupComponent from './native/component';
@@ -12,16 +12,16 @@ import {
 	router
 } from './plugins/index';
 
-const dola = new Dola();
+const mol = new Mol();
 
 const setup = setupOptions => {
-	dola.provider = new Provider(setupOptions.provider());
-	dola.app = setupApp(setupOptions.app || {}, dola);
-	dola.page = setupPage(setupOptions.page || {}, dola);
-	dola.component = setupComponent(setupOptions.component || {}, dola);
+	mol.provider = new Provider(setupOptions.provider());
+	mol.app = setupApp(setupOptions.app || {}, mol);
+	mol.page = setupPage(setupOptions.page || {}, mol);
+	mol.component = setupComponent(setupOptions.component || {}, mol);
 };
 
-export default dola;
+export default mol;
 
 export {
 	setup,

@@ -6,8 +6,8 @@ import { URL } from '@wya/mp-utils';
  * 并且建议该子包仅做该资源分包用，不含其它业务，避免因加载该资源而必须加载其他可能目前不需要用到的代码资源
  * 设计方式：调用require获取资源 -> redirect进入子包指定页面 -> 子包调用add方法完成资源挂载 -> 重定向到调用require的页面
  * 
- * 获取资源如：dola.sourceManager.require('echarts')
- * 挂载资源如：dola.sourceManager.add('echarts', echarts)
+ * 获取资源如：mol.sourceManager.require('echarts')
+ * 挂载资源如：mol.sourceManager.add('echarts', echarts)
  */
 class SourceManager {
 	constructor() {

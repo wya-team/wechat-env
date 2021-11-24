@@ -32,10 +32,10 @@
 
 <script>
 import { Utils } from '@wya/mp-utils';
-import dola from '@wya/mp-framework'
+import mol from '@wya/mp-framework'
 
 const app = getApp();
-dola.page({
+mol.page({
 	mapState: (state) => {
 		return {
 			user: state.homeMain.user
@@ -84,7 +84,7 @@ dola.page({
 
 	onLoad() {
 		this.setData({
-			echarts: dola.sourceManager.require('echarts')
+			echarts: mol.sourceManager.require('echarts')
 		});
 
 		this.data.echarts && wx.setNavigationBarTitle({

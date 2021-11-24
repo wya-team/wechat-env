@@ -2,7 +2,7 @@ import { Utils } from '@wya/mp-utils';
 import { patchComponentLifecycle } from '../init/index';
 import { mergeOptions } from '../shared';
 
-export default (setupOptions, dola) => {
+export default (setupOptions, mol) => {
 	const { middlewares = [], ...otherGlobalOptions } = setupOptions;
 	/**
 	 * 注意：
@@ -34,7 +34,7 @@ export default (setupOptions, dola) => {
 			compOptions
 		);
 		// 最先执行patch，保证在到达业务层的前一步会做可能需要的wait
-		patchComponentLifecycle(options, dola);
+		patchComponentLifecycle(options, mol);
 		return component(options);
 	};
 };

@@ -19,7 +19,7 @@ const parseUrl = url => {
 	return result;
 };
 
-export default (dola, wxCtx, options = {}) => {
+export default (mol, wxCtx, options = {}) => {
 	// 对路由跳转方法进行代理
 	const proxy = navigateFn => {
 		return async routerOpts => {

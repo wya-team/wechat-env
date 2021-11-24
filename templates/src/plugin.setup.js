@@ -1,7 +1,7 @@
 /**
- * dola插件注册相关
+ * mol插件注册相关
  */
-import dola, {
+import mol, {
 	authorizeManager,
 	locationManager,
 	sourceManager,
@@ -15,11 +15,11 @@ import { USER_KEY, LOCATION_KEY } from './constants/index';
 import API_ROOT from './stores/apis/root';
 
 export default (app) => {
-	dola.use(promisify, wx);
+	mol.use(promisify, wx);
 	// 注册小程序更新管理器
-	dola.use(updateManager);
+	mol.use(updateManager);
 
-	dola.use(authorizeManager, {
+	mol.use(authorizeManager, {
 		cacheKey: USER_KEY,
 		code2Token: code => {
 			return new Promise(async (resolve, reject) => {
@@ -47,7 +47,7 @@ export default (app) => {
 		}
 	})
 
-	dola.use(router, wx, {
+	mol.use(router, wx, {
 		beforeEach: async (to, from) => {
 			// console.log('beforeEach - to:', to)
 			// if (to.path.includes('/a-sub/')) {
@@ -62,7 +62,7 @@ export default (app) => {
 			// }
 		}
 	})
-	dola.use(queryParser, {
+	mol.use(queryParser, {
 		scene2Query: async () => {
 			return new Promise(resolve => {
 				// 【BUSINESS】模拟接口返回解析结果，具体业务开发时需要替换
@@ -73,9 +73,9 @@ export default (app) => {
 		}
 	})
 
-	dola.use(locationManager, {
+	mol.use(locationManager, {
 		cacheKey: LOCATION_KEY
 	})
 
-	dola.use(sourceManager);
+	mol.use(sourceManager);
 }

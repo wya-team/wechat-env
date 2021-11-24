@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import dola from '@wya/mp-framework'
+import mol from '@wya/mp-framework'
 
 const MAP = {
 	close: {
@@ -19,7 +19,7 @@ const MAP = {
 		image: ''
 	}
 };
-dola.page({
+mol.page({
 	data: {
 		// 自定义
 		message: '',

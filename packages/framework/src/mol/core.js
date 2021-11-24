@@ -1,6 +1,6 @@
-import { isFunc } from './shared';
+import { isFunc } from '../shared';
 
-export default class Dola {
+export default class Mol {
 	constructor() {
 		// 存放页面、组件的生命周期中需要等待的异步任务，建议仅将必要的业务层前置处理逻辑放进来，避免不必要的延后业务逻辑执行
 		this.lifecycleWaitingTasks = [];
@@ -16,7 +16,7 @@ export default class Dola {
 		this.lifecycleWaitingTasks.push(task);
 		this._taskChanged = true;
 		// task要自行处理reject时的逻辑，保证一定会resolve，
-		// 因为如果reject到这里，dola也会将该task移除，不然这个失败的任务会始终存在，
+		// 因为如果reject到这里，mol也会将该task移除，不然这个失败的任务会始终存在，
 		// 导致后面调用的doLifecycleWatingTasks都会返回reject结果
 		task.finally(() => {
 			const index = this.lifecycleWaitingTasks.findIndex(it => it === task);

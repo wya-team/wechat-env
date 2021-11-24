@@ -1,5 +1,5 @@
 import createHttp from './http';
-import dola from '@wya/mp-framework'
+import mol from '@wya/mp-framework'
 
 let app;
 const _getApp = () => {
@@ -15,7 +15,7 @@ const net = createHttp({
 		return !!(userData && userData.token);
 	},
 	authorize: () => {
-		return dola.authorizeManager.codeLogin();
+		return mol.authorizeManager.codeLogin();
 	},
 	// 请求全局headers
 	headers: () => {
@@ -28,7 +28,7 @@ const net = createHttp({
 		return new  Promise(async resolve => {
 			// reqOptions.location为'accurate'时使用准确定位
 			const location = reqOptions.location
-				? await dola.locationManager.get({ accurate: reqOptions.location === 'accurate' }) || {}
+				? await mol.locationManager.get({ accurate: reqOptions.location === 'accurate' }) || {}
 				: {};
 			// 【BUSINESS】其它全局参数可以在此处添加
 			resolve({ ...location })

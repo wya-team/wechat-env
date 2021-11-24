@@ -3,9 +3,9 @@
 </template>
 
 <script>
-import dola from '@wya/mp-framework'
+import mol from '@wya/mp-framework'
 
-dola.component({
+mol.component({
 
 });
 </script>

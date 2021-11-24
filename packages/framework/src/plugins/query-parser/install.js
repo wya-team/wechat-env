@@ -11,8 +11,8 @@ class QueryParser {
 	// 请求实例池
 	_instancePool = {};
 
-	constructor(dola, options) {
-		this._dolaCtx = dola;
+	constructor(mol, options) {
+		this._molCtx = mol;
 		this._sceneKey = options.sceneKey || 'scene';
 		this._scene2Query = options.scene2Query;
 	}
@@ -60,13 +60,13 @@ class QueryParser {
 			}
 			resolve(query);
 		});
-		this._dolaCtx.addLifecycleWaitingTask(parseTask);
+		this._molCtx.addLifecycleWaitingTask(parseTask);
 		return parseTask;
 	}
 }
 
-const install = (dola, opts) => {
-	dola.queryParser = new QueryParser(dola, opts);
+const install = (mol, opts) => {
+	mol.queryParser = new QueryParser(mol, opts);
 };
 
 export default install;

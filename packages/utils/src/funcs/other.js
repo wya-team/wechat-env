@@ -74,3 +74,11 @@ export const canIUse = (api, guide = true) => {
 	!ok && guide && wxVersionUpgradeGuide();
 	return ok;
 };
+
+/**
+ * console.log prettier
+ * @param {*} trigger 
+ */
+export const createLogger = (trigger, color = '#1890ff') => {
+	return (...args) => console.log(`%c [${trigger}]`, `color: ${color}; font-weight: bold`, ...args);
+};

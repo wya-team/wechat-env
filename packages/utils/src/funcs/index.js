@@ -12,7 +12,8 @@ import {
 	compose, 
 	debounce,
 	canIUse,
-	wxVersionUpgradeGuide
+	wxVersionUpgradeGuide,
+	createLogger
 } from './other';
 
 export const Utils = {
@@ -29,6 +30,7 @@ export const Utils = {
 	debounce,
 	canIUse,
 	wxVersionUpgradeGuide,
+	createLogger,
 	/**
 	 * 扩展或重写
 	 */

@@ -1,0 +1,28 @@
+{
+  "name": "@wya/mol-plugin-source",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "wya-team",
+  "homepage": "https://github.com/wya-team/wechat-env#readme",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wya-team/wechat-env.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/wya-team/wechat-env/issues"
+  },
+  "dependencies": {
+    "@wya/mp-utils": "^1.3.1"
+  }
+}

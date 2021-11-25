@@ -3,15 +3,6 @@ import setupApp from './native/app';
 import setupPage from './native/page';
 import setupComponent from './native/component';
 import { initGlobalApi } from './global-apis/index';
-import {
-	authorizeManager,
-	locationManager,
-	sourceManager,
-	updateManager,
-	queryParser,
-	promisify,
-	router
-} from './plugins/index';
 
 initGlobalApi(Mol);
 
@@ -25,12 +16,5 @@ const setup = setupOptions => {
 export default Mol;
 
 export {
-	setup,
-	authorizeManager,
-	locationManager,
-	sourceManager,
-	updateManager,
-	queryParser,
-	promisify,
-	router
+	setup
 };

@@ -45,14 +45,6 @@ export const mergeOptions = (...optionsList) => {
 	}, {});
 };
 
-/**
- * console.log prettier
- * @param {*} trigger 
- */
-export const createLogger = trigger => {
-	return (...args) => console.log(`%c [${trigger}]`, 'color: #1890ff; font-weight: bold', ...args);
-};
-
 export const remove = (arr, item) => {
 	if (arr.length) {
 		const index = arr.indexOf(item);

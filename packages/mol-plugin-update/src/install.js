@@ -1,7 +1,6 @@
 import { Utils } from '@wya/mp-utils';
-import { createLogger } from '../../shared/index';
 
-const log = createLogger('UpdateManager');
+const log = Utils.createLogger('UpdateManager');
 
 /**
  * 应用更新管理

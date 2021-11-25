@@ -1,18 +1,17 @@
 /**
  * Mol插件注册相关
  */
-import Mol, {
-	authorizeManager,
-	locationManager,
-	sourceManager,
-	updateManager,
-	queryParser,
-	promisify,
-	router
-} from '@wya/mp-framework';
+import Mol from '@wya/mp-framework';
 import { ajax } from '@wya/mp-http';
 import { USER_KEY, LOCATION_KEY } from './constants/index';
 import API_ROOT from './stores/apis/root';
+import authorizeManager from '@wya/mol-plugin-authorize'
+import locationManager from '@wya/mol-plugin-location'
+import sourceManager from '@wya/mol-plugin-source'
+import updateManager from '@wya/mol-plugin-update'
+import queryParser from '@wya/mol-plugin-query'
+import promisify from '@wya/mol-plugin-promisify'
+import router from '@wya/mol-plugin-router'
 
 export default (app) => {
 	Mol.use(promisify, wx);

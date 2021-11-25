@@ -59,6 +59,68 @@ const builds = {
 			dest: 'packages/framework/dist/framework.min.js',
 			format: 'cjs'
 		}
+	},
+	'mol-plugin-authorize': {
+		/* eslint-disable max-len */
+		script: 'babel packages/mol-plugin-authorize/src --out-dir packages/mol-plugin-authorize/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		/* eslint-enable max-len */
+		rollup: {
+			entry: 'packages/mol-plugin-authorize/src/index.js',
+			dest: 'packages/mol-plugin-authorize/dist/mol-plugin-authorize.min.js',
+			format: 'cjs'
+		}
+	},
+	'mol-plugin-location': {
+		/* eslint-disable max-len */
+		script: 'babel packages/mol-plugin-location/src --out-dir packages/mol-plugin-location/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		/* eslint-enable max-len */
+		rollup: {
+			entry: 'packages/mol-plugin-location/src/index.js',
+			dest: 'packages/mol-plugin-location/dist/mol-plugin-location.min.js',
+			format: 'cjs'
+		}
+	},
+	'mol-plugin-promisify': {
+		/* eslint-disable max-len */
+		script: 'babel packages/mol-plugin-promisify/src --out-dir packages/mol-plugin-promisify/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		/* eslint-enable max-len */
+		rollup: {
+			entry: 'packages/mol-plugin-promisify/src/index.js',
+			dest: 'packages/mol-plugin-promisify/dist/mol-plugin-promisify.min.js',
+			format: 'cjs'
+		}
+	},
+	'mol-plugin-query': {
+		script: 'babel packages/mol-plugin-query/src --out-dir packages/mol-plugin-query/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		rollup: {
+			entry: 'packages/mol-plugin-query/src/index.js',
+			dest: 'packages/mol-plugin-query/dist/mol-plugin-query.min.js',
+			format: 'cjs'
+		}
+	},
+	'mol-plugin-router': {
+		script: 'babel packages/mol-plugin-router/src --out-dir packages/mol-plugin-router/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		rollup: {
+			entry: 'packages/mol-plugin-router/src/index.js',
+			dest: 'packages/mol-plugin-router/dist/mol-plugin-router.min.js',
+			format: 'cjs'
+		}
+	},
+	'mol-plugin-source': {
+		script: 'babel packages/mol-plugin-source/src --out-dir packages/mol-plugin-source/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		rollup: {
+			entry: 'packages/mol-plugin-source/src/index.js',
+			dest: 'packages/mol-plugin-source/dist/mol-plugin-source.min.js',
+			format: 'cjs'
+		}
+	},
+	'mol-plugin-update': {
+		script: 'babel packages/mol-plugin-update/src --out-dir packages/mol-plugin-update/dist --copy-files --ignore **.test.js,**.md,examples/**',
+		rollup: {
+			entry: 'packages/mol-plugin-update/src/index.js',
+			dest: 'packages/mol-plugin-update/dist/mol-plugin-update.min.js',
+			format: 'cjs'
+		}
 	}
 };
 

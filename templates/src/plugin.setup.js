@@ -1,7 +1,7 @@
 /**
  * Mol插件注册相关
  */
-import Mol from '@wya/mp-framework';
+import Mol from '@wya/mol';
 import { ajax } from '@wya/mp-http';
 import { USER_KEY, LOCATION_KEY } from './constants/index';
 import API_ROOT from './stores/apis/root';

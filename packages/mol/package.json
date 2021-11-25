@@ -1,7 +1,7 @@
 {
-  "name": "@wya/mp-framework",
+  "name": "@wya/mol",
   "version": "1.0.0",
-  "description": "> TODO: description",
+  "description": "小程序开发框架",
   "author": "wya-team",
   "homepage": "https://github.com/wya-team/wechat-env#readme",
   "license": "MIT",

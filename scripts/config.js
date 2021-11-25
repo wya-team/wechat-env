@@ -52,11 +52,11 @@ const builds = {
 			format: 'cjs'
 		}
 	},
-	framework: {
-		script: 'babel packages/framework/src --out-dir packages/framework/dist --copy-files --ignore **.test.js,**.md,examples/**',
+	mol: {
+		script: 'babel packages/mol/src --out-dir packages/mol/dist --copy-files --ignore **.test.js,**.md,examples/**',
 		rollup: {
-			entry: 'packages/framework/src/index.js',
-			dest: 'packages/framework/dist/framework.min.js',
+			entry: 'packages/mol/src/index.js',
+			dest: 'packages/mol/dist/mol.min.js',
 			format: 'cjs'
 		}
 	},

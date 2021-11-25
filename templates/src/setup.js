@@ -1,4 +1,4 @@
-import { setup } from '@wya/mp-framework';
+import { setup } from '@wya/mol';
 import storeMiddleware, { mapActions } from '@wya/mp-store';
 import { 
 	net, navigatorMiddleware, shareMiddleware, queryMiddleware

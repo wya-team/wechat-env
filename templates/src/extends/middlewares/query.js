@@ -1,7 +1,7 @@
 /**
  * 用于给页面注入$query
  */
-import Mol from '@wya/mp-framework';
+import Mol from '@wya/mol';
 
  export default (next) => userOptions => {
 	const { onLoad, ...rest } = userOptions;

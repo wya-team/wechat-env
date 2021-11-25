@@ -1,6 +1,6 @@
 import '@wya/mp-polyfill';
 import { Store } from '@wya/mp-store';
-import Mol from '@wya/mp-framework';
+import Mol from '@wya/mol';
 import { storeConfig } from './stores/root';
 import mcConfig from './mc.config';
 import setup from './setup';

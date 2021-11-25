@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Mol from '@wya/mp-framework'
+import Mol from '@wya/mol'
 
 Mol.component({
 

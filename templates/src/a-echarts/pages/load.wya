@@ -1,7 +1,7 @@
 <template></template>
 <script>
 import * as echarts from 'echarts/dist/echarts.min';
-import Mol from '@wya/mp-framework'
+import Mol from '@wya/mol'
 
 Mol.page({
 	onLoad(options) {

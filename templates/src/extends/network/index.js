@@ -1,5 +1,5 @@
 import createHttp from './http';
-import Mol from '@wya/mp-framework'
+import Mol from '@wya/mol'
 
 let app;
 const _getApp = () => {

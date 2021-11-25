@@ -3,9 +3,9 @@
 </template>
 
 <script>
-import MOl from '@wya/mp-framework'
+import Mol from '@wya/mp-framework'
 
-MOl.component({
+Mol.component({
 
 });
 </script>

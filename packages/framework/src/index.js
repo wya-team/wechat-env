@@ -1,7 +1,8 @@
-import Mol, { Provider } from './mol/index';
+import Mol from './class/mol';
 import setupApp from './native/app';
 import setupPage from './native/page';
 import setupComponent from './native/component';
+import { initGlobalApi } from './global-apis/index';
 import {
 	authorizeManager,
 	locationManager,
@@ -12,16 +13,16 @@ import {
 	router
 } from './plugins/index';
 
-const mol = new Mol();
+initGlobalApi(Mol);
 
 const setup = setupOptions => {
-	mol.provider = new Provider(setupOptions.provider());
-	mol.app = setupApp(setupOptions.app || {}, mol);
-	mol.page = setupPage(setupOptions.page || {}, mol);
-	mol.component = setupComponent(setupOptions.component || {}, mol);
+	setupOptions.provider && Mol.provider.set(setupOptions.provider());
+	Mol.app = setupApp(setupOptions.app || {});
+	Mol.page = setupPage(setupOptions.page || {});
+	Mol.component = setupComponent(setupOptions.component || {});
 };
 
-export default mol;
+export default Mol;
 
 export {
 	setup,

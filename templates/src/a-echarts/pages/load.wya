@@ -1,15 +1,15 @@
 <template></template>
 <script>
 import * as echarts from 'echarts/dist/echarts.min';
-import mol from '@wya/mp-framework'
+import Mol from '@wya/mp-framework'
 
-mol.page({
+Mol.page({
 	onLoad(options) {
 		this.options = options;
 	},
 	onReady() {
 		try {
-			mol.sourceManager.add('echarts', echarts)
+			Mol.sourceManager.add('echarts', echarts)
 		
 			let { url } = this.options;
 			

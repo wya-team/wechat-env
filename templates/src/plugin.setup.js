@@ -1,7 +1,7 @@
 /**
- * mol插件注册相关
+ * Mol插件注册相关
  */
-import mol, {
+import Mol, {
 	authorizeManager,
 	locationManager,
 	sourceManager,
@@ -15,11 +15,11 @@ import { USER_KEY, LOCATION_KEY } from './constants/index';
 import API_ROOT from './stores/apis/root';
 
 export default (app) => {
-	mol.use(promisify, wx);
+	Mol.use(promisify, wx);
 	// 注册小程序更新管理器
-	mol.use(updateManager);
+	Mol.use(updateManager);
 
-	mol.use(authorizeManager, {
+	Mol.use(authorizeManager, {
 		cacheKey: USER_KEY,
 		code2Token: code => {
 			return new Promise(async (resolve, reject) => {
@@ -47,7 +47,7 @@ export default (app) => {
 		}
 	})
 
-	mol.use(router, wx, {
+	Mol.use(router, wx, {
 		beforeEach: async (to, from) => {
 			// console.log('beforeEach - to:', to)
 			// if (to.path.includes('/a-sub/')) {
@@ -62,7 +62,7 @@ export default (app) => {
 			// }
 		}
 	})
-	mol.use(queryParser, {
+	Mol.use(queryParser, {
 		scene2Query: async () => {
 			return new Promise(resolve => {
 				// 【BUSINESS】模拟接口返回解析结果，具体业务开发时需要替换
@@ -73,9 +73,9 @@ export default (app) => {
 		}
 	})
 
-	mol.use(locationManager, {
+	Mol.use(locationManager, {
 		cacheKey: LOCATION_KEY
 	})
 
-	mol.use(sourceManager);
+	Mol.use(sourceManager);
 }

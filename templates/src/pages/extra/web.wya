@@ -4,10 +4,10 @@
 
 <script>
 import { URL } from '@wya/mp-utils';
-import mol from '@wya/mp-framework'
+import Mol from '@wya/mp-framework'
 
 const app = getApp();
-mol.page({
+Mol.page({
 	data: {
 		url: ''
 	},

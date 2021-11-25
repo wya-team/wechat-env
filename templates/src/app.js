@@ -1,6 +1,6 @@
 import '@wya/mp-polyfill';
 import { Store } from '@wya/mp-store';
-import mol from '@wya/mp-framework';
+import Mol from '@wya/mp-framework';
 import { storeConfig } from './stores/root';
 import mcConfig from './mc.config';
 import setup from './setup';
@@ -9,18 +9,18 @@ import setupPlugin from './plugin.setup';
 // 对整个应用框架进行初始化配置
 setup();
 
-mol.app({
+Mol.app({
 	$mc: { config: mcConfig },
 	userData: null,
 	onLaunch() {
-		// mol插件注册
+		// Mol插件注册
 		setupPlugin(this);
 		// 注册小程序更新监听
-		mol.updateManager.watch();
+		Mol.updateManager.watch();
 	},
 
 	async clearLoginAuth() {
-		mol.authorizeManager.clearAuthorize();
+		Mol.authorizeManager.clearAuthorize();
 		let page = getCurrentPages().pop();
 		if (!page || page.route === 'pages/auth/index') {
 			wx.reLaunch({ url: '`/pages/home/index' });

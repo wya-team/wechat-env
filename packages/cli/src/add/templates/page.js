@@ -12,13 +12,15 @@ exports.page = (opts = {}) => {
 	contents += `</template>\n\n`;
 
 	contents += `<script>\n`;
-	if (packageName === 'pages') { 
-		contents += `import Page from '../../common/page';\n\n`;
-	} else {
-		contents += `import { Page } from '../../index';\n\n`;
-	}
+	// if (packageName === 'pages') { 
+	// 	contents += `import Page from '../../common/page';\n\n`;
+	// } else {
+	// 	contents += `import { Page } from '../../index';\n\n`;
+	// }
+
+	contents += `import Mol from '@wya/mol';\n\n`;
 	
-	contents += `Page({\n`;
+	contents += `Mol.page({\n`;
 	contents += `	mapState(state) {\n`;
 	contents += `		return {\n`;
 	contents += `			...state.${storeKey}\n`;

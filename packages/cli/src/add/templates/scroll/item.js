@@ -9,13 +9,15 @@ exports.item = (content, opts = {}) => {
 	contents += `</template>\n\n`;
 	contents += `<script>\n`;
 	
-	if (packageName === 'pages') { 
-		contents += `import Component from '../../../common/component';\n\n`;
-	} else {
-		contents += `import { Component } from '../../../index';\n\n`;
-	}
+	// if (packageName === 'pages') { 
+	// 	contents += `import Component from '../../../common/component';\n\n`;
+	// } else {
+	// 	contents += `import { Component } from '../../../index';\n\n`;
+	// }
+
+	contents += `import Mol from '@wya/mol';\n\n`;
 	
-	contents += `Component({\n`;
+	contents += `Mol.component({\n`;
 	contents += `	properties: {\n`;
 	contents += `		it: {\n`;
 	contents += `			type: Object,\n`;

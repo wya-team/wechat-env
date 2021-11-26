@@ -60,14 +60,19 @@ exports.page = (content, opts = {}) => {
 		contents += `\n`;
 		contents += `<script>\n`;
 
-		if (packageName === 'pages') { 
-			contents += `import Page from '../../common/page';\n\n`;
-		} else {
-			contents += `import { Page } from '../../index';\n\n`;
+		// if (packageName === 'pages') { 
+		// 	contents += `import Page from '../../common/page';\n\n`;
+		// } else {
+		// 	contents += `import { Page } from '../../index';\n\n`;
+		// }
+
+		contents += `import Mol from '@wya/mol';\n`;
+		if (packageName !== 'pages') { 
+			contents += `import '../../index';\n\n`;
 		}
 
 		contents += `\n`;
-		contents += `Page({\n`;
+		contents += `Mol.page({\n`;
 		contents += `	navigator: '${mutationType}',\n`;
 		contents += `	mapState(state) {\n`;
 		contents += `		const { ${storeKey} } = state;\n`;

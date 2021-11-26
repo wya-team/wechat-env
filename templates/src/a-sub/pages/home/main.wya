@@ -23,7 +23,7 @@
 <script>
 import { Utils } from '@wya/mp-utils';
 import '../../index.js';
-import Mol from '@wya/mol'
+import Mol from '@wya/mol';
 
 const app = getApp();
 

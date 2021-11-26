@@ -3,15 +3,15 @@
  */
 import Mol from '@wya/mol';
 import { ajax } from '@wya/mp-http';
-import { USER_KEY, LOCATION_KEY } from './constants/index';
+import authorizeManager from '@wya/mol-plugin-authorize';
+import locationManager from '@wya/mol-plugin-location';
+import sourceManager from '@wya/mol-plugin-source';
+import updateManager from '@wya/mol-plugin-update';
+import queryParser from '@wya/mol-plugin-query';
+import promisify from '@wya/mol-plugin-promisify';
+import router from '@wya/mol-plugin-router';
 import API_ROOT from './stores/apis/root';
-import authorizeManager from '@wya/mol-plugin-authorize'
-import locationManager from '@wya/mol-plugin-location'
-import sourceManager from '@wya/mol-plugin-source'
-import updateManager from '@wya/mol-plugin-update'
-import queryParser from '@wya/mol-plugin-query'
-import promisify from '@wya/mol-plugin-promisify'
-import router from '@wya/mol-plugin-router'
+import { USER_KEY, LOCATION_KEY } from './constants/index';
 
 export default (app) => {
 	Mol.use(promisify, wx);
@@ -42,9 +42,9 @@ export default (app) => {
 			});
 		},
 		onTokenChange: (tokenData) => {
-			app.userData = tokenData
+			app.userData = tokenData;
 		}
-	})
+	});
 
 	Mol.use(router, wx, {
 		beforeEach: async (to, from) => {
@@ -60,7 +60,7 @@ export default (app) => {
 			// 	});
 			// }
 		}
-	})
+	});
 	Mol.use(queryParser, {
 		scene2Query: async () => {
 			return new Promise(resolve => {
@@ -70,11 +70,11 @@ export default (app) => {
 				}, 2000);
 			});
 		}
-	})
+	});
 
 	Mol.use(locationManager, {
 		cacheKey: LOCATION_KEY
-	})
+	});
 
 	Mol.use(sourceManager);
-}
+};

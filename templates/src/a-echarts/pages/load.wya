@@ -1,7 +1,7 @@
 <template></template>
 <script>
 import * as echarts from 'echarts/dist/echarts.min';
-import Mol from '@wya/mol'
+import Mol from '@wya/mol';
 
 Mol.page({
 	onLoad(options) {
@@ -9,7 +9,7 @@ Mol.page({
 	},
 	onReady() {
 		try {
-			Mol.sourceManager.add('echarts', echarts)
+			Mol.sourceManager.add('echarts', echarts);
 		
 			let { url } = this.options;
 			

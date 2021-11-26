@@ -32,7 +32,7 @@
 
 <script>
 import { Utils } from '@wya/mp-utils';
-import Mol from '@wya/mol'
+import Mol from '@wya/mol';
 
 const app = getApp();
 Mol.page({
@@ -93,8 +93,8 @@ Mol.page({
 	},
 
 	injector(data) {
-		this.config = {...data.config}
-		console.log(this.config.configD.d, '----from injector')
+		this.config = { ...data.config };
+		console.log(this.config.configD.d, '----from injector');
 	},
 
 	// 事件处理函数

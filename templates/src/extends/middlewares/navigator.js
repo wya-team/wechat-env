@@ -13,6 +13,6 @@ export default (next) => userOptions => {
 			}
 			: hook;
 	};
-	Object.assign(rest, { onUnload: proxy(onUnload) })
+	Object.assign(rest, { onUnload: proxy(onUnload) });
 	return next(rest);
 };

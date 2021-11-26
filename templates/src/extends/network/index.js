@@ -1,5 +1,5 @@
+import Mol from '@wya/mol';
 import createHttp from './http';
-import Mol from '@wya/mol'
 
 let app;
 const _getApp = () => {
@@ -25,14 +25,14 @@ const net = createHttp({
 	},
 	// 请求全局参数
 	async param(reqOptions) {
-		return new  Promise(async resolve => {
+		return new Promise(async resolve => {
 			// reqOptions.location为'accurate'时使用准确定位
 			const location = reqOptions.location
 				? await Mol.locationManager.get({ accurate: reqOptions.location === 'accurate' }) || {}
 				: {};
 			// 【BUSINESS】其它全局参数可以在此处添加
-			resolve({ ...location })
-		})
+			resolve({ ...location });
+		});
 	}
 });
 

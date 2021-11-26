@@ -8,6 +8,8 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "npm run clean:debug && cd templates/ && yarn dev",
+    "dev:add": "cd templates/ && yarn link @wya/mp-cli && yarn run add",
     "build:packages": "cross-env NODE_ENV=production node --max_old_space_size=8192 ./scripts/build.js",
     "bootstrap": "lerna clean --yes && lerna bootstrap --loglevel silly && cd templates/ && npm install",
     "pub": "npm run build:packages && lerna publish",
@@ -19,10 +21,8 @@
     "test": "node scripts/unit-test.js",
     "link": "lerna exec --scope @wya/mp-cli -- yarn link",
     "unlink": "lerna exec --scope @wya/mp-cli -- yarn unlink",
-    "add": "yarn workspace @wya/mp-template run add",
     "create": "yarn workspace @wya/mp-template run create",
     "clean:debug": "rm -rf templates/node_modules/.bin/wya-mp",
-    "dev": "npm run clean:debug && cd templates/ && yarn dev",
     "build": "npm run clean:debug && yarn workspace @wya/mp-template run build"
   },
   "scripts-info": {

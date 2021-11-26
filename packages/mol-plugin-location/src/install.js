@@ -141,8 +141,8 @@ class LocationManager {
 	}
 }
 
-const install = (context, options) => {
-	context.locationManager = new LocationManager(options);
+const install = (Mol, options) => {
+	Mol.locationManager = new LocationManager(options);
 };
 
 export default install;

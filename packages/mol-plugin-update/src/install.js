@@ -32,7 +32,8 @@ class UpdateManager {
 	}
 }
 
-const install = (context) => {
-	context.updateManager = UpdateManager;
+const install = (Mol) => {
+	Mol.updateManager = UpdateManager;
 };
+
 export default install;

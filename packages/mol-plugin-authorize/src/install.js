@@ -2,7 +2,7 @@ import { Storage } from '@wya/mp-utils';
 import { HttpHelper } from '@wya/mp-http';
 
 class AuthorizeManager {
-	constructor(context, options) {
+	constructor(options) {
 		this.tokenData = null;
 		this.cacheKey = options.cacheKey;
 		this.code2Token = options.code2Token;
@@ -68,8 +68,8 @@ class AuthorizeManager {
 	}
 }
 
-const install = (context, opts = {}) => {
-	context.authorizeManager = new AuthorizeManager(context, opts);
+const install = (Mol, opts = {}) => {
+	Mol.authorizeManager = new AuthorizeManager(opts);
 };
 
 export default install;

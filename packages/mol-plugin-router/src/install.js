@@ -19,7 +19,7 @@ const parseUrl = url => {
 	return result;
 };
 
-export default (mol, wxCtx, options = {}) => {
+const install = (Mol, wxCtx, options = {}) => {
 	// 对路由跳转方法进行代理
 	const proxy = navigateFn => {
 		return async routerOpts => {
@@ -100,3 +100,5 @@ export default (mol, wxCtx, options = {}) => {
 		value: proxy(originalNavigateTo)
 	});
 };
+
+export default install;

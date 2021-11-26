@@ -36,7 +36,7 @@ const promisify = (context, apis = []) => {
 	});
 };
 
-export default (mol, ctx, extraApis = []) => {
+export default (Mol, ctx, extraApis = []) => {
 	promisify(ctx, [...PROMISIFY_APIS, ...extraApis]);
-	mol.promisify = promisify;
+	Mol.promisify = promisify;
 };

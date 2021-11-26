@@ -11,8 +11,8 @@ class QueryParser {
 	// 请求实例池
 	_instancePool = {};
 
-	constructor(mol, options) {
-		this._molCtx = mol;
+	constructor(Mol, options) {
+		this._molCtx = Mol;
 		this._sceneKey = options.sceneKey || 'scene';
 		this._scene2Query = options.scene2Query;
 	}
@@ -65,8 +65,8 @@ class QueryParser {
 	}
 }
 
-const install = (mol, opts) => {
-	mol.queryParser = new QueryParser(mol, opts);
+const install = (Mol, opts) => {
+	Mol.queryParser = new QueryParser(Mol, opts);
 };
 
 export default install;

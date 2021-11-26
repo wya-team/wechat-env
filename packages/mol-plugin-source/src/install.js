@@ -44,8 +44,8 @@ class SourceManager {
 
 }
 
-const install = (context) => {
-	context.sourceManager = new SourceManager();
+const install = (Mol) => {
+	Mol.sourceManager = new SourceManager();
 };
 
 export default install;

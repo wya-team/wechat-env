@@ -82,7 +82,6 @@ export const reactive = (obj, key, val, shallow) => {
 		configurable: true,
 		get() {
 			const value = getter ? getter.call(obj) : val;
-			console.log(key, value, dep);
 			// 将该依赖作为当前的watcher依赖收集起来
 			dep.depend();
 			return value;

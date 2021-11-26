@@ -24,7 +24,6 @@ export default (mol, wxCtx, options = {}) => {
 	const proxy = navigateFn => {
 		return async routerOpts => {
 			const { url } = routerOpts;
-			console.log(routerOpts);
 
 			// 如果和正在准备跳转的页面（path+参数）相同，则阻止掉，不做跳转
 			if (url === navigatingUrl) return;

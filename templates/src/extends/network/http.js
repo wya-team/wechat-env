@@ -73,11 +73,11 @@ export default createOptions => {
 			resolve({
 				...options,
 				param: {
-					...(createOptions.param ? await createOptions.param() : {}),
+					...(createOptions.param ? await createOptions.param(options) : {}),
 					...options.param,
 				},
 				headers: {
-					...(createOptions.headers ? createOptions.headers() : {}),
+					...(createOptions.headers ? createOptions.headers(options) : {}),
 					...options.headers
 				}
 			});

@@ -28,18 +28,12 @@ exports.page = (content, opts = {}) => {
 
 		contents += `<script>\n`;
 
-		// if (packageName === 'pages') { 
-		// 	contents += `import Page from '../../common/page';\n\n`;
-		// } else {
-		// 	contents += `import { Page } from '../../index';\n\n`;
-		// }
-		
 		contents += `import Mol from '@wya/mol';\n`;
 		if (packageName !== 'pages') { 
-			contents += `import '../../index';\n\n`;
+			contents += `import '../../index';\n`;
 		}
 
-		contents += `Mol.page({\n`;
+		contents += `\nMol.page({\n`;
 		contents += `	data: {\n`;
 		contents += `		dataSource: [\n`;
 		contents += `			{ \n`;

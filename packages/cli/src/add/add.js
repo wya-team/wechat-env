@@ -164,7 +164,7 @@ module.exports = (opts = {}) => {
 				fs.outputFileSync(
 					fullpath,
 					typeof tpl[key] === 'function'
-						? tpl[key]({ mutation, route, pathArr, project, packageName, module, extra, title })
+						? tpl[key]({ mutation, route, pathArr, project, packageName, module, extra, title, store })
 						: content
 				);
 			} else if (typeof tpl[`${key}Override`] === 'function') {
@@ -174,7 +174,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					tpl[`${key}Override`](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, route, pathArr, project, packageName, module, extra, title }
+						{ mutation, route, pathArr, project, packageName, module, extra, title, store }
 					)
 				);
 			}
@@ -201,7 +201,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					rootTpl[_key](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, pathArr, project, packageName, module, extra, title, route }
+						{ mutation, pathArr, project, packageName, module, extra, title, route, store }
 					)
 				);
 			}
@@ -220,7 +220,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						scrollTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, pathArr, project, packageName, module, pagingType, extra, title, route }
+							{ mutation, pathArr, project, packageName, module, pagingType, extra, title, route, store }
 						)
 					);
 					
@@ -240,7 +240,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						formTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, pathArr, project, packageName, module, extra, title }
+							{ mutation, pathArr, project, packageName, module, extra, title, store }
 						)
 					);
 					

@@ -1,7 +1,7 @@
 const { getNewContent, getStoreKey } = require('./utils/helper');
 
 exports.page = (opts = {}) => {
-	const { mutation, packageName, pathArr, project, obj, title } = opts;
+	const { mutation, packageName, pathArr, project, obj, title, store } = opts;
 	let storeKey = getStoreKey(pathArr, packageName);
 	let contents = '';
 
@@ -19,11 +19,15 @@ exports.page = (opts = {}) => {
 	}
 	
 	contents += `\nMol.page({\n`;
-	contents += `	mapState(state) {\n`;
-	contents += `		return {\n`;
-	contents += `			...state.${storeKey}\n`;
-	contents += `		};\n`;
-	contents += `	},\n`;
+
+	if (store) {
+		contents += `	mapState(state) {\n`;
+		contents += `		return {\n`;
+		contents += `			...state.${storeKey}\n`;
+		contents += `		};\n`;
+		contents += `	},\n`;
+	}
+	
 	contents += `	data: {\n`;
 	contents += `	},\n`;
 	contents += `	onShow() {\n`;

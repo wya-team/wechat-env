@@ -2,7 +2,7 @@ import { Utils } from '@wya/mp-utils';
 import { patchPageLifecycle } from '../init/index';
 import { mergeOptions } from '../shared';
 
-export default (setupOptions, mol) => {
+export default (setupOptions) => {
 	const { middlewares = [], ...otherGlobalOptions } = setupOptions;
 	/**
 	 * 注意：
@@ -19,7 +19,7 @@ export default (setupOptions, mol) => {
 			pageOptions
 		);
 		// 最先执行patch，保证在到达业务层的前一步会做可能需要的wait
-		patchPageLifecycle(options, mol);
+		patchPageLifecycle(options);
 		return page(options);
 	};
 };

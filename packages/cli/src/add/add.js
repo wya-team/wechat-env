@@ -81,6 +81,12 @@ module.exports = (opts = {}) => {
 			path: upath.normalize(`${dir}${packagePath}stores/apis/${pathArr[0]}.js`)
 		}
 	};
+	const isExist = fs.existsSync(join(basicConfig.page.path));
+	// 如果页面文件已经存在，则认为已经创建，则不重新创建，否则可能会将工作区已修改的代码覆盖掉
+	if (isExist) {
+		log(chalk`{rgb(30,144,255) ${isSubPackage ? packageName + '/pages' : packageName}${route} already exists, skipped.}`);
+		return;
+	}
 
 	if (hasStore) {
 		basicConfig = {

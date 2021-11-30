@@ -21,9 +21,9 @@
     "test": "node scripts/unit-test.js",
     "link": "lerna exec --scope @wya/mp-cli -- yarn link",
     "unlink": "lerna exec --scope @wya/mp-cli -- yarn unlink",
-    "create": "yarn workspace @wya/mp-template run create",
+    "create": "cd templates/ && yarn run create",
     "clean:debug": "rm -rf templates/node_modules/.bin/wya-mp",
-    "build": "npm run clean:debug && yarn workspace @wya/mp-template run build"
+    "build": "npm run clean:debug && cd templates/ && yarn run build"
   },
   "scripts-info": {
     "bootstrap": "npm install 保持依赖不在root下"

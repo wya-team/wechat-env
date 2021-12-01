@@ -1,12 +1,18 @@
 import { Storage } from '@wya/mp-utils';
 import { HttpHelper } from '@wya/mp-http';
 
+// 缓存wxLogin的promise实例，避免重复发起
+let _wxLoginInstance;
+
 class AuthorizeManager {
 	constructor(options) {
 		this.tokenData = null;
 		this.cacheKey = options.cacheKey;
 		this.code2Token = options.code2Token;
 		this.onTokenChange = options.onTokenChange;
+
+		// 缓存codeLogin的promise实例，避免重复发起（因为涉及到外部传入的code2Token，所以挂在AuthorizeManager的实例上）
+		this._codeLoginInstance = null;
 
 		this.init();
 	}
@@ -19,10 +25,21 @@ class AuthorizeManager {
 	 * 微信code换取token
 	 */
 	async codeLogin() {
-		const { code } = await this.wxLogin();
-		// 通过code向服务端换取tokenData
-		const data = await this.code2Token(code);
-		this.setTokenData(data);
+		this._codeLoginInstance = this._codeLoginInstance 
+			|| new Promise(async (resolve, reject) => {
+				try {
+					const { code } = await this.wxLogin();
+					// 通过code向服务端换取tokenData
+					const data = await this.code2Token(code);
+					this.setTokenData(data);
+					resolve(data);
+				} catch (error) {
+					reject(error);
+				} finally {
+					this._codeLoginInstance = null;
+				}
+			});
+		return this._codeLoginInstance;
 	}
 
 	/**
@@ -30,16 +47,22 @@ class AuthorizeManager {
 	 * @returns wx.login 返回结果
 	 */
 	wxLogin() {
-		return new Promise((resolve, reject) => {
-			wx.login({
-				success: resolve,
-				fail(error) {
-					reject(error);
-					const msg = error.msg || error.message;
-					msg && wx.showModal({ content: msg });
-				}
+		_wxLoginInstance = _wxLoginInstance 
+			|| new Promise((resolve, reject) => {
+				wx.login({
+					success: (...args) => {
+						resolve(...args);
+						_wxLoginInstance = null;
+					},
+					fail(error) {
+						reject(error);
+						const msg = error.msg || error.message;
+						msg && wx.showModal({ content: msg });
+						_wxLoginInstance = null;
+					}
+				});
 			});
-		});
+		return _wxLoginInstance;
 	}
 
 	getTokenFromCache() {

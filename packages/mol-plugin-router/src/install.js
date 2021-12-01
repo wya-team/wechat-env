@@ -51,13 +51,8 @@ const install = (Mol, wxCtx, options = {}) => {
 					// 如果返回的是跳转配置，则使用返回的跳转配置进行跳转
 					const { type = 'navigateTo', ...beforeRest } = beforeResult;
 					// 注意：此处的跳转还是会走这些跳转检查逻辑，而非直接使用navigateFn进行跳转
-					if (type === 'switchTab') {
-						wxCtx.switchTab(beforeRest);
-					} else if (type === 'redirectTo') {
-						wxCtx.redirectTo(beforeRest);
-					} else {
-						wxCtx.navigateTo(beforeRest);
-					}
+					const fn = wxCtx[type];
+					typeof fn === 'function' ? fn(beforeRest) : wxCtx.navigateTo(beforeRest);
 					return;
 				}
 			}

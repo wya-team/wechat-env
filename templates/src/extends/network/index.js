@@ -1,5 +1,6 @@
 import Mol from '@wya/mol';
 import createHttp from './http';
+import API_ROOT from '../../stores/apis/root';
 
 let app;
 const _getApp = () => {
@@ -8,6 +9,7 @@ const _getApp = () => {
 };
 
 const net = createHttp({
+	apis: API_ROOT,
 	// 无需登录的接口
 	escapeLoginUrls: [],
 	isAuthorized: () => {

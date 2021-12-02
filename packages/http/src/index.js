@@ -27,4 +27,5 @@ export {
 	HttpError,
 	HttpHelper
 };
+
 export default createHttpClient;

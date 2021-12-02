@@ -1,6 +1,6 @@
 {
   "name": "@wya/mol-plugin-authorize",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "> TODO: description",
   "author": "wya-team",
   "homepage": "https://github.com/wya-team/wechat-env#readme",
@@ -23,7 +23,7 @@
     "url": "https://github.com/wya-team/wechat-env/issues"
   },
   "dependencies": {
-    "@wya/mp-http": "^1.3.3",
+    "@wya/mp-http": "^1.4.1",
     "@wya/mp-utils": "^2.0.0"
   }
 }

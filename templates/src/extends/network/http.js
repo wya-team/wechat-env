@@ -92,7 +92,18 @@ export default createOptions => {
 				if (!options._failCount_ || options._failCount_ < MAX_FAIL_RETRY_COUNT) {
 					await authorize();
 					options._failCount_ = (options._failCount_ || 0) + 1;
-					ajax(options);
+					// 此处必须要return, 否则重新发起请求后，业务代码内的请求处理结果就不会执行
+					return ajax({
+						...options,
+						/** 
+						 * 此处的options是原始请求的options, 
+						 * authorize()后需要更新headers，如果后面需要更新其他信息，请在此处修改
+						 */
+						headers: {
+							...options.headers,
+							token: ((createOptions.headers ? createOptions.headers(options) : {})).token,
+						}
+					});
 				}
 				break;
 			default:

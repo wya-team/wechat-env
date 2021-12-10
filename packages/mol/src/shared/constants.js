@@ -1,3 +1,6 @@
+// 自定义的app生命周期，将会在app.onShow前触发，且不会等待lifecycleWaitingTask
+export const APP_BEFORE_SHOW = 'onBeforeShow';
+
 export const APP_LIFECYCLES = [
 	'onLaunch',
 	'onShow',

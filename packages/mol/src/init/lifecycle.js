@@ -1,4 +1,5 @@
 import {
+	APP_BEFORE_SHOW,
 	APP_LIFECYCLES,
 	PAGE_LIFECYCLES,
 	COMPONENT_LIFECYCLES,
@@ -35,6 +36,14 @@ export const patchAppLifecycle = (appOptions) => {
 		// 注册 $mol
 		this.$mol = molApp;
 		onLaunch && onLaunch.apply(this, args);
+	};
+
+	const onShow = appOptions.onShow;
+	const beforeShowHook = appOptions[APP_BEFORE_SHOW];
+	appOptions.onShow = function (...args) {
+		// 在业务的onShow前触发beforeShowHook
+		beforeShowHook && beforeShowHook.apply(this, args);
+		onShow && onShow.apply(this, args);
 	};
 };
 

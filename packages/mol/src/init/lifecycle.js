@@ -1,8 +1,8 @@
 import {
 	APP_BEFORE_SHOW,
-	APP_LIFECYCLES,
-	PAGE_LIFECYCLES,
-	COMPONENT_LIFECYCLES,
+	APP_WAIT_LIFECYCLES,
+	PAGE_WAIT_LIFECYCLES,
+	COMPONENT_WAIT_LIFECYCLES,
 	COMPONENT_PAGE_LIFECYCLES
 } from '../shared';
 import Mol from '../class/mol';
@@ -14,19 +14,13 @@ import { initInjector } from './injector';
 
 export const patchAppLifecycle = (appOptions) => {
 	const molApp = new MolApp();
-	APP_LIFECYCLES.forEach(it => {
+	APP_WAIT_LIFECYCLES.forEach(it => {
 		let lifecycle = appOptions[it];
-		const isOnLaunch = it === 'onLaunch';
-		if (lifecycle || isOnLaunch) {
+		if (lifecycle) {
 			appOptions[it] = async function (...args) {
 				// 保证必要的等待任务执行完成，再执行业务逻辑
 				await Mol.doLifecycleWatingTasks();
 				lifecycle.apply(this, args);
-
-				if (isOnLaunch) {
-					const { injector } = appOptions;
-					injector && initInjector(this, molApp, injector, Mol.provider.get());
-				}
 			};
 		}
 	});
@@ -36,6 +30,8 @@ export const patchAppLifecycle = (appOptions) => {
 		// 注册 $mol
 		this.$mol = molApp;
 		onLaunch && onLaunch.apply(this, args);
+		const { injector } = appOptions;
+		injector && initInjector(this, molApp, injector, Mol.provider.get());
 	};
 
 	const onShow = appOptions.onShow;
@@ -50,7 +46,7 @@ export const patchAppLifecycle = (appOptions) => {
 
 export const patchPageLifecycle = (pageOptions) => {
 	const molPage = new MolPage();
-	PAGE_LIFECYCLES.forEach(it => {
+	PAGE_WAIT_LIFECYCLES.forEach(it => {
 		let lifecycle = pageOptions[it];
 		const isOnLoad = it === 'onLoad';
 		const isOnUnload = it === 'onUnload';
@@ -85,7 +81,7 @@ export const patchComponentLifecycle = (compOptions) => {
 		compOptions.lifetimes = {};
 	}
 	
-	COMPONENT_LIFECYCLES.forEach(it => {
+	COMPONENT_WAIT_LIFECYCLES.forEach(it => {
 		let lifecycle = lifetimes[it] || compOptions[it];
 		const isAttached = it === 'attached';
 		const isDetached = it === 'detached';

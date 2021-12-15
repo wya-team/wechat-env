@@ -19,7 +19,7 @@ export const patchAppLifecycle = (appOptions) => {
 		if (lifecycle) {
 			appOptions[it] = async function (...args) {
 				// 保证必要的等待任务执行完成，再执行业务逻辑
-				await Mol.doLifecycleWatingTasks();
+				await Mol.doLifecycleWaitingTasks();
 				lifecycle.apply(this, args);
 			};
 		}
@@ -53,7 +53,7 @@ export const patchPageLifecycle = (pageOptions) => {
 		
 		if (lifecycle || isOnUnload || isOnLoad) {
 			pageOptions[it] = async function (...args) {
-				await Mol.doLifecycleWatingTasks();
+				await Mol.doLifecycleWaitingTasks();
 				lifecycle && lifecycle.apply(this, args);
 
 				if (isOnLoad) {
@@ -87,7 +87,7 @@ export const patchComponentLifecycle = (compOptions) => {
 		const isDetached = it === 'detached';
 		if (lifecycle || isAttached || isDetached) {
 			compOptions.lifetimes[it] = async function (...args) {
-				await Mol.doLifecycleWatingTasks();
+				await Mol.doLifecycleWaitingTasks();
 				lifecycle && lifecycle.apply(this, args);
 
 				if (isAttached) {
@@ -104,7 +104,7 @@ export const patchComponentLifecycle = (compOptions) => {
 			let lifecycle = pageLifetimes[it];
 			if (lifecycle) {
 				compOptions.pageLifetimes[it] = async function (...args) {
-					await Mol.doLifecycleWatingTasks();
+					await Mol.doLifecycleWaitingTasks();
 					lifecycle.apply(this, args);
 				};
 			}

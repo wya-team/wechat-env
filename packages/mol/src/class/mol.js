@@ -15,7 +15,7 @@ export default class Mol {
 		this._taskChanged = true;
 		// task要自行处理reject时的逻辑，保证一定会resolve，
 		// 因为如果reject到这里，mol也会将该task移除，不然这个失败的任务会始终存在，
-		// 导致后面调用的doLifecycleWatingTasks都会返回reject结果
+		// 导致后面调用的doLifecycleWaitingTasks都会返回reject结果
 		task.finally(() => {
 			const index = this.lifecycleWaitingTasks.findIndex(it => it === task);
 			this.lifecycleWaitingTasks.splice(index, 1);
@@ -27,7 +27,7 @@ export default class Mol {
 	 * 执行生命周期任务
 	 * @returns 
 	 */
-	static doLifecycleWatingTasks() {
+	static doLifecycleWaitingTasks() {
 		if (!this.lifecycleWaitingTasks.length) {
 			this._taskChanged = false;
 			return;

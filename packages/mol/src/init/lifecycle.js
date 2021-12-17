@@ -3,7 +3,7 @@ import {
 	APP_WAIT_LIFECYCLES,
 	PAGE_WAIT_LIFECYCLES,
 	COMPONENT_WAIT_LIFECYCLES,
-	COMPONENT_PAGE_LIFECYCLES
+	COMPONENT_PAGE_WAIT_LIFECYCLES
 } from '../shared';
 import Mol from '../class/mol';
 import MolApp from '../class/mol-app';
@@ -100,7 +100,7 @@ export const patchComponentLifecycle = (compOptions) => {
 		}
 	});
 	if (pageLifetimes) {
-		COMPONENT_PAGE_LIFECYCLES.forEach(it => {
+		COMPONENT_PAGE_WAIT_LIFECYCLES.forEach(it => {
 			let lifecycle = pageLifetimes[it];
 			if (lifecycle) {
 				compOptions.pageLifetimes[it] = async function (...args) {

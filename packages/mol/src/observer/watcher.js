@@ -1,5 +1,5 @@
-import Dep, { pushTarget, popTarget } from './dep';
-import { noop, isObject } from '../shared/index';
+import { pushTarget, popTarget } from './dep';
+import { noop, isObject } from '../utils';
 
 let uid = 0;
 

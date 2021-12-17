@@ -1,4 +1,4 @@
-import { def } from '../shared/index';
+import { def } from '../utils';
 
 const PATCH_METHODS = [
 	'shift',

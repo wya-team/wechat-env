@@ -4,7 +4,7 @@ import {
 	PAGE_WAIT_LIFECYCLES,
 	COMPONENT_WAIT_LIFECYCLES,
 	COMPONENT_PAGE_WAIT_LIFECYCLES
-} from '../shared';
+} from '../constants';
 import Mol from '../class/mol';
 import MolApp from '../class/mol-app';
 import MolPage from '../class/mol-page';

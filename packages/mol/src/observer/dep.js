@@ -1,4 +1,4 @@
-import { remove } from '../shared/index';
+import { remove } from '../utils';
 
 let uid = 0;
 

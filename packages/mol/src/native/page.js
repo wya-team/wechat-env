@@ -1,6 +1,6 @@
 import { Utils } from '@wya/mp-utils';
 import { patchPageLifecycle } from '../init/index';
-import { mergeOptions } from '../shared';
+import { mergeOptions } from '../utils';
 
 export default (setupOptions) => {
 	const { middlewares = [], ...otherGlobalOptions } = setupOptions;

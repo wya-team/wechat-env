@@ -3,7 +3,7 @@ import {
 	hasOwn,
 	isObject,
 	isPlainObject
-} from '../shared/index';
+} from '../utils';
 
 import Dep from './dep';
 import { arrayMethods } from './array';

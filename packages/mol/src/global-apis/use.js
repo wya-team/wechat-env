@@ -1,4 +1,4 @@
-import { isFunc } from '../shared';
+import { isFunc } from '../utils';
 
 /**
 * 注册插件

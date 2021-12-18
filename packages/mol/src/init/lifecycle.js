@@ -5,6 +5,7 @@ import {
 	COMPONENT_WAIT_LIFECYCLES,
 	COMPONENT_PAGE_WAIT_LIFECYCLES
 } from '../constants';
+import { normalizeComponentLifecycles } from '../utils';
 import Mol from '../class/mol';
 import MolApp from '../class/mol-app';
 import MolPage from '../class/mol-page';
@@ -24,7 +25,7 @@ export const patchAppLifecycle = (appOptions) => {
 			};
 		}
 	});
-	const onLaunch = appOptions.onLaunch;
+	const { onLaunch } = appOptions;
 	appOptions.onLaunch = function (...args) {
 		molApp.$native = this;
 		// 注册 $mol
@@ -34,7 +35,7 @@ export const patchAppLifecycle = (appOptions) => {
 		injector && initInjector(this, molApp, injector, Mol.provider.get());
 	};
 
-	const onShow = appOptions.onShow;
+	const { onShow } = appOptions;
 	const beforeShowHook = appOptions[APP_BEFORE_SHOW];
 	appOptions.onShow = function (...args) {
 		// 在业务的onShow前触发beforeShowHook
@@ -47,7 +48,7 @@ export const patchAppLifecycle = (appOptions) => {
 export const patchPageLifecycle = (pageOptions) => {
 	const molPage = new MolPage();
 	PAGE_WAIT_LIFECYCLES.forEach(it => {
-		let lifecycle = pageOptions[it];
+		const lifecycle = pageOptions[it];
 		const isOnLoad = it === 'onLoad';
 		const isOnUnload = it === 'onUnload';
 		
@@ -65,7 +66,7 @@ export const patchPageLifecycle = (pageOptions) => {
 			};
 		}
 	});
-	const onLoad = pageOptions.onLoad;
+	const { onLoad } = pageOptions;
 	pageOptions.onLoad = function (...args) {
 		molPage.$native = this;
 		// 注册 $mol
@@ -76,13 +77,11 @@ export const patchPageLifecycle = (pageOptions) => {
 
 export const patchComponentLifecycle = (compOptions) => {
 	const molComponent = new MolComponent();
-	const { lifetimes = {}, pageLifetimes } = compOptions;
-	if (!compOptions.lifetimes) {
-		compOptions.lifetimes = {};
-	}
+	normalizeComponentLifecycles(compOptions);
+	const { lifetimes, pageLifetimes } = compOptions;
 	
 	COMPONENT_WAIT_LIFECYCLES.forEach(it => {
-		let lifecycle = lifetimes[it] || compOptions[it];
+		const lifecycle = lifetimes[it];
 		const isAttached = it === 'attached';
 		const isDetached = it === 'detached';
 		if (lifecycle || isAttached || isDetached) {
@@ -101,7 +100,7 @@ export const patchComponentLifecycle = (compOptions) => {
 	});
 	if (pageLifetimes) {
 		COMPONENT_PAGE_WAIT_LIFECYCLES.forEach(it => {
-			let lifecycle = pageLifetimes[it];
+			const lifecycle = pageLifetimes[it];
 			if (lifecycle) {
 				compOptions.pageLifetimes[it] = async function (...args) {
 					await Mol.doLifecycleWaitingTasks();
@@ -110,8 +109,8 @@ export const patchComponentLifecycle = (compOptions) => {
 			}
 		});
 	}
-	const created = compOptions.created;
-	compOptions.created = function (...args) {
+	const { created } = compOptions.lifetimes;
+	compOptions.lifetimes.created = function (...args) {
 		molComponent.$native = this;
 		// 注册 $mol
 		this.$mol = molComponent;

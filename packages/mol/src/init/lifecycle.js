@@ -31,8 +31,6 @@ export const patchAppLifecycle = (appOptions) => {
 		// 注册 $mol
 		this.$mol = molApp;
 		onLaunch && onLaunch.apply(this, args);
-		const { injector } = appOptions;
-		injector && initInjector(this, molApp, injector, Mol.provider.get());
 	};
 
 	const { onShow } = appOptions;

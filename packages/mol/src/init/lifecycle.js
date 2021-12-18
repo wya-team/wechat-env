@@ -53,14 +53,13 @@ export const patchPageLifecycle = (pageOptions) => {
 		if (lifecycle || isOnUnload || isOnLoad) {
 			pageOptions[it] = async function (...args) {
 				await Mol.doLifecycleWaitingTasks();
-				lifecycle && lifecycle.apply(this, args);
 
 				if (isOnLoad) {
 					const { injector } = pageOptions;
 					injector && initInjector(this, molPage, injector, Mol.provider.get());
-				} else if (isOnUnload) {
-					molPage.$destroy();
 				}
+				lifecycle && lifecycle.apply(this, args);
+				isOnUnload && molPage.$destroy();
 			};
 		}
 	});
@@ -85,14 +84,13 @@ export const patchComponentLifecycle = (compOptions) => {
 		if (lifecycle || isAttached || isDetached) {
 			compOptions.lifetimes[it] = async function (...args) {
 				await Mol.doLifecycleWaitingTasks();
-				lifecycle && lifecycle.apply(this, args);
 
 				if (isAttached) {
 					const { injector } = compOptions;
 					injector && initInjector(this, molComponent, injector, Mol.provider.get());
-				} else if (isDetached) {
-					molComponent.$destroy();
-				}
+				} 
+				lifecycle && lifecycle.apply(this, args);
+				isDetached && molComponent.$destroy();
 			};
 		}
 	});

@@ -49,7 +49,8 @@ const afterFn = ({ options, response }) => {
 
 /**
  * 以下“授权”是指是否有请求接口所必须的token类数据
- * createOptions.headers  -> Object  请求头，可将token等放在这里
+ * createOptions.headers  -> Function  返回附加的请求头信息，可将token等放在这里
+ * createOptions.param  -> Function  返回附加的请求参数，支持异步
  * createOptions.isAuthorized  -> Function  判断是否授权
  * createOptions.escapeLoginUrls  -> Array  无需授权的接口
  * createOptions.apis  -> Object  API_ROOT (stores/apis/root.js)
@@ -68,41 +69,37 @@ export default createOptions => {
 		return new Promise(async (resolve) => {
 			// 接口是需要授权的，且判断当前用户未授权，则需要先执行授权逻辑
 			!escapeLoginUrls.includes(options.url) && !isAuthorized() && await authorize();
-			
+
+			const { param: getExtraParams, headers: getExtraHeaders } = createOptions;
 			// options优先级更高
 			resolve({
 				...options,
 				param: {
-					...(createOptions.param ? await createOptions.param(options) : {}),
+					...(getExtraParams ? await getExtraParams(options) : {}),
 					...options.param,
 				},
 				headers: {
-					...(createOptions.headers ? createOptions.headers(options) : {}),
+					...(getExtraHeaders ? getExtraHeaders(options) : {}),
 					...options.headers
-				}
+				},
+				// 保存业务中传入的原始options，用于重新发起请求
+				__options__: options.__options__ || options,
 			});
 		});
 	};
 
-	const otherFn = async ({ response, resolve, options }) => {
+	const otherFn = async ({ response, options }) => {
+		let failCount = options.__failedCount__ || 0;
 		switch (response.status) {
 			// 登录信息失效，需要重新授权
 			case -1:
 				// 控制最大失败重发次数，防止进入无限循化
-				if (!options._failCount_ || options._failCount_ < MAX_FAIL_RETRY_COUNT) {
+				if (failCount < MAX_FAIL_RETRY_COUNT) {
 					await authorize();
-					options._failCount_ = (options._failCount_ || 0) + 1;
 					// 此处必须要return, 否则重新发起请求后，业务代码内的请求处理结果就不会执行
 					return ajax({
-						...options,
-						/** 
-						 * 此处的options是原始请求的options, 
-						 * authorize()后需要更新headers，如果后面需要更新其他信息，请在此处修改
-						 */
-						headers: {
-							...options.headers,
-							token: ((createOptions.headers ? createOptions.headers(options) : {})).token,
-						}
+						...options.__options__,
+						__failedCount__: ++failCount
 					});
 				}
 				break;

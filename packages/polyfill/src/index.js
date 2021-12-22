@@ -7,7 +7,8 @@ let ready = false;
 		typeof window !== 'undefined' && window,
 		typeof self !== 'undefined' && self,
 		typeof this !== 'undefined' && this,
-		typeof wx !== 'undefined' && wx
+		typeof wx !== 'undefined' && wx,
+		typeof tt !== 'undefined' && tt
 	];
 
 	let originals = {
@@ -23,7 +24,9 @@ let ready = false;
 		setTimeout,
 		clearTimeout,
 		setInterval,
-		clearInterval
+		clearInterval,
+		// tt下没有
+		nextTick: setTimeout
 	};
 		
 	roots.forEach((root) => {

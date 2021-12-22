@@ -7,7 +7,7 @@
 			<text>echarts资源由子包(a-echarts)加载</text>
 			<text>echarts version: {{ echarts.version }}</text>
 			<mc-echarts 
-				echarts="{{ echarts }}"
+				wx:if="{{ echarts }}"
 				elementId="chart" 
 				options="{{ chartOptions }}" 
 				style="width: 40vw; height: 40vw"
@@ -82,7 +82,7 @@ Mol.page({
 		},
 	},
 
-	onLoad() {
+	onShow() {
 		this.setData({
 			echarts: Mol.sourceManager.require('echarts')
 		});
@@ -165,6 +165,9 @@ Mol.page({
 <config>
 {
 	"navigationBarTitleText": "",
-	"usingComponents": {}
+	"usingComponents": {
+		"mc-button": "../../libs/mc/button/index",
+		"mc-echarts": "../../libs/mc/echarts/index"
+	}
 }
 </config>

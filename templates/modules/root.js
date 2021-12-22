@@ -8,4 +8,7 @@ module.exports = [
 	...aOne,
 	...aTwo,
 	...master
-];
+].map(i => {
+	i.platform = 'wx';
+	return i;
+});

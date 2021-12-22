@@ -1,7 +1,7 @@
 const { getNewContent, getStoreKey, getMutationType } = require('../utils/helper');
 
 exports.page = (content, opts = {}) => {
-	const { mutation, pathArr, project, packageName, obj, pagingMode: mode, pagingType: type, route, title } = opts;
+	const { isSubPackage, platform, mutation, pathArr, project, packageName, obj, pagingMode: mode, pagingType: type, route, title } = opts;
 	let storeKey = getStoreKey(pathArr, packageName);
 
 	let mutationType = `${getMutationType(pathArr, packageName)}`;
@@ -18,8 +18,8 @@ exports.page = (content, opts = {}) => {
 				contents += `		bind:click="handleChange"\n`;
 				contents += `	>\n`;
 				contents += `		<mc-tabs-pane \n`;
-				contents += `			wx:for="{{tabs}}"\n`;
-				contents += `			wx:key="index"\n`;
+				contents += `			${platform}:for="{{tabs}}"\n`;
+				contents += `			${platform}:key="index"\n`;
 				contents += `			title="{{ item.label }}"\n`;
 				contents += `			name="{{ item.value }}"\n`;
 				contents += `		>\n`;
@@ -31,8 +31,8 @@ exports.page = (content, opts = {}) => {
 				contents += `				bind:loadData="loadData"\n`;
 				contents += `			>\n`;
 				contents += `				<${project}-item \n`;
-				contents += `					wx:for="{{ listInfo[item.value].data }}"\n`;
-				contents += `					wx:key="index"\n`;
+				contents += `					${platform}:for="{{ listInfo[item.value].data }}"\n`;
+				contents += `					${platform}:key="index"\n`;
 				contents += `					it="{{ item }}"\n`;
 				contents += `				/>\n`;
 				contents += `			</mc-recycle-list>\n`;
@@ -49,8 +49,8 @@ exports.page = (content, opts = {}) => {
 				contents += `		bind:loadData="loadData"\n`;
 				contents += `	>\n`;
 				contents += `		<${project}-item \n`;
-				contents += `			wx:for="{{ listInfo.data }}"\n`;
-				contents += `			wx:key="index"\n`;
+				contents += `			${platform}:for="{{ listInfo.data }}"\n`;
+				contents += `			${platform}:key="index"\n`;
 				contents += `			it="{{ item }}"\n`;
 				contents += `		/>\n`;
 				contents += `	</mc-recycle-list>\n`;
@@ -97,27 +97,28 @@ exports.page = (content, opts = {}) => {
 			default:
 				break;
 		}
-		contents += `	loadData(event) {\n`;
+		contents += `	async loadData(event) {\n`;
 		contents += `		const { page, done, refresh } = event.detail;\n`;
-		contents += `		this.request({\n`;
-		contents += `			url: '${pagingType}_GET',\n`;
-		contents += `			type: 'GET',\n`;
-		contents += `			param: {\n`;
+		contents += `		try {\n`;
+		contents += `			await this.request({\n`;
+		contents += `				url: '${pagingType}_GET',\n`;
+		contents += `				type: 'GET',\n`;
+		contents += `				param: {\n`;
 		switch (type) {
 			case 'tabs':
-				contents += `				type: this.data.type,\n`;
+				contents += `					type: this.data.type,\n`;
 				break;
 			default:
 				break;
 		}
-		contents += `				page,\n`;
-		contents += `			},\n`;
-		contents += `			refresh\n`;
-		contents += `		}).then((res) => {\n`;
+		contents += `					page,\n`;
+		contents += `				},\n`;
+		contents += `				refresh\n`;
+		contents += `			});\n`;
 		contents += `			done && done();\n`;
-		contents += `		}).catch((error) => {\n`;
+		contents += `		} catch (error) {\n`;
 		contents += `			console.log(error, 'error');\n`;
-		contents += `		});\n`;
+		contents += `		}\n`;
 		contents += `	},\n`;
 		switch (type) {
 			case 'tabs':
@@ -139,6 +140,13 @@ exports.page = (content, opts = {}) => {
 		contents += `{\n`;
 		contents += `	"navigationBarTitleText": "${title}",\n`;
 		contents += `	"usingComponents": {\n`;
+		// 字节还不支持全局注册
+		if (platform === 'tt') {
+			let patchPath = isSubPackage ? '../' : '';
+			contents += `		"mc-tabs": "../../${patchPath}libs/mc/tabs/index",\n`;
+			contents += `		"mc-tabs-pane": "../../${patchPath}libs/mc/tabs/tabs-pane",\n`;
+			contents += `		"mc-recycle-list": "../../${patchPath}libs/mc/recycle-list/index",\n`;
+		}
 		contents += `		"${project}-item": "../../components/${mutation}/${pathArr[1]}/item"\n`;
 		contents += `	},\n`;
 		contents += `	"enablePullDownRefresh": false,\n`;

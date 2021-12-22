@@ -7,7 +7,9 @@ const chalk = require('chalk');
 const createHtmlDom = require('htmldom');
 const sass = require('node-sass');
 const babel = require('@babel/core');
-const babelConfig = require('./babel-config');
+const { babelConfig } = require('./babel-config');
+const compileTemplate = require('./compile-template');
+const platform = require('./platform');
 
 let { resolve, dirname } = path;
 let src = process.env.REPO_SOURCE_DIR;
@@ -97,18 +99,29 @@ module.exports = (options) => {
 			content.config && write('json', content.config);
 
 			// template
-			write('wxml', content.template);
+			write(
+				platform.template, 
+				compileTemplate.transform(content.template)
+			);
 
 			// style
 			let imports = '';
+			let regex = new RegExp(`\\.(${platform.styles.join("|")})$`);
 			let { css } = sass.renderSync({
 				data: content.style || ' ',
 				file: file.path,
 				importer(url, prev, done) {
 					let fullpath = resolve(dirname(prev), url);
 					// 如果本身是wxss文件, 编译后不将其包含进来。
-					if (!fs.existsSync(fullpath) || url.includes('.wxss')) {
-						imports += `@import '${upath.normalize(url.replace(/\.scss$/, '.wxss'))}';\n`;
+					if (
+						!fs.existsSync(fullpath) 
+						|| (
+							platform.styles
+								.filter(i => i != 'scss')
+								.some(i => url.includes(`.${i}`))
+						)
+					) {
+						imports += `@import '${upath.normalize(url.replace(regex, `.${platform.style}`))}';\n`;
 						return {
 							file: fullpath, 
 							contents: ``
@@ -117,8 +130,9 @@ module.exports = (options) => {
 					
 				}
 			});
+
 			// style
-			write('wxss', imports + css);
+			write(platform.style, imports + css);
 		} catch (e) {
 			console.log(e);
 		}

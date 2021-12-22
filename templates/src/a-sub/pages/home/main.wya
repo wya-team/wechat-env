@@ -108,6 +108,8 @@ Mol.page({
 <config>
 {
 	"navigationBarTitleText": "首页",
-	"usingComponents": {}
+	"usingComponents": {
+		"mc-button": "../../../libs/mc/button/index"
+	}
 }
 </config>

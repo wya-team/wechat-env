@@ -1,5 +1,5 @@
 exports.page = (content, opts = {}) => {
-	const { mutation, pathArr, project, packageName, obj, title } = opts;
+	const { isSubPackage, platform, mutation, pathArr, project, packageName, obj, title } = opts;
 	try {
 		let contents = '';
 
@@ -101,12 +101,13 @@ exports.page = (content, opts = {}) => {
 		contents += `			'formValidate.array': event.detail.value\n`;
 		contents += `		});\n`;
 		contents += `	},\n`;
-		contents += `	handleSubmit() {\n`;
-		contents += `		this.form.validate().then((res) => {\n`;
-		contents += `			wx.showToast({ title: '校验通过' });\n`;
-		contents += `		}).catch((res) => {\n`;
-		contents += `			console.log(res);\n`;
-		contents += `		});\n`;
+		contents += `	async handleSubmit() {\n`;
+		contents += `		try {\n`;
+		contents += `			await this.form.validate();\n`;
+		contents += `			${platform}.showToast({ title: '校验通过' });\n`;
+		contents += `		} catch (e) {\n`;
+		contents += `			console.log(e);\n`;
+		contents += `		}\n`;
 		contents += `	},\n`;
 		contents += `});\n`;
 		contents += `</script>\n\n`;
@@ -115,7 +116,16 @@ exports.page = (content, opts = {}) => {
 		contents += `<config>\n`;
 		contents += `{\n`;
 		contents += `	"navigationBarTitleText": "${title}",\n`;
-		contents += `	"usingComponents": {}\n`;
+		contents += `	"usingComponents": {\n`;
+		// 字节还不支持全局注册
+		if (platform === 'tt') {
+			let patchPath = isSubPackage ? '../' : '';
+			contents += `		"mc-form": "../../${patchPath}libs/mc/form/index",\n`;
+			contents += `		"mc-form-item": "../../${patchPath}libs/mc/form/form-item",\n`;
+			contents += `		"mc-input": "../../${patchPath}libs/mc/input/index",\n`;
+			contents += `		"mc-picker": "../../${patchPath}libs/mc/picker/index"\n`;
+		}
+		contents += `	}\n`;
 		contents += `}\n`;
 		contents += `</config>\n`;
 		return contents;

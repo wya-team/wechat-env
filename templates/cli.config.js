@@ -1,6 +1,11 @@
 const { resolve } = require('path');
 
 module.exports = {
+	// TODO: 当为true时，平台之间转换会警告提示，目的是保证纯净的当前平台代码
+	strict: false,
+	// wx | tt
+	platform: process.env.PLATFORM || 'wx',
+	// TODO: 寻址映射
 	alias: {
 		'@components': resolve(__dirname, './src/components'),
 		'@stores': resolve(__dirname, './src/stores'),

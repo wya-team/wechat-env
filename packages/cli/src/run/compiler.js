@@ -7,11 +7,14 @@ const gulp = require('gulp');
 const gulpSass = require('gulp-sass');
 const rename = require('gulp-rename');
 const babel = require('gulp-babel');
-const babelConfig = require('./babel-config');
+const { babelConfig, scriptPlugins } = require('./babel-config');
 const compileWya = require('./compile-wya');
 const compileJSON = require('./compile-json');
+const compileTemplate = require('./compile-template');
 const compileRuntime = require('./compile-runtime');
 const { resolvePackage } = require('./utils');
+const platform = require('./platform');
+
 gulpSass.compiler = require('node-sass');
 
 let src = process.env.REPO_SOURCE_DIR;
@@ -55,17 +58,6 @@ class Compiler {
 		};
 	}
 
-	static sass = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.{wxss,scss}`, single = {}, gulpOpts } = opts;
-		return function sass() {
-			return gulp
-				.src(u(single.from || `${from}${globs}`), gulpOpts || getEntryConfig())
-				.pipe(gulpSass().on('error', gulpSass.logError))
-				.pipe(rename({ extname: '.wxss' }))
-				.pipe(gulp.dest(single.to || to));
-		};
-	}
-
 	static js = (opts = {}) => {
 		const { from = src, to = dist, globs = `/**/*.js`, single = {}, gulpOpts } = opts;
 		return function js() {
@@ -81,22 +73,37 @@ class Compiler {
 		};
 	}
 
-	static wxml = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.wxml`, single = {}, gulpOpts } = opts;
-		return function wxml() {
+	static style = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.{${platform.styles.join(',')}}`, single = {}, gulpOpts } = opts;
+		return function style() {
 			return gulp
 				.src(u(single.from || `${from}${globs}`), gulpOpts || getEntryConfig())
+				.pipe(gulpSass().on('error', gulpSass.logError))
+				.pipe(rename({ extname: `.${platform.style}` }))
 				.pipe(gulp.dest(single.to || to));
 		};
 	}
 
-	static wxs = (opts = {}) => {
-		const { from = src, to = dist, globs = `/**/*.wxs`, single = {}, gulpOpts } = opts;
-		return function wxs() {
+	static template = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.{${platform.templates.join(',')}}`, single = {}, gulpOpts } = opts;
+		return function template() {
 			return gulp
 				.src(u(single.from || `${from}${globs}`), gulpOpts || getEntryConfig())
-				.pipe(babel(babelConfig({ runtimeHelpers: false, from, to })))
-				.pipe(rename({ extname: '.wxs' }))
+				.pipe(compileTemplate())
+				.pipe(gulp.dest(single.to || to));
+		};
+	}
+
+	static script = (opts = {}) => {
+		const { from = src, to = dist, globs = `/**/*.{${platform.scripts.join(',')}}`, single = {}, gulpOpts } = opts;
+
+		const babelrc = babelConfig({ runtimeHelpers: false, from, to });
+		babelrc.plugins = babelrc.plugins.concat(scriptPlugins);
+		return function script() {
+			return gulp
+				.src(u(single.from || `${from}${globs}`), gulpOpts || getEntryConfig())
+				.pipe(babel(babelrc))
+				.pipe(rename({ extname: `.${platform.script}` }))
 				.pipe(gulp.dest(single.to || to));
 		};
 	}
@@ -156,10 +163,10 @@ class Compiler {
 
 				buildsReady = buildsReady.concat([
 					Compiler.wya({ from, to, gulpOpts }),
-					Compiler.sass({ from, to, gulpOpts }),
+					Compiler.style({ from, to, gulpOpts }),
 					Compiler.js({ from, to, gulpOpts }),
-					Compiler.wxml({ from, to, gulpOpts }),
-					Compiler.wxs({ from, to, gulpOpts }),
+					Compiler.template({ from, to, gulpOpts }),
+					Compiler.script({ from, to, gulpOpts }),
 					Compiler.json({ from, to, gulpOpts }),
 					Compiler.image({ from, to, gulpOpts })
 				]);
@@ -185,10 +192,10 @@ exports.build = gulp.series(
 	Compiler.prebuild(),
 	gulp.parallel(
 		Compiler.wya(),
-		Compiler.sass(),
+		Compiler.style(),
 		Compiler.js(),
-		Compiler.wxml(),
-		Compiler.wxs(),
+		Compiler.template(),
+		Compiler.script(),
 		Compiler.json(),
 		Compiler.image(),
 	),
@@ -201,10 +208,10 @@ exports.dev = gulp.series(
 	Compiler.prebuild(),
 	gulp.parallel(
 		Compiler.wya(),
-		Compiler.sass(),
+		Compiler.style(),
 		Compiler.js(),
-		Compiler.wxml(),
-		Compiler.wxs(),
+		Compiler.template(),
+		Compiler.script(),
 		Compiler.json(),
 		Compiler.image()
 	),
@@ -241,9 +248,9 @@ exports.dev = gulp.series(
 
 		fn(`${src}/**/*.wya`, Compiler.wya);
 		fn(`${src}/**/*.js`, Compiler.js);
-		fn(`${src}/**/*.{wxss,scss}`, Compiler.sass);
-		fn(`${src}/**/*.wxml`, Compiler.wxml);
-		fn(`${src}/**/*.wxs`, Compiler.wxs);
+		fn(`${src}/**/*.{${platform.styles.join(',')}}`, Compiler.style);
+		fn(`${src}/**/*.{${platform.templates.join(',')}}`, Compiler.template);
+		fn(`${src}/**/*.{${platform.scripts.join(',')}}`, Compiler.script);
 		fn(`${src}/**/*.json`, Compiler.json);
 		fn(`${src}/**/*.{png,jpg,gif,ico,jpeg}`, Compiler.image);
 		fn(`${temp}/**/*.js`, Compiler.runtime);

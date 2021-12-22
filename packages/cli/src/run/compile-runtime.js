@@ -9,7 +9,9 @@ const commonjs = require('@rollup/plugin-commonjs');
 const replace = require('@rollup/plugin-replace');
 const nodeResolve = require('@rollup/plugin-node-resolve');
 const alias = require('@rollup/plugin-alias');
+const { babel } = require('@rollup/plugin-babel');
 const { terser } = require('rollup-plugin-terser');
+const { replacePlugins } = require('./babel-config');
 
 let { resolve, dirname, parse } = path;
 let __cwd = process.env.SOURCE_DIR;
@@ -56,6 +58,11 @@ module.exports = (options) => {
 				replace({
 					'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
 					preventAssignment: false
+				}),
+				babel({
+					babelHelpers: 'inline',
+					compact: false,
+					plugins: [].concat(replacePlugins)
 				}),
 				process.env.NODE_ENV === 'production' && terser()
 			]

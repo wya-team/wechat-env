@@ -34,6 +34,19 @@ module.exports = class AddManager {
 					}
 				}
 			},
+
+			{
+				type: 'list',
+				name: 'platform',
+				message: 'Select platform:',
+				choices: [
+					new Separator(' = For platform = '),
+					'wx',
+					'tt'
+				],
+				default: 'wx'
+			},
+
 			{
 				type: 'input',
 				name: 'packageName',

@@ -27,5 +27,9 @@ Mol.app({
 		}
 	},
 
+	require(...args) {
+		return Mol.sourceManager.require(...args);
+	},
+	
 	store: new Store(storeConfig)
 });

@@ -2,6 +2,7 @@ const { resolve, dirname, relative, parse } = require('path');
 const upath = require('upath');
 const fs = require('fs-extra');
 const { resolvePackage } = require('./utils');
+const platform = require('./platform');
 
 const MASTER_PACKAGE_NAME = 'pages';
 
@@ -41,6 +42,57 @@ let getModuleId = (key, packageName) => {
 	}
 	return cache[packageName][key];
 };
+
+let replacePlugins = [
+	// 如wx. -> tt.
+	[
+		({ types: t }) => {
+			return {
+				visitor: {
+					Identifier(path) {
+						if (
+							platform.globalApis.includes(path.node.name)
+							&& path.node.name !== platform.globalApi 
+							&& path.parent.type === 'MemberExpression'
+						) {
+							path.node.name = platform.globalApi;
+						}
+					}
+				}
+			};
+		}
+	]
+];
+
+let scriptPlugins = [
+	// 如.wxs -> .sjs
+	[
+		({ types: t }) => {
+			let regex = new RegExp(`\\.(${platform.scripts.join("|")})$`);
+			let targetRegex = new RegExp(`\\.${platform.script}$`);
+			return {
+				visitor: {
+					CallExpression(path) {
+						let value = path.node.arguments && path.node.arguments[0] && path.node.arguments[0].value;
+						if (
+							path.node.callee.name === 'require' 
+							&& regex.test(value) 
+							&& !targetRegex.test(value)
+						) {
+							path.node.arguments[0].value = value.replace(regex, `.${platform.script}`);
+						}
+					},
+					ImportDeclaration(path) {
+						let { value } = path.node.source;
+						if (regex.test(value) && !targetRegex.test(value)) {
+							path.node.source.value = path.node.source.value.replace(regex, `.${platform.script}`);
+						}
+					}
+				}
+			};
+		}
+	]
+];
 
 let runtimePlugins = (from, to) => ([
 	[
@@ -118,7 +170,8 @@ let runtimePlugins = (from, to) => ([
 				}
 			};
 		}
-	]
+	],
+	...replacePlugins
 ]);
 const babelConfig = (opts = {}) => {
 	const { runtimeHelpers = true, from, to } = opts;
@@ -153,4 +206,6 @@ const babelConfig = (opts = {}) => {
 	};
 };
 
-module.exports = babelConfig;
+exports.babelConfig = babelConfig;
+exports.replacePlugins = replacePlugins;
+exports.scriptPlugins = scriptPlugins;

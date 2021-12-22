@@ -25,7 +25,8 @@ module.exports = (opts = {}) => {
 		extra = '',
 		title = '',
 		components,
-		force
+		force,
+		platform = 'wx'
 	} = opts;
 
 	const hasStore = /(scroll)/.test(template) || store;
@@ -156,6 +157,21 @@ module.exports = (opts = {}) => {
 	let fn = () => {
 		log(chalk('waiting...'));
 
+		let params = {
+			isSubPackage,
+			platform,
+			mutation,
+			pathArr,
+			project,
+			packageName,
+			module,
+			extra,
+			title,
+			store,
+			pagingType,
+			route
+		};
+
 		Object.keys(basicConfig).forEach(key => {
 			let { path } = basicConfig[key];
 			let fullpath = join(path);
@@ -170,7 +186,7 @@ module.exports = (opts = {}) => {
 				fs.outputFileSync(
 					fullpath,
 					typeof tpl[key] === 'function'
-						? tpl[key]({ mutation, route, pathArr, project, packageName, module, extra, title, store })
+						? tpl[key](params)
 						: content
 				);
 			} else if (typeof tpl[`${key}Override`] === 'function') {
@@ -180,7 +196,7 @@ module.exports = (opts = {}) => {
 					fullpath,
 					tpl[`${key}Override`](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, route, pathArr, project, packageName, module, extra, title, store }
+						params
 					)
 				);
 			}
@@ -207,11 +223,13 @@ module.exports = (opts = {}) => {
 					fullpath,
 					rootTpl[_key](
 						fs.readFileSync(fullpath, 'utf-8'),
-						{ mutation, pathArr, project, packageName, module, extra, title, route, store }
+						params
 					)
 				);
 			}
 		});
+
+
 
 		if (template === 'scroll') {
 			fs.removeSync(scrollConfig.page.path);
@@ -226,7 +244,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						scrollTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, pathArr, project, packageName, module, pagingType, extra, title, route, store }
+							params
 						)
 					);
 					
@@ -246,7 +264,7 @@ module.exports = (opts = {}) => {
 						fullpath,
 						formTpl[key](
 							fs.existsSync(fullpath) ? fs.readFileSync(fullpath, 'utf-8') : '',
-							{ mutation, pathArr, project, packageName, module, extra, title, store }
+							params
 						)
 					);
 					

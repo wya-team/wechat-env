@@ -1,5 +1,6 @@
 {
-  // "globals": { "wx": true },
+	"root": true,
+	// "globals": { "wx": true },
 	"parserOptions":
 	{
 		"parser": "babel-eslint",
@@ -22,14 +23,14 @@
 	"plugins": [
 		"markdown",
 		"babel",
-    "html"
+		"html"
 	],
 	"settings": {
-    "html/html-extensions": [".html", ".wya"],
+	"html/html-extensions": [".html", ".wya"],
 		"import/resolver": {
 			"node": {
 				"extensions": [
-				  ".js"
+					".js"
 				]
 			}
 		}

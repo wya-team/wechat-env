@@ -72,19 +72,13 @@
         "miniprogram": {
             "list": [
                 {
-                    "id": 0,
-                    "name": "logs",
-                    "pathName": "pages/index/index",
-                    "query": "",
-                    "scene": null
-                },
-                {
                     "id": -1,
                     "name": "home",
-                    "pathName": "pages/home/index",
+                    "pathName": "pages/home/main",
                     "query": ""
                 }
-            ]
+            ],
+            "current": -1
         }
     }
 }

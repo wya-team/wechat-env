@@ -43,7 +43,7 @@ class AuthorizeManager {
 	}
 
 	/**
-	 * wx.login promiseify
+	 * wx.login promisify
 	 * @returns wx.login 返回结果
 	 */
 	wxLogin() {
@@ -69,6 +69,10 @@ class AuthorizeManager {
 		const data = Storage.get(this.cacheKey);
 		this.updateToken(data);
 		return data;
+	}
+
+	getTokenData() {
+		return this.tokenData;
 	}
 
 	setTokenData(data) {

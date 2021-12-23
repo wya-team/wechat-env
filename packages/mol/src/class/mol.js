@@ -11,6 +11,8 @@ export default class Mol {
 	 * @param {*} task 
 	 */
 	static addLifecycleWaitingTask(task) {
+		if (this.lifecycleWaitingTasks.includes(task)) return;
+		
 		this.lifecycleWaitingTasks.push(task);
 		this._taskChanged = true;
 		// task要自行处理reject时的逻辑，保证一定会resolve，

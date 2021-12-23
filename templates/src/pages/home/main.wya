@@ -137,26 +137,31 @@ Mol.page({
 </script>
 
 <style lang="scss">
-.v-home-main {
-	&__userinfo {
+@import '../../assets/css/bem.scss';
+$block: v-home-main;
+
+@include block($block) {
+	@include element(userinfo) { 
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		&--avatar {
+		@include modifier(avatar) { 
 			width: 128rpx;
 			height: 128rpx;
 			margin: 20rpx;
 			border-radius: 50%;
 		}
-		&--nickname {
+
+		@include modifier(nickname) { 
 			color: #aaa;
 		}
 	}
-	&__usermotto {
+
+	@include element(usermotto) { 
 		margin-top: 20rpx;
 	}
 
-	&__network {
+	@include element(network) { 
 		margin-top: 20rpx;
 	}
 }

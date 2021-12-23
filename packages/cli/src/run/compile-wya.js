@@ -112,7 +112,13 @@ module.exports = (options) => {
 				file: file.path,
 				importer(url, prev, done) {
 					let fullpath = resolve(dirname(prev), url);
-					// 如果本身是wxss文件, 编译后不将其包含进来。
+					/**
+					 * scss文件均会转为wxss
+					 * 如果本身是wxss文件, 编译后不将其包含进来
+					 * 如：@import './xxx.wxss'; 
+					 * 	1. 实际的文件为xxx.scss, 跳过不编译
+					 * 	2. 实际的文件是wxss, 仅修改后缀为wxss
+					 */
 					if (
 						!fs.existsSync(fullpath) 
 						|| (

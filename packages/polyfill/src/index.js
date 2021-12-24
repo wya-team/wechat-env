@@ -31,7 +31,17 @@ let ready = false;
 		
 	roots.forEach((root) => {
 		root && Object.keys(originals).forEach((key) => {
-			if (!root[key]) root[key] = originals[key];
+
+			
+			if (!root[key]) {
+				try {
+					root[key] = originals[key];
+				} catch (e) {
+					Object.defineProperty(root, key, {
+						value: originals[key]
+					});
+				}
+			}
 		});
 	});
 

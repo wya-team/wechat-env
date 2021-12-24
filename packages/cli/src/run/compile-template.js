@@ -6,7 +6,7 @@ const platform = require('./platform');
 
 let transform = (v) => {
 	return v
-		.replace(/wx:/g, `${platform.globalApi}:`)
+		.replace(new RegExp(`(${platform.globalApis.join('|')}):`, 'g'), `${platform.globalApi}:`)
 		.replace(new RegExp(`(<|<\\/|\\.)(${platform.scripts.join('|')})`, 'g'), `$1${platform.script}`);
 
 };

@@ -54,6 +54,18 @@ class DevProcess extends EventEmitter {
 			prompt([
 				{
 					type: 'list',
+					name: 'platform',
+					message: 'Select platform:',
+					when: () => !process.env.PLATFORM,
+					choices: [
+						new Separator(' = For platform = '),
+						'wx',
+						'tt'
+					],
+					default: 'wx'
+				},
+				{
+					type: 'list',
 					name: 'isSelectAll',
 					message: 'Select all package:',
 					choices: allModules.reduce((pre, cur, index, source) => {
@@ -80,7 +92,7 @@ class DevProcess extends EventEmitter {
 					}
 				}
 			]).then((result) => {
-				let { isSelectAll, modules = [] } = result;
+				let { platform, isSelectAll, modules = [] } = result;
 
 				let ignore;
 				if (result.isSelectAll === 'no') {
@@ -97,6 +109,7 @@ class DevProcess extends EventEmitter {
 					ignore = [];
 				}
 				
+				!process.env.PLATFORM && (process.env.PLATFORM = platform);
 				process.env.IGNORE_MODULES = ignore.join(',');
 				resolve();
 			}).catch((res) => {

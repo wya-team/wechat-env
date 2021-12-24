@@ -7,3 +7,5 @@
 - 【`@wya/mp-polyfill`】：增加`tt.nextTick`, 兼容`wx.nextTick`
 - 【不支持】：函数无法作为参数传递：`<my-comp prop="{{ target }}">`, 即`target.xxx`不能是函数
 - 【不支持】：无法全局注册全局组件，`app.json -> usingComponents`无法作用
+- 【不支持】：addGlobalClass，externalClasses（能作用，但无法生效）
+- 【不支持】：observers，但支持observer，必要时将data转移到props里

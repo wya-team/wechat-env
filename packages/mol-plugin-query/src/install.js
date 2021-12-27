@@ -60,7 +60,7 @@ class QueryParser {
 			}
 			resolve(query);
 		});
-		this._molCtx.addLifecycleWaitingTask(parseTask);
+		this._molCtx.addPreprocessingTask(parseTask);
 		return parseTask;
 	}
 }

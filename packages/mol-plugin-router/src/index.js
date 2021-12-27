@@ -1,5 +1,3 @@
-import install from './install';
+import Router from './platforms/wechat';
 
-export default {
-	install
-};
+export default Router;

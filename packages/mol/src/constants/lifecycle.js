@@ -1,13 +1,10 @@
 /**
- * 自定义的app生命周期，将会在app.onShow前触发，且不会等待lifecycleWaitingTask
- */
-export const APP_BEFORE_SHOW = 'onBeforeShow';
-
-/**
  * App的生命周期
  */
 export const APP_LIFECYCLES = [
+	'beforeLaunch', // Mol custom
 	'onLaunch',
+	'beforeShow', // Mol custom
 	'onShow',
 	'onHide',
 	'onError',
@@ -28,6 +25,8 @@ export const APP_WAIT_LIFECYCLES = [
  * 页面的生命周期
  */
 export const PAGE_LIFECYCLES = [
+	'beforeCreate', // Mol custom
+	'created', // Mol custom
 	'onLoad',
 	'onShow',
 	'onReady',
@@ -60,7 +59,9 @@ export const PAGE_WAIT_LIFECYCLES = [
  * 组件的生命周期
  */
 export const COMPONENT_LIFECYCLES = [
+	'beforeCreate', // Mol custom
 	'created',
+	'beforeAttach', // Mol custom
 	'attached',
 	'ready',
 	'moved',

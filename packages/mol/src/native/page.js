@@ -1,9 +1,8 @@
 import { Utils } from '@wya/mp-utils';
-import { patchPageLifecycle } from '../init/index';
-import { mergeOptions } from '../utils';
+import { patchPage } from '../patch/index';
 
 export default (setupOptions) => {
-	const { middlewares = [], ...otherGlobalOptions } = setupOptions;
+	const { middlewares = [] } = setupOptions;
 	/**
 	 * 注意：
 	 * 中间件注册顺序为从前往后（Utils.compose实现原因），但实际代理的方法的执行顺序是从后往前的
@@ -14,12 +13,9 @@ export default (setupOptions) => {
 	const page = Utils.compose(...middlewares)(Page);
 
 	return pageOptions => {
-		const options = mergeOptions(
-			otherGlobalOptions,
-			pageOptions
-		);
 		// 最先执行patch，保证在到达业务层的前一步会做可能需要的wait
-		patchPageLifecycle(options);
-		return page(options);
+		pageOptions = patchPage(pageOptions);
+		
+		return page(pageOptions);
 	};
 };

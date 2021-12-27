@@ -1,6 +1,7 @@
 import Watcher from '../observer/watcher';
 
-export const initInjector = (vm, molVm, injector, provideData) => {
+export const initInjector = (vm, injector, provideData) => {
+	const molVm = vm.$mol;
 	const getter = () => {
 		injector.call(vm, provideData);
 	};

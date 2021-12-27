@@ -6,11 +6,12 @@ import { initGlobalApi } from './global-apis/index';
 
 initGlobalApi(Mol);
 
-const setup = setupOptions => {
+const setup = (setupOptions = {}) => {
 	setupOptions.provider && Mol.provider.set(setupOptions.provider());
 	Mol.app = setupApp(setupOptions.app || {});
 	Mol.page = setupPage(setupOptions.page || {});
 	Mol.component = setupComponent(setupOptions.component || {});
+	Mol.options.router = setupOptions.router;
 };
 
 export default Mol;

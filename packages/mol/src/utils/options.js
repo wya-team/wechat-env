@@ -1,26 +1,123 @@
-import { isObject } from './base';
-import { COMPONENT_LIFECYCLES } from '../constants';
+import { isFunc } from './base';
+import {
+	APP_LIFECYCLES,
+	PAGE_LIFECYCLES,
+	COMPONENT_LIFECYCLES,
+	COMPONENT_PAGE_LIFECYCLES,
+	PLAIN_OBJECT_FIELDS
+} from '../constants';
+
+/**
+ * 合并钩子函数
+ * @param {*} base 
+ * @param {*} target 
+ * @param {*} key 
+ * @returns 
+ */
+const mergeHook = (base, target, key) => {
+	if (!base[key]) {
+		base[key] = [];
+	}
+	if (isFunc(base[key])) {
+		base[key] = [base[key]];
+	}
+	if (base[key].includes(target)) return;
+	base[key].push(target);
+};
+
+const convertHooks = (options, hookNames) => {
+	hookNames.forEach(hookName => {
+		const hooks = options[hookName];
+		if (hooks) {
+			options[hookName] = function (...args) {
+				for (let i = 0; i < hooks.length; i++) {
+					hooks[i].apply(this, args);
+				}
+			};
+		}
+	});
+};
+
+const mergeArray = (base, target, key) => {
+	if (!base[key]) {
+		base[key] = [];
+	}
+	if (base[key].includes(target)) return;
+	base[key] = [...(base[key] || []), target];
+};
+
+const mergePlainObject = (base, target, key) => {
+	if (!base[key]) {
+		base[key] = {};
+	}
+	Object.keys(target).forEach(_key => {
+		if (target[_key] !== undefined) {
+			base[key][_key] = target[_key];
+		}
+	});
+};
 
 /**
  * 合并配置项
  * 如果为覆盖型配置（即非数组或Object的配置项），则优先级从左到右递增
  */
-export const mergeOptions = (...optionsList) => {
-	return optionsList.reduce((opts, cur) => {
+export const mergeOptions = (isComponent, hooks = [], ...optionsList) => {
+	const options = optionsList.reduce((mergedOptions, cur) => {
 		Object.entries(cur).forEach(([key, value]) => {
-			if (Array.isArray(value)) {
-				opts[key] = [...new Set([...(opts[key] || []), ...value])];
-			} else if (isObject(value)) {
-				opts[key] = {
-					...(opts[key] || {}),
-					...value
-				};
-			} else {
-				opts[key] = value;
+			if (isComponent && key === 'lifetimes' || key === 'pageLifetimes') {
+				Object.keys(value).forEach(hookName => {
+					mergeHook(mergedOptions[key], value[hookName], hookName);
+				});
+			} else if (hooks.includes(key)) {
+				mergeHook(mergedOptions, value, key);
+			} else if (Array.isArray(value)) {
+				mergeArray(mergedOptions, value, key);
+			} else if (PLAIN_OBJECT_FIELDS.includes(value)) {
+				mergePlainObject(mergedOptions, value, key);
+			} else if (typeof value !== 'undefined') {
+				mergedOptions[key] = value;
 			}
 		});
-		return opts;
-	}, {});
+		return mergedOptions;
+	}, isComponent ? { lifetimes: {}, pageLifetimes: {} } : {});
+
+	if (isComponent) {
+		convertHooks(options.lifetimes, COMPONENT_LIFECYCLES);
+		convertHooks(options.pageLifetimes, COMPONENT_PAGE_LIFECYCLES);
+	} else {
+		convertHooks(options, hooks);
+	}
+	return options;
+};
+
+export const mergeAppOptions = (...optionsList) => {
+	return mergeOptions(false, APP_LIFECYCLES, ...optionsList);
+};
+
+export const mergePageOptions = (...optionsList) => {
+	return mergeOptions(false, PAGE_LIFECYCLES, ...optionsList);
+};
+
+export const mergeComponentOptions = (...optionsList) => {
+	return mergeOptions(true, undefined, ...optionsList);
+};
+
+export const resolveConstructorOptions = Ctor => {
+	let { options } = Ctor;
+	if (Ctor.super) {
+		const superOptions = resolveConstructorOptions(Ctor.super);
+		const { name } = Ctor;
+		if (name === 'MolPage') {
+			options = mergePageOptions(superOptions, options);
+		} else if (name === 'MolComponent') {
+			options = mergeComponentOptions(superOptions, options);
+		} else if (name === 'MolApp') {
+			options = mergeAppOptions(superOptions, options);
+		} else {
+			options = mergeOptions(false, undefined, superOptions, options);
+		}
+	}
+	return options;
 };
 
 /**

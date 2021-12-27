@@ -31,3 +31,17 @@ export const remove = (arr, item) => {
 };
 
 export const noop = () => {};
+
+export const makeMap = (str) => {
+	const map = Object.create(null);
+	const list = str.split(',');
+	for (let i = 0; i < list.length; i++) {
+		map[list[i]] = true;
+	}
+	return key => map[key];
+};
+
+/**
+ * 判断某个字段是否为保留字段（不允许传入原生构造配置中）
+ */
+export const isReservedField = makeMap('router');

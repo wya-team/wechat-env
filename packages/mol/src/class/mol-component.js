@@ -1,9 +1,35 @@
-import Base from './base';
+import Mol from './mol';
+import { mergeComponentOptions, resolveConstructorOptions } from '../utils';
 
-export default class MolComponent extends Base {
-	/* eslint-disable no-useless-constructor */
-	constructor() {
-		super();
+export default class MolComponent extends Mol {
+	static super = Mol;
+
+	static options = Object.create(null, {
+		options: {
+			addGlobalClass: true,
+			multipleSlots: true
+		},
+		externalClasses: ['custom-class'],
+		properties: {
+			customStyle: String
+		},
+		methods: {
+			$emit(...args) {
+				this.triggerEvent(...args);
+			}
+		}
+	})
+
+	constructor(options) {
+		super(options);
+	
+		this._init(options);
 	}
-	/* eslint-enable no-useless-constructor */
+
+	_init(options) {
+		this.$options = mergeComponentOptions(
+			resolveConstructorOptions(MolComponent),
+			options
+		);
+	}
 }

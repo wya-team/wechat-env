@@ -1,9 +1,8 @@
 import { Utils } from '@wya/mp-utils';
-import { patchComponentLifecycle } from '../init/index';
-import { mergeOptions } from '../utils';
+import { patchComponent } from '../patch/index';
 
 export default (setupOptions) => {
-	const { middlewares = [], ...otherGlobalOptions } = setupOptions;
+	const { middlewares = [] } = setupOptions;
 	/**
 	 * 注意：
 	 * 中间件注册顺序为从前往后（Utils.compose实现原因），但实际代理的方法的执行顺序是从后往前的
@@ -14,27 +13,9 @@ export default (setupOptions) => {
 	const component = Utils.compose(...middlewares)(Component);
 
 	return compOptions => {
-		const options = mergeOptions(
-			{
-				options: {
-					addGlobalClass: true,
-					multipleSlots: true
-				},
-				externalClasses: ['custom-class'],
-				properties: {
-					customStyle: String
-				},
-				methods: {
-					$emit(...args) {
-						this.triggerEvent(...args);
-					}
-				}
-			},
-			otherGlobalOptions,
-			compOptions
-		);
 		// 最先执行patch，保证在到达业务层的前一步会做可能需要的wait
-		patchComponentLifecycle(options);
-		return component(options);
+		compOptions = patchComponent(compOptions);
+		
+		return component(compOptions);
 	};
 };

@@ -1,9 +1,21 @@
-import Base from './base';
+import Mol from './mol';
+import { mergeAppOptions, resolveConstructorOptions } from '../utils';
 
-export default class MolApp extends Base {
-	/* eslint-disable no-useless-constructor */
-	constructor() {
-		super();
+export default class MolApp extends Mol {
+	static super = Mol;
+
+	static options = Object.create(null);
+
+	constructor(options = {}) {
+		super(options);
+
+		this._init(options);
 	}
-	/* eslint-enable no-useless-constructor */
+
+	_init(options) {
+		this.$options = mergeAppOptions(
+			resolveConstructorOptions(MolApp),
+			options
+		);
+	}
 }

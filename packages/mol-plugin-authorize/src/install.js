@@ -6,7 +6,7 @@ let _wxLoginInstance;
 
 class AuthorizeManager {
 	constructor(options) {
-		this.tokenData = null;
+		this._tokenData = null;
 		this.cacheKey = options.cacheKey;
 		this.code2Token = options.code2Token;
 		this.onTokenChange = options.onTokenChange;
@@ -15,6 +15,14 @@ class AuthorizeManager {
 		this._codeLoginInstance = null;
 
 		this.init();
+	}
+
+	get tokenData() {
+		return this._tokenData;
+	}
+
+	set tokenData(value) {
+		this.setTokenData(value);
 	}
 
 	init() {
@@ -71,20 +79,16 @@ class AuthorizeManager {
 		return data;
 	}
 
-	getTokenData() {
-		return this.tokenData;
-	}
-
 	setTokenData(data) {
 		this.updateToken(data);
 		Storage.set(this.cacheKey, data);
 	}
 
 	updateToken(tokenData) {
-		this.tokenData = tokenData;
+		this._tokenData = tokenData;
 		this.onTokenChange(tokenData);
 	}
-	
+
 	/**
 	 * 清除授权
 	 */

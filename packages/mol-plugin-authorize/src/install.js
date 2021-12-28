@@ -14,7 +14,7 @@ class AuthorizeManager {
 		// 缓存codeLogin的promise实例，避免重复发起（因为涉及到外部传入的code2Token，所以挂在AuthorizeManager的实例上）
 		this._codeLoginInstance = null;
 
-		this.init();
+		// this.init();
 	}
 
 	get tokenData() {

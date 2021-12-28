@@ -51,7 +51,7 @@ const mergePlainObject = (base, target, key) => {
 		base[key] = {};
 	}
 	Object.keys(target).forEach(_key => {
-		if (target[_key] !== undefined) {
+		if (typeof target[_key] !== 'undefined') {
 			base[key][_key] = target[_key];
 		}
 	});
@@ -64,15 +64,15 @@ const mergePlainObject = (base, target, key) => {
 export const mergeOptions = (isComponent, hooks = [], ...optionsList) => {
 	const options = optionsList.reduce((mergedOptions, cur) => {
 		Object.entries(cur).forEach(([key, value]) => {
-			if (isComponent && key === 'lifetimes' || key === 'pageLifetimes') {
+			if (isComponent && (key === 'lifetimes' || key === 'pageLifetimes')) {
 				Object.keys(value).forEach(hookName => {
 					mergeHook(mergedOptions[key], value[hookName], hookName);
 				});
 			} else if (hooks.includes(key)) {
 				mergeHook(mergedOptions, value, key);
-			} else if (Array.isArray(value)) {
+			} else if (Array.isArray(value) && key !== 'behaviors') {
 				mergeArray(mergedOptions, value, key);
-			} else if (PLAIN_OBJECT_FIELDS.includes(value)) {
+			} else if (PLAIN_OBJECT_FIELDS.includes(key)) {
 				mergePlainObject(mergedOptions, value, key);
 			} else if (typeof value !== 'undefined') {
 				mergedOptions[key] = value;

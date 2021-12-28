@@ -19,7 +19,9 @@ const callHook = (vm, hookName, args, isComponent = false) => {
 const getOptionsForNative = molOptions => {
 	const opts = {};
 	Object.keys(molOptions).forEach(key => {
-		if (!isReservedField(key)) {
+		if (key === 'lifetimes' || key === 'pageLifetimes') {
+			opts[key] = { ...molOptions[key] };
+		} else if (!isReservedField(key)) {
 			opts[key] = molOptions[key];
 		}
 	});

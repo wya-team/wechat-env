@@ -1,8 +1,7 @@
 import Mol from './mol';
 import {
 	mergeComponentOptions,
-	normalizeProps,
-	normalizeComponentLifecycles,
+	normalizeComponentOptions,
 	resolveConstructorOptions,
 	getValueDescriptor
 } from '../utils';
@@ -25,8 +24,7 @@ export default class MolComponent extends Mol {
 	})
 
 	constructor(options) {
-		normalizeProps(options);
-		normalizeComponentLifecycles(options);
+		normalizeComponentOptions(options);
 
 		super(options);
 	

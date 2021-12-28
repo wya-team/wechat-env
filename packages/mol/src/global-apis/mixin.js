@@ -33,8 +33,7 @@ export const initMixin = Mol => {
 	 * @returns 
 	 */
 	Mol.componentMixin = function (mixin) {
-		normalizeProps(mixin);
-		normalizeComponentLifecycles(mixin);
+		normalizeComponentOptions(mixin);
 		this.MolComponent.options = mergeComponentOptions(this.MolComponent.options, mixin);
 		return this;
 	};

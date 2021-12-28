@@ -1,8 +1,8 @@
 import {
-	APP_WAIT_LIFECYCLES,
-	PAGE_WAIT_LIFECYCLES,
-	COMPONENT_WAIT_LIFECYCLES,
-	COMPONENT_PAGE_WAIT_LIFECYCLES
+	APP_WAIT_HOOKS,
+	PAGE_WAIT_HOOKS,
+	COMPONENT_WAIT_HOOKS,
+	COMPONENT_PAGE_WAIT_HOOKS
 } from '../constants';
 import Mol from '../class/mol';
 import MolApp from '../class/mol-app';
@@ -31,7 +31,7 @@ const getOptionsForNative = molOptions => {
 export const patchApp = (appOptions) => {
 	// 需最先执行，配置项合并
 	const molApp = new MolApp(appOptions);
-	APP_WAIT_LIFECYCLES.forEach(it => {
+	APP_WAIT_HOOKS.forEach(it => {
 		let lifecycle = molApp.$options[it];
 		if (lifecycle) {
 			molApp.$options[it] = async function (...args) {
@@ -65,7 +65,7 @@ export const patchApp = (appOptions) => {
 export const patchPage = (pageOptions) => {
 	// 需最先执行，配置项合并
 	const molPage = new MolPage(pageOptions);
-	PAGE_WAIT_LIFECYCLES.forEach(it => {
+	PAGE_WAIT_HOOKS.forEach(it => {
 		const lifecycle = molPage.$options[it];
 		const isOnUnload = it === 'onUnload';
 		
@@ -100,7 +100,7 @@ export const patchComponent = (compOptions) => {
 	const molComponent = new MolComponent(compOptions);
 	const { lifetimes, pageLifetimes } = molComponent.$options;
 	
-	COMPONENT_WAIT_LIFECYCLES.forEach(it => {
+	COMPONENT_WAIT_HOOKS.forEach(it => {
 		const lifecycle = lifetimes[it];
 		const isDetached = it === 'detached';
 		if (lifecycle || isDetached) {
@@ -113,7 +113,7 @@ export const patchComponent = (compOptions) => {
 		}
 	});
 	if (pageLifetimes) {
-		COMPONENT_PAGE_WAIT_LIFECYCLES.forEach(it => {
+		COMPONENT_PAGE_WAIT_HOOKS.forEach(it => {
 			const lifecycle = pageLifetimes[it];
 			if (lifecycle) {
 				molComponent.$options.pageLifetimes[it] = async function (...args) {

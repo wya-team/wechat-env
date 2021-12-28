@@ -1,9 +1,9 @@
 import { isFunc } from './base';
 import {
-	APP_LIFECYCLES,
-	PAGE_LIFECYCLES,
-	COMPONENT_LIFECYCLES,
-	COMPONENT_PAGE_LIFECYCLES,
+	APP_HOOKS,
+	PAGE_HOOKS,
+	COMPONENT_HOOKS,
+	COMPONENT_PAGE_HOOKS,
 	PLAIN_OBJECT_FIELDS
 } from '../constants';
 
@@ -68,7 +68,7 @@ const mergePlainObject = (base, target, key) => {
  */
 export const normalizeComponentLifecycles = (options) => {
 	const { lifetimes = {} } = options;
-	COMPONENT_LIFECYCLES.forEach(hookName => {
+	COMPONENT_HOOKS.forEach(hookName => {
 		const exposedHook = options[hookName];
 		const hook = lifetimes[hookName] || exposedHook;
 		if (hook) {
@@ -128,21 +128,21 @@ export const mergeOptions = (isComponent, hooks = [], ...optionsList) => {
 };
 
 export const mergeAppOptions = (...optionsList) => {
-	const options = mergeOptions(false, APP_LIFECYCLES, ...optionsList);
-	convertHooks(options, APP_LIFECYCLES);
+	const options = mergeOptions(false, APP_HOOKS, ...optionsList);
+	convertHooks(options, APP_HOOKS);
 	return options;
 };
 
 export const mergePageOptions = (...optionsList) => {
-	const options = mergeOptions(false, PAGE_LIFECYCLES, ...optionsList);
-	convertHooks(options, PAGE_LIFECYCLES);
+	const options = mergeOptions(false, PAGE_HOOKS, ...optionsList);
+	convertHooks(options, PAGE_HOOKS);
 	return options;
 };
 
 export const mergeComponentOptions = (...optionsList) => {
 	const options = mergeOptions(true, undefined, ...optionsList);
-	convertHooks(options.lifetimes, COMPONENT_LIFECYCLES);
-	convertHooks(options.pageLifetimes, COMPONENT_PAGE_LIFECYCLES);
+	convertHooks(options.lifetimes, COMPONENT_HOOKS);
+	convertHooks(options.pageLifetimes, COMPONENT_PAGE_HOOKS);
 	return options;
 };
 

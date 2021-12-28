@@ -2,6 +2,7 @@ import {
 	mergeAppOptions,
 	mergePageOptions,
 	mergeComponentOptions,
+	normalizeProps,
 	normalizeComponentLifecycles
 } from '../utils';
 
@@ -32,6 +33,7 @@ export const initMixin = Mol => {
 	 * @returns 
 	 */
 	Mol.componentMixin = function (mixin) {
+		normalizeProps(mixin);
 		normalizeComponentLifecycles(mixin);
 		this.MolComponent.options = mergeComponentOptions(this.MolComponent.options, mixin);
 		return this;

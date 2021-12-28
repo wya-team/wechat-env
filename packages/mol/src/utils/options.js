@@ -140,3 +140,13 @@ export const normalizeComponentLifecycles = (options) => {
 	});
 	options.lifetimes = lifetimes;
 };
+
+export const normalizeProps = (options) => {
+	const { props = {}, properties = {} } = options;
+
+	options.properties = {
+		...props,
+		...properties
+	};
+	delete options.props;
+};

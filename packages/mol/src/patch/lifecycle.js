@@ -8,7 +8,7 @@ import Mol from '../class/mol';
 import MolApp from '../class/mol-app';
 import MolPage from '../class/mol-page';
 import MolComponent from '../class/mol-component';
-import { normalizeComponentLifecycles, isReservedField } from '../utils';
+import { isReservedField } from '../utils';
 import { initInjector } from './injector';
 
 const callHook = (vm, hookName, args, isComponent = false) => {
@@ -96,7 +96,6 @@ export const patchPage = (pageOptions) => {
 };
 
 export const patchComponent = (compOptions) => {
-	normalizeComponentLifecycles(compOptions);
 	// 需最先执行，配置项合并
 	const molComponent = new MolComponent(compOptions);
 	const { lifetimes, pageLifetimes } = molComponent.$options;

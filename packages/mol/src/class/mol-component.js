@@ -1,23 +1,25 @@
 import Mol from './mol';
-import { mergeComponentOptions, resolveConstructorOptions } from '../utils';
+import {
+	mergeComponentOptions,
+	resolveConstructorOptions,
+	getValueDescriptor
+} from '../utils';
 
 export default class MolComponent extends Mol {
 	static super = Mol;
 
 	static options = Object.create(null, {
-		options: {
+		options: getValueDescriptor({
 			addGlobalClass: true,
 			multipleSlots: true
-		},
-		externalClasses: ['custom-class'],
-		properties: {
-			customStyle: String
-		},
-		methods: {
+		}),
+		externalClasses: getValueDescriptor(['custom-class']),
+		properties: getValueDescriptor({ customStyle: String }),
+		methods: getValueDescriptor({
 			$emit(...args) {
 				this.triggerEvent(...args);
 			}
-		}
+		})
 	})
 
 	constructor(options) {

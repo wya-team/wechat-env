@@ -45,3 +45,12 @@ export const makeMap = (str) => {
  * 判断某个字段是否为保留字段（不允许传入原生构造配置中）
  */
 export const isReservedField = makeMap('router');
+
+export const getValueDescriptor = value => {
+	return {
+		configurable: true,
+		enumerable: true,
+		writable: true,
+		value
+	};
+};

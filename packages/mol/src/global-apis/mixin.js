@@ -2,8 +2,7 @@ import {
 	mergeAppOptions,
 	mergePageOptions,
 	mergeComponentOptions,
-	normalizeProps,
-	normalizeComponentLifecycles
+	normalizeComponentOptions
 } from '../utils';
 
 export const initMixin = Mol => {

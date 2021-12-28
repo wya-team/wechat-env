@@ -123,26 +123,27 @@ export const mergeOptions = (isComponent, hooks = [], ...optionsList) => {
 		});
 		return mergedOptions;
 	}, isComponent ? { lifetimes: {}, pageLifetimes: {} } : {});
-
-	if (isComponent) {
-		convertHooks(options.lifetimes, COMPONENT_LIFECYCLES);
-		convertHooks(options.pageLifetimes, COMPONENT_PAGE_LIFECYCLES);
-	} else {
-		convertHooks(options, hooks);
-	}
+	
 	return options;
 };
 
 export const mergeAppOptions = (...optionsList) => {
-	return mergeOptions(false, APP_LIFECYCLES, ...optionsList);
+	const options = mergeOptions(false, APP_LIFECYCLES, ...optionsList);
+	convertHooks(options, APP_LIFECYCLES);
+	return options;
 };
 
 export const mergePageOptions = (...optionsList) => {
-	return mergeOptions(false, PAGE_LIFECYCLES, ...optionsList);
+	const options = mergeOptions(false, PAGE_LIFECYCLES, ...optionsList);
+	convertHooks(options, PAGE_LIFECYCLES);
+	return options;
 };
 
 export const mergeComponentOptions = (...optionsList) => {
-	return mergeOptions(true, undefined, ...optionsList);
+	const options = mergeOptions(true, undefined, ...optionsList);
+	convertHooks(options.lifetimes, COMPONENT_LIFECYCLES);
+	convertHooks(options.pageLifetimes, COMPONENT_PAGE_LIFECYCLES);
+	return options;
 };
 
 export const resolveConstructorOptions = Ctor => {

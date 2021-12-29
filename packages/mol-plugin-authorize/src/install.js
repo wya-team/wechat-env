@@ -85,6 +85,7 @@ class AuthorizeManager {
 	}
 
 	updateToken(tokenData) {
+		if (this._tokenData === tokenData) return;
 		this._tokenData = tokenData;
 		this.onTokenChange(tokenData);
 	}

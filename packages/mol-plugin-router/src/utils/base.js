@@ -1,5 +1,3 @@
-import { URL } from '@wya/mp-utils';
-
 export const noop = () => {};
 
 const _toString = Object.prototype.toString;

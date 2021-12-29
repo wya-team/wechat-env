@@ -12,8 +12,6 @@ import {
 } from '../utils';
 
 export default class RouterCore {
-	__switchTab__
-
 	constructor() {
 		this.navigatingUrl = null;
 		this.currentRoute = null;
@@ -112,7 +110,7 @@ export default class RouterCore {
 							const { fail } = native;
 							fail && fail(...args);
 							this.pendingRoute = null;
-							const error = args[0]
+							const error = args[0];
 							this.errorCaptured(error, this.currentRoute, toRoute);
 							reject(args[0]);
 						}

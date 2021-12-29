@@ -1,4 +1,4 @@
-const install = (Mol, options) => {
+const install = (Mol) => {
 	Mol.appMixin({
 		beforeLaunch() {
 			Mol.proxy(this, '$mol', '$router');

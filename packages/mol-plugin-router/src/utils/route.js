@@ -1,15 +1,6 @@
 import { URL } from '@wya/mp-utils';
 import { isPlainObject } from './base';
 
-// 保留字段（官方api接收的字段）
-const RESERVED_KEYS = [
-	'url',
-	'events',
-	'success',
-	'fail',
-	'complete'
-];
-
 export const isSameRoute = (a, b) => {
 	if (!a || !b) return false;
 	return a.fullPath === b.fullPath;
@@ -21,35 +12,20 @@ export const isSameRoute = (a, b) => {
  */
 export const getCurrentPageUrl = () => {
 	const currentPage = getCurrentPages().pop();
+	if (!currentPage) return null;
+
 	const res = {
 		path: `/${currentPage.route}`,
 		query: currentPage.options
 	};
 	res.fullPath = URL.merge(res);
-	return currentPage 
-		? res
-		: null;
+	return res;
 };
 
 export const parseUrl = url => {
 	const result = URL.parse(url);
 	result.path = result.path.join('/');
 	return result;
-};
-
-/**
- * 从开发者传入的路由options中筛选出开发者自定义的一些数据
- * @param {*} userRouterOpts 
- * @returns 
- */
-export const getCustomData = (userRouterOpts) => {
-	const customData = {};
-	Object.keys(userRouterOpts).forEach(key => {
-		if (!RESERVED_KEYS.includes(key)) {
-			customData[key] = userRouterOpts[key];
-		}
-	});
-	return customData;
 };
 
 /**
@@ -89,9 +65,8 @@ export const createRoute = route => {
 };
 
 export const getCurrentRoute = () => {
-	const res = getCurrentPageUrl(false);
-	return {
-		...res,
-		native: null
-	};
+	const res = getCurrentPageUrl();
+	return res 
+		? { ...res, native: null }
+		: null;
 };

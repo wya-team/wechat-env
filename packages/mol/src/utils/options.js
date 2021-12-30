@@ -16,10 +16,10 @@ import {
 const mergeHook = (base, target, key) => {
 	if (!base[key]) {
 		base[key] = [];
-	}
-	if (isFunc(base[key])) {
+	} else if (isFunc(base[key])) {
 		base[key] = [base[key]];
 	}
+	
 	if (Array.isArray(target)) {
 		base[key].push(...target);
 	} else if (!base[key].includes(target)) {

@@ -11,9 +11,12 @@ import {
 	createUnsupportedNavigationError
 } from '../utils';
 
+/**
+ * TODO: 保存当前路由的信息（this.$route）？
+ * 需考虑非主动调用跳转方法进行跳转的一些场景（如直接进入小程序）
+ */
 export default class RouterCore {
 	constructor() {
-		this.navigatingUrl = null;
 		this.currentRoute = null;
 		this.pendingRoute = null;
 		this.errorCbs = [];
@@ -62,6 +65,7 @@ export default class RouterCore {
 		return routeOpts => {
 			return new Promise((resolve, reject) => {
 				const toRoute = createRoute(routeOpts);
+				this.currentRoute = getCurrentRoute();
 
 				// 如果目标页面和当前页面或正在跳转的页面相同（fullPath相同），则阻止掉，不做跳转
 				if (isSameRoute(toRoute, this.pendingRoute) || isSameRoute(toRoute, this.currentRoute)) {
@@ -102,7 +106,7 @@ export default class RouterCore {
 						success: (...args) => {
 							const { success } = native;
 							success && success(...args);
-							this.currentRoute = this.pendingRoute;
+							this.currentRoute = null;
 							this.pendingRoute = null;
 							resolve();
 						},
@@ -121,7 +125,7 @@ export default class RouterCore {
 				if (this.beforeEachFn) {
 					this.beforeEachFn(
 						toRoute,
-						this.currentRoute || (this.currentRoute = getCurrentRoute()),
+						this.currentRoute,
 						next
 					);
 				} else {

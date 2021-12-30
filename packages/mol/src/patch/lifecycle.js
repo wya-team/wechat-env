@@ -1,4 +1,7 @@
 import {
+	APP_NATIVE_HOOKS,
+	PAGE_NATIVE_HOOKS,
+	COMPONENT_NATIVE_HOOKS,
 	APP_WAIT_HOOKS,
 	PAGE_WAIT_HOOKS,
 	COMPONENT_WAIT_HOOKS,
@@ -12,50 +15,91 @@ import { isReservedField } from '../utils';
 import { initInjector } from './injector';
 
 const callHook = (vm, hookName, args, isComponent = false) => {
-	const hook = isComponent ? vm.$mol.$options.lifetimes[hookName] : vm.$mol.$options[hookName];
-	hook && hook.apply(vm, args);
+	const molOptions = vm.$mol.$options;
+	const hooks = isComponent 
+		? molOptions.lifetimes[hookName] || molOptions.pageLifetimes[hookName] 
+		: molOptions[hookName];
+
+	// 自定义的钩子可能不存在对应的钩子callback
+	if (!hooks) return;
+
+	// 如onLoad等这种钩子会被合并成数组挂载在$mol.$options中
+	if (Array.isArray(hooks)) {
+		for (let i = 0; i < hooks.length; i++) {
+			hooks[i].apply(vm, args);
+		}
+	} else {
+		// 如onShareAppMessage等这种需要返回值的钩子，只能存在一个，故不会被合并成数组
+		hooks.apply(vm, args);
+	}
 };
 
-const getOptionsForNative = molOptions => {
+const createNativeHookFn = (hookName, waitHooks, isComponent) => {
+	return waitHooks.includes(hookName)
+		? async function (...args) {
+			// 保证预处理任务执行完成，再执行业务逻辑
+			await Mol.waitPreprocessing();
+			return callHook(this, hookName, args, isComponent);
+		}
+		: function (...args) {
+			// 因为有些钩子是需要返回值的，故需要return
+			return callHook(this, hookName, args, isComponent);
+		};
+};
+
+/**
+ * @param {*} molOptions this.$mol.$options
+ * @param {*} nativeHooks 原生钩子数组
+ * @param {*} isComponent 是否为组件options
+ * @returns 用于传给原生构造方法的配置数据
+ */
+const getOptionsForNative = (molOptions, nativeHooks, waitHooks, isComponent) => {
 	const opts = {};
+
 	Object.keys(molOptions).forEach(key => {
-		if (key === 'lifetimes' || key === 'pageLifetimes') {
-			opts[key] = { ...molOptions[key] };
+		const isCompPageHooks = key === 'pageLifetimes';
+		if (key === 'lifetimes' || isCompPageHooks) {
+			!opts[key] && (opts[key] = {});
+
+			Object.keys(molOptions[key]).forEach(hookName => {
+				// pageLifetimes中不存在自定义钩子，所以不用判断是否为原生钩子
+				if (!isCompPageHooks && !nativeHooks.includes(hookName)) return;
+				
+				opts[key][hookName] = createNativeHookFn(hookName, waitHooks, isComponent);
+			});
+		} else if (nativeHooks.includes(key)) {
+			opts[key] = createNativeHookFn(key, waitHooks, isComponent);
 		} else if (!isReservedField(key)) {
 			opts[key] = molOptions[key];
 		}
 	});
+
 	return opts;
 };
 
 export const patchApp = (appOptions) => {
 	// 需最先执行，配置项合并
 	const molApp = new MolApp(appOptions);
-	APP_WAIT_HOOKS.forEach(it => {
-		let lifecycle = molApp.$options[it];
-		if (lifecycle) {
-			molApp.$options[it] = async function (...args) {
-				// 保证必要的等待任务执行完成，再执行业务逻辑
-				await Mol.waitPreprocessing();
-				lifecycle.apply(this, args);
-			};
-		}
-	});
 
-	appOptions = getOptionsForNative(molApp.$options);
+	appOptions = getOptionsForNative(
+		molApp.$options,
+		APP_NATIVE_HOOKS,
+		APP_WAIT_HOOKS
+	);
 
+	const { onLaunch, onShow } = appOptions;
 	appOptions.onLaunch = function (...args) {
 		molApp.$native = this;
-		// 注册 $mol
+		// mount $mol
 		this.$mol = molApp;
 		callHook(this, 'beforeLaunch', args);
-		callHook(this, 'onLaunch', args);
+		onLaunch && onLaunch.apply(this, args);
 	};
 
 	appOptions.onShow = function (...args) {
 		// 在业务的onShow前触发 beforeShow 钩子
 		callHook(this, 'beforeShow', args);
-		callHook(this, 'onShow', args);
+		onShow && onShow.apply(this, args);
 	};
 
 	return appOptions;
@@ -65,31 +109,34 @@ export const patchApp = (appOptions) => {
 export const patchPage = (pageOptions) => {
 	// 需最先执行，配置项合并
 	const molPage = new MolPage(pageOptions);
-	PAGE_WAIT_HOOKS.forEach(it => {
-		const lifecycle = molPage.$options[it];
-		const isOnUnload = it === 'onUnload';
-		
-		if (lifecycle || isOnUnload) {
-			molPage.$options[it] = async function (...args) {
-				await Mol.waitPreprocessing();
 
-				lifecycle && lifecycle.apply(this, args);
-				isOnUnload && this.$mol.$destroy();
-			};
-		}
-	});
+	pageOptions = getOptionsForNative(
+		molPage.$options,
+		PAGE_NATIVE_HOOKS,
+		PAGE_WAIT_HOOKS
+	);
 
-	pageOptions = getOptionsForNative(molPage.$options);
-	
+	const { onLoad, onUnload } = pageOptions;
 	pageOptions.onLoad = function (...args) {
 		molPage.$native = this;
-		// 注册 $mol
+		// mount $mol
 		this.$mol = molPage;
 		callHook(this, 'beforeCreate', args);
 		const { injector } = molPage.$options;
 		injector && initInjector(this, injector, Mol.provider.get());
 		callHook(this, 'created', args);
-		callHook(this, 'onLoad', args);
+		onLoad && onLoad.apply(this, args);
+	};
+
+	pageOptions.onUnload = function (...args) {
+		const res = onUnload && onUnload.apply(this, args);
+		if (res && res.then) {
+			res.then(() => {
+				this.$mol.$destroy();
+			});
+		} else {
+			this.$mol.$destroy();
+		}
 	};
 
 	return pageOptions;
@@ -98,46 +145,40 @@ export const patchPage = (pageOptions) => {
 export const patchComponent = (compOptions) => {
 	// 需最先执行，配置项合并
 	const molComponent = new MolComponent(compOptions);
-	const { lifetimes, pageLifetimes } = molComponent.$options;
-	
-	COMPONENT_WAIT_HOOKS.forEach(it => {
-		const lifecycle = lifetimes[it];
-		const isDetached = it === 'detached';
-		if (lifecycle || isDetached) {
-			molComponent.$options.lifetimes[it] = async function (...args) {
-				await Mol.waitPreprocessing();
 
-				lifecycle && lifecycle.apply(this, args);
-				isDetached && this.$mol.$destroy();
-			};
-		}
-	});
-	if (pageLifetimes) {
-		COMPONENT_PAGE_WAIT_HOOKS.forEach(it => {
-			const lifecycle = pageLifetimes[it];
-			if (lifecycle) {
-				molComponent.$options.pageLifetimes[it] = async function (...args) {
-					await Mol.waitPreprocessing();
-					lifecycle.apply(this, args);
-				};
-			}
-		});
-	}
+	compOptions = getOptionsForNative(
+		molComponent.$options,
+		COMPONENT_NATIVE_HOOKS,
+		[...COMPONENT_WAIT_HOOKS, ...COMPONENT_PAGE_WAIT_HOOKS],
+		true /* isComponent */
+	);
 
-	compOptions = getOptionsForNative(molComponent.$options);
-	
+	const { created, attached, detached } = compOptions.lifetimes;
+
 	compOptions.lifetimes.created = function (...args) {
 		molComponent.$native = this;
-		// 注册 $mol
+		// mount $mol
 		this.$mol = molComponent;
 		callHook(this, 'beforeCreate', args, true /* isComponent */);
-		callHook(this, 'created', args, true);
+		created && created.apply(this, args);
 	};
+
 	compOptions.lifetimes.attached = function (...args) {
 		callHook(this, 'beforeAttach', args, true);
 		const { injector } = molComponent.$options;
 		injector && initInjector(this, injector, Mol.provider.get());
-		callHook(this, 'attached', args, true);
+		attached && attached.apply(this, args);
+	};
+
+	compOptions.lifetimes.detached = function (...args) {
+		const res = detached && detached.apply(this, args);
+		if (res && res.then) {
+			res.then(() => {
+				this.$mol.$destroy();
+			});
+		} else {
+			this.$mol.$destroy();
+		}
 	};
 
 	return compOptions;

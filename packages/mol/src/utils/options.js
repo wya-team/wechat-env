@@ -1,9 +1,8 @@
 import { isFunc } from './base';
 import {
 	APP_HOOKS,
-	PAGE_HOOKS,
 	COMPONENT_HOOKS,
-	COMPONENT_PAGE_HOOKS,
+	PAGE_MERGE_HOOKS,
 	PLAIN_OBJECT_FIELDS
 } from '../constants';
 
@@ -21,21 +20,11 @@ const mergeHook = (base, target, key) => {
 	if (isFunc(base[key])) {
 		base[key] = [base[key]];
 	}
-	if (base[key].includes(target)) return;
-	base[key].push(target);
-};
-
-const convertHooks = (options, hookNames) => {
-	hookNames.forEach(hookName => {
-		const hooks = options[hookName];
-		if (hooks) {
-			options[hookName] = function (...args) {
-				for (let i = 0; i < hooks.length; i++) {
-					hooks[i].apply(this, args);
-				}
-			};
-		}
-	});
+	if (Array.isArray(target)) {
+		base[key].push(...target);
+	} else if (!base[key].includes(target)) {
+		base[key].push(target);
+	}
 };
 
 const mergeArray = (base, target, key) => {
@@ -128,22 +117,15 @@ export const mergeOptions = (isComponent, hooks = [], ...optionsList) => {
 };
 
 export const mergeAppOptions = (...optionsList) => {
-	const options = mergeOptions(false, APP_HOOKS, ...optionsList);
-	convertHooks(options, APP_HOOKS);
-	return options;
+	return mergeOptions(false, APP_HOOKS, ...optionsList);
 };
 
 export const mergePageOptions = (...optionsList) => {
-	const options = mergeOptions(false, PAGE_HOOKS, ...optionsList);
-	convertHooks(options, PAGE_HOOKS);
-	return options;
+	return mergeOptions(false, PAGE_MERGE_HOOKS, ...optionsList);
 };
 
 export const mergeComponentOptions = (...optionsList) => {
-	const options = mergeOptions(true, undefined, ...optionsList);
-	convertHooks(options.lifetimes, COMPONENT_HOOKS);
-	convertHooks(options.pageLifetimes, COMPONENT_PAGE_HOOKS);
-	return options;
+	return mergeOptions(true, undefined, ...optionsList);
 };
 
 export const resolveConstructorOptions = Ctor => {

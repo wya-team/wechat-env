@@ -65,12 +65,26 @@ const PAGE_CUSTOM_HOOKS = [
 ];
 
 /**
+ * 页面中需要return数据的钩子
+ */
+const PAGE_EXIST_RETURN_HOOKS = [
+	'onShareAppMessage',
+	'onShareTimeline',
+	'onAddToFavorites'
+];
+
+/**
  * Mol.page 的全部钩子
  */
 export const PAGE_HOOKS = [
 	...PAGE_NATIVE_HOOKS,
 	...PAGE_CUSTOM_HOOKS
 ];
+
+/**
+ * 页面中可合并成数组的钩子
+ */
+export const PAGE_MERGE_HOOKS = PAGE_HOOKS.filter(hook => !PAGE_EXIST_RETURN_HOOKS.includes(hook));
 
 /**
  * 页面钩子中，需等待全局预处理任务的钩子

@@ -2,8 +2,7 @@ import { URL } from '@wya/mp-utils';
 import { isPlainObject } from './base';
 
 export const isSameRoute = (a, b) => {
-	if (!a || !b) return false;
-	return a.fullPath === b.fullPath;
+	return a && b && a.fullPath === b.fullPath;
 };
 
 /**

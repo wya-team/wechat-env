@@ -1,11 +1,12 @@
 const { EventEmitter } = require('events');
 const path = require('path');
 const fs = require('fs-extra');
-const { prompt, Separator } = require('inquirer');
+const { prompt, Separator, registerPrompt } = require('inquirer');
 const { exec } = require('child_process');
 
-
 const gulpConfig = path.resolve(__dirname, './compiler.js');
+
+registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 
 class DevProcess extends EventEmitter {
 	constructor(parent) {
@@ -75,10 +76,31 @@ class DevProcess extends EventEmitter {
 					}, [])
 				},
 				{
-					type: 'checkbox',
-					name: 'modules',
+					type: 'autocomplete',
+					message: 'Select module:',
+					name: 'module',
+					// suggestOnly: true, 开启后可以验证数据且需要使用tab选中
+					default: 'multiple',
 					when: (answers) => answers.isSelectAll === 'no',
+					source: (answers, input) => {
+						input = input || '';
+						return new Promise((resolve => {
+							let choices = allModules.reduce((pre, cur, index, source) => {
+								pre = pre.concat(cur.modules.map(i => `${cur.package ? `${cur.package}/` : ''}pages/${i}`));
+								return pre;
+							}, ['multiple']);
+							let filter = input 
+								? choices.filter(item => item.includes(input))
+								: choices;
+							resolve(filter);
+						}));
+					}
+				},
+				{
+					type: 'checkbox',
 					message: 'Select modules:',
+					name: 'modules',
+					when: (answers) => answers.module === 'multiple',
 					choices: allModules.reduce((pre, cur, index, source) => {
 						pre.push(new Separator(`--- ${cur.package || 'master'} ---`));
 						pre = pre.concat(cur.modules.map(i => `${cur.package ? `${cur.package}/` : ''}pages/${i}`));
@@ -92,10 +114,15 @@ class DevProcess extends EventEmitter {
 					}
 				}
 			]).then((result) => {
-				let { platform, isSelectAll, modules = [] } = result;
+				let { platform, isSelectAll, modules = [], module: $module } = result;
 
 				let ignore;
 				if (result.isSelectAll === 'no') {
+					
+					if ($module !== 'multiple') {
+						modules = [$module];
+					}
+
 					ignore = allModules
 						.reduce(
 							(pre, cur, index, source) => pre.concat(

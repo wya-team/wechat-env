@@ -64,7 +64,8 @@ module.exports = (options) => {
 					.replace(/\.wya$/, `.${ext}`);
 
 				if (!fullpath.includes(to)) {
-					throw new Error('路径解析错误');
+					console.log(`${fullpath}, ${to} 路径解析错误`);
+					return;
 				}
 
 				fullpath = resolve(fullpath);
@@ -89,7 +90,8 @@ module.exports = (options) => {
 				}, 
 				(err, result) => {
 					if (err) {
-						throw err;
+						console.log(err);
+						return;
 					}
 					write('js', result.code);
 				}

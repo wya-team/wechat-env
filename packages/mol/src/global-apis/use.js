@@ -6,14 +6,16 @@ export const initUse = (Mol) => {
 	* @param {*} plugin 
 	*/
 	Mol.use = function use(plugin, ...args) {
-		if (plugin.installed) return;
+		const installedPlugins = this._installedPlugins || (this._installedPlugins = []);
+		if (installedPlugins.indexOf(plugin) > -1) return this;
+
 		const install = plugin.install || plugin;
-	
 		if (isFunc(install)) {
 		   install.apply(plugin, [this, ...args]);
-		   plugin.installed = true;
+		   installedPlugins.push(plugin);
 		} else {
-		   throw new Error("plugin's install method is required.");
+		   console.error(`plugin's 'install' method or plugin should be a function.`);
 		}
+		return this;
 	};
 };

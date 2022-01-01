@@ -7,11 +7,25 @@ import { initGlobalApi } from './global-apis/index';
 initGlobalApi(Mol);
 
 const setup = (setupOptions = {}) => {
-	setupOptions.provider && Mol.provider.set(setupOptions.provider());
+	const { provider, plugins } = setupOptions;
+
+	provider && Mol.provider.set(provider());
+
 	Mol.app = setupApp(setupOptions.app || {});
 	Mol.page = setupPage(setupOptions.page || {});
 	Mol.component = setupComponent(setupOptions.component || {});
 	Mol.options.router = setupOptions.router;
+
+	if (plugins && plugins.length) {
+		plugins.forEach(plugin => {
+			// 需要传递注册配置的插件可按这种规则：plugins: [[xxxPlugin, arg1, arg2, ...]]
+			if (Array.isArray(plugin)) {
+				Mol.use(plugin[0], ...plugin.slice(1));
+			} else {
+				Mol.use(plugin);
+			}
+		});
+	}
 };
 
 export default Mol;

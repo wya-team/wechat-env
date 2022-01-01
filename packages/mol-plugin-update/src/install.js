@@ -34,6 +34,12 @@ class UpdateManager {
 
 const install = (Mol) => {
 	Mol.updateManager = UpdateManager;
+
+	Mol.appMixin({
+		beforeLaunch() {
+			Mol.updateManager.watch();
+		}
+	});
 };
 
 export default install;

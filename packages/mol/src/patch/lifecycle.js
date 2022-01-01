@@ -1,7 +1,7 @@
 import {
-	APP_NATIVE_HOOKS,
-	PAGE_NATIVE_HOOKS,
-	COMPONENT_NATIVE_HOOKS,
+	APP_HOOKS,
+	PAGE_HOOKS,
+	COMPONENT_HOOKS,
 	APP_WAIT_HOOKS,
 	PAGE_WAIT_HOOKS,
 	COMPONENT_WAIT_HOOKS,
@@ -49,11 +49,11 @@ const createNativeHookFn = (hookName, waitHooks, isComponent) => {
 
 /**
  * @param {*} molOptions this.$mol.$options
- * @param {*} nativeHooks 原生钩子数组
+ * @param {*} hooks 钩子数组
  * @param {*} isComponent 是否为组件options
  * @returns 用于传给原生构造方法的配置数据
  */
-const getOptionsForNative = (molOptions, nativeHooks, waitHooks, isComponent) => {
+const getOptionsForNative = (molOptions, hooks, waitHooks, isComponent) => {
 	const opts = {};
 
 	Object.keys(molOptions).forEach(key => {
@@ -62,12 +62,9 @@ const getOptionsForNative = (molOptions, nativeHooks, waitHooks, isComponent) =>
 			!opts[key] && (opts[key] = {});
 
 			Object.keys(molOptions[key]).forEach(hookName => {
-				// pageLifetimes中不存在自定义钩子，所以不用判断是否为原生钩子
-				if (!isCompPageHooks && !nativeHooks.includes(hookName)) return;
-				
 				opts[key][hookName] = createNativeHookFn(hookName, waitHooks, isComponent);
 			});
-		} else if (nativeHooks.includes(key)) {
+		} else if (hooks.includes(key)) {
 			opts[key] = createNativeHookFn(key, waitHooks, isComponent);
 		} else if (!isReservedField(key)) {
 			opts[key] = molOptions[key];
@@ -83,7 +80,7 @@ export const patchApp = (appOptions) => {
 
 	appOptions = getOptionsForNative(
 		molApp.$options,
-		APP_NATIVE_HOOKS,
+		APP_HOOKS,
 		APP_WAIT_HOOKS
 	);
 
@@ -112,7 +109,7 @@ export const patchPage = (pageOptions) => {
 
 	pageOptions = getOptionsForNative(
 		molPage.$options,
-		PAGE_NATIVE_HOOKS,
+		PAGE_HOOKS,
 		PAGE_WAIT_HOOKS
 	);
 
@@ -148,7 +145,7 @@ export const patchComponent = (compOptions) => {
 
 	compOptions = getOptionsForNative(
 		molComponent.$options,
-		COMPONENT_NATIVE_HOOKS,
+		[],
 		[...COMPONENT_WAIT_HOOKS, ...COMPONENT_PAGE_WAIT_HOOKS],
 		true /* isComponent */
 	);

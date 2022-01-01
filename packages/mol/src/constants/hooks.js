@@ -1,7 +1,7 @@
 /**
  * App 原生提供的钩子函数
  */
-export const APP_NATIVE_HOOKS = [
+const APP_NATIVE_HOOKS = [
 	'onLaunch',
 	'onShow',
 	'onHide',
@@ -39,7 +39,7 @@ export const APP_WAIT_HOOKS = [
 /**
  * Page 原生提供的钩子函数
  */
-export const PAGE_NATIVE_HOOKS = [
+const PAGE_NATIVE_HOOKS = [
 	'onLoad',
 	'onShow',
 	'onReady',
@@ -104,7 +104,7 @@ export const PAGE_WAIT_HOOKS = [
 /**
  * Component 的原生钩子
  */
-export const COMPONENT_NATIVE_HOOKS = [
+const COMPONENT_NATIVE_HOOKS = [
 	'created',
 	'attached',
 	'ready',

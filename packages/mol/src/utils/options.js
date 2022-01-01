@@ -27,6 +27,23 @@ const mergeHook = (base, target, key) => {
 	}
 };
 
+const mergeMethods = (base, methods, isComponent) => {
+	let method;
+
+	if (isComponent && !base.methods) {
+		base.methods = {};
+	}
+	
+	Object.keys(methods).forEach(key => {
+		method = methods[key];
+		if (typeof method === 'function') {
+			isComponent
+				? base.methods[key] = method
+				: base[key] = method;
+		}
+	});
+};
+
 const mergeArray = (base, target, key) => {
 	if (!base[key]) {
 		base[key] = [];
@@ -85,7 +102,7 @@ export const normalizeComponentOptions = options => {
 
 /**
  * 合并配置项
- * 如果为覆盖型配置（即非数组或Object的配置项），则优先级从左到右递增
+ * 合并顺序从左到右
  */
 export const mergeOptions = (isComponent, hooks = [], ...optionsList) => {
 	const options = optionsList.reduce((mergedOptions, cur) => {
@@ -94,18 +111,25 @@ export const mergeOptions = (isComponent, hooks = [], ...optionsList) => {
 				Object.keys(value).forEach(hookName => {
 					mergeHook(mergedOptions[key], value[hookName], hookName);
 				});
+				
 			} else if (hooks.includes(key)) {
 				mergeHook(mergedOptions, value, key);
+
 			} else if (key === 'mixins' && value.length) {
 				// 将mixins合并进来
 				isComponent && value.forEach(mixinItem => {
 					normalizeComponentOptions(mixinItem);
 				});
 				mergedOptions = mergeOptions(isComponent, hooks, mergedOptions, ...value);
+
 			} else if (Array.isArray(value) && key !== 'behaviors') {
 				mergeArray(mergedOptions, value, key);
+
 			} else if (PLAIN_OBJECT_FIELDS.includes(key)) {
-				mergePlainObject(mergedOptions, value, key);
+				key === 'methods'
+					? mergeMethods(mergedOptions, value, isComponent)
+					: mergePlainObject(mergedOptions, value, key);
+
 			} else if (typeof value !== 'undefined') {
 				mergedOptions[key] = value;
 			}

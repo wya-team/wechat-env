@@ -4,9 +4,16 @@
 
 <script>
 import Mol from '@wya/mol';
+import testMixin from '../../mixins/component/tpl.js';
 
 Mol.component({
-
+	mixins: [testMixin],
+	props: {
+		testProp: {
+			type: Number,
+			value: 1
+		}
+	},
 });
 </script>
 

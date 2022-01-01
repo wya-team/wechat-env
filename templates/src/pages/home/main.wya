@@ -27,15 +27,19 @@
 			<text>网络请求[request]: </text>
 			<text>{{ user }}</text>
 		</view>
+		<tpl-component />
 	</view>
 </template>
 
 <script>
 import { Utils } from '@wya/mp-utils';
 import Mol from '@wya/mol';
+import mixin from '../../mixins/page/tpl.js';
 
 const app = getApp();
 Mol.page({
+	navigator: '',
+	mixins: [mixin],
 	mapState: (state) => {
 		return {
 			user: state.homeMain.user
@@ -82,7 +86,8 @@ Mol.page({
 		},
 	},
 
-	onShow() {
+	onLoad() {
+		console.log('------page onLoad');
 		this.setData({
 			echarts: Mol.sourceManager.require('echarts')
 		});
@@ -92,15 +97,23 @@ Mol.page({
 		});
 	},
 
+	onShow() {
+		console.log('-----page onShow');
+	},
+
 	injector(data) {
 		this.config = { ...data.config };
-		console.log(this.config.configD.d, '----from injector');
+		console.log(data, '----page injector');
 	},
 
 	// 事件处理函数
 	handleViewTap() {
-		wx.navigateTo({
-			url: '/a-sub/pages/home/main'
+		this.$router.push({
+			path: '/a-sub/pages/home/main',
+			customData: 1,
+			success() {
+				console.log('跳转成功');
+			}
 		});
 	},
 
@@ -137,31 +150,26 @@ Mol.page({
 </script>
 
 <style lang="scss">
-@import '../../assets/css/bem.scss';
-$block: v-home-main;
-
-@include block($block) {
-	@include element(userinfo) { 
+.v-home-main {
+	&__userinfo {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		@include modifier(avatar) { 
+		&--avatar {
 			width: 128rpx;
 			height: 128rpx;
 			margin: 20rpx;
 			border-radius: 50%;
 		}
-
-		@include modifier(nickname) { 
+		&--nickname {
 			color: #aaa;
 		}
 	}
-
-	@include element(usermotto) { 
+	&__usermotto {
 		margin-top: 20rpx;
 	}
 
-	@include element(network) { 
+	&__network {
 		margin-top: 20rpx;
 	}
 }
@@ -171,6 +179,7 @@ $block: v-home-main;
 {
 	"navigationBarTitleText": "",
 	"usingComponents": {
+		"tpl-component": "../../components/tpl/index",
 		"mc-button": "../../libs/mc/button/index",
 		"mc-echarts": "../../libs/mc/echarts/index"
 	}

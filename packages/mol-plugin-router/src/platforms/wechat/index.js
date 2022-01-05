@@ -5,10 +5,10 @@ import { isNavigationFailError, isError } from '../../utils/index';
 class Router extends RouterCore {
 	static install
 
+	static platform = 'wechat'
+
 	constructor(options) {
 		super(options);
-
-		this.platform = 'wechat';
 
 		this._init();
 	}

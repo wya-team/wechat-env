@@ -29,8 +29,8 @@ const callHook = (vm, hookName, args, isComponent = false) => {
 			hooks[i].apply(vm, args);
 		}
 	} else {
-		// 如onShareAppMessage等这种需要返回值的钩子，只能存在一个，故不会被合并成数组
-		hooks.apply(vm, args);
+		// 如onShareAppMessage等这种需要返回值的钩子，只能存在一个，故不会被合并成数组，并且需要return返回值
+		return hooks.apply(vm, args);
 	}
 };
 

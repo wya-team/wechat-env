@@ -9,6 +9,8 @@ import {
 export default class MolComponent extends Mol {
 	static super = Mol;
 
+	static type = 'component';
+
 	static options = Object.create(null, {
 		options: getValueDescriptor({
 			addGlobalClass: true,

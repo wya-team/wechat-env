@@ -4,6 +4,8 @@ import { mergeAppOptions, resolveConstructorOptions } from '../utils';
 export default class MolApp extends Mol {
 	static super = Mol;
 
+	static type = 'app';
+
 	static options = Object.create(null);
 
 	constructor(options = {}) {

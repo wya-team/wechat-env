@@ -156,12 +156,12 @@ export const resolveConstructorOptions = Ctor => {
 	let { options } = Ctor;
 	if (Ctor.super) {
 		const superOptions = resolveConstructorOptions(Ctor.super);
-		const { name } = Ctor;
-		if (name === 'MolPage') {
+		const { type } = Ctor;
+		if (type === 'page') {
 			options = mergePageOptions(superOptions, options);
-		} else if (name === 'MolComponent') {
+		} else if (type === 'component') {
 			options = mergeComponentOptions(superOptions, options);
-		} else if (name === 'MolApp') {
+		} else if (type === 'app') {
 			options = mergeAppOptions(superOptions, options);
 		} else {
 			options = mergeOptions(false, undefined, superOptions, options);

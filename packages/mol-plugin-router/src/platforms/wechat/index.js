@@ -15,7 +15,7 @@ class Router extends RouterCore {
 
 	_init() {
 		this.__switchTab__ = this.patchForward(wx.switchTab);
-		this.__relaunch__ = this.patchForward(wx.relaunch);
+		this.__reLaunch__ = this.patchForward(wx.reLaunch);
 		this.__replace__ = this.patchForward(wx.redirectTo);
 		this.__push__ = this.patchForward(wx.navigateTo);
 	}
@@ -24,8 +24,8 @@ class Router extends RouterCore {
 		this.__switchTab__(userOpts);
 	}
 
-	relaunch(userOpts) {
-		this.__relaunch__(userOpts);
+	reLaunch(userOpts) {
+		this.__reLaunch__(userOpts);
 	}
 
 	replace(userOpts) {
@@ -48,7 +48,7 @@ class Router extends RouterCore {
 			wx.showModal({
 				title: '温馨提醒：页面层级过深警告⚠️',
 				content: '点击“确定”将清理您之前的页面浏览记录, 并跳转至目标页面, 可能会影响您的历史操作',
-				success(res) {
+				success: (res) => {
 					res.confirm && this.reLaunch({ path: to.path, query: to.query });
 				}
 			});

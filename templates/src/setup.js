@@ -14,12 +14,11 @@ import {
 	shareMiddleware,
 	setupGlobalMixin
 } from './extends/index';
+import { onBeforeEach } from './router/index';
 
 const router = new Router();
 
-router.beforeEach(async (to, from, next) => {
-	next();
-});
+router.beforeEach(onBeforeEach);
 
 setupGlobalMixin(Mol);
 

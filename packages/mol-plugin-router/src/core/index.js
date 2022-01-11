@@ -53,6 +53,8 @@ export default class RouterCore {
 
 	_abort(error, abort) {
 		this.errorCaptured(error);
+		this.currentRoute = null;
+		this.pendingRoute = null;
 		abort && abort(error);
 	}
 
@@ -79,14 +81,12 @@ export default class RouterCore {
 					// 如果返回false则阻止跳转
 					if (result === false) {
 						this._abort(createNavigationAbortedError(this.currentRoute, toRoute), reject);
-						this.pendingRoute = null;
 						return;
 					}
 
 					const isObj = isPlainObject(result);
 					if (isObj || typeof result === 'string') {
 						this._abort(createNavigationRedirectedError(this.currentRoute, toRoute), reject);
-						this.pendingRoute = null;
 						// 如果返回的是跳转配置，则使用返回的跳转配置进行跳转
 						const type = isObj && result.type ? result.type : 'push';
 						// 注意：此处的跳转还是会走这些跳转检查逻辑，而非直接使用navigateFn进行跳转
@@ -113,9 +113,10 @@ export default class RouterCore {
 						fail: (...args) => {
 							const { fail } = native;
 							fail && fail(...args);
-							this.pendingRoute = null;
 							const error = args[0];
 							this.errorCaptured(error, this.currentRoute, toRoute);
+							this.currentRoute = null;
+							this.pendingRoute = null;
 							reject(args[0]);
 						}
 					});

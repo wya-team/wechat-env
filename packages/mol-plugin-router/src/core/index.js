@@ -85,6 +85,7 @@ export default class RouterCore {
 					}
 
 					const isObj = isPlainObject(result);
+
 					if (isObj || typeof result === 'string') {
 						this._abort(createNavigationRedirectedError(this.currentRoute, toRoute), reject);
 						// 如果返回的是跳转配置，则使用返回的跳转配置进行跳转

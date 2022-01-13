@@ -78,6 +78,7 @@ class HttpShell {
 							// TODO: 超时依然走catch 或者 不执行任何操作(delete opts.setOver); 
 							this._beforeOver(opts);
 							reject(new HttpError({
+								options: opts,
 								code: ERROR_CODE.HTTP_REQUEST_TIMEOUT,
 							}));
 						}, opts.timeout * 1000);
@@ -87,7 +88,11 @@ class HttpShell {
 		} catch (e) {
 			setOver && setOver();
 			// 强制.catch
-			throw new HttpError({ code: ERROR_CODE.HTTP_CODE_ILLEGAL, exception: e });
+			throw new HttpError({ 
+				options: opts,
+				code: ERROR_CODE.HTTP_CODE_ILLEGAL, 
+				exception: e 
+			});
 		}
 	}
 
@@ -117,8 +122,9 @@ class HttpShell {
 				opts = await onBefore({ options: opts }) || opts;
 			} catch (e) {
 				throw new HttpError({ 
+					options: opts,
 					code: ERROR_CODE.HTTP_OPTIONS_BUILD_FAILED, 
-					exception: e 
+					exception: e
 				});
 			}
 
@@ -131,6 +137,7 @@ class HttpShell {
 
 			if (!url && !localData) {
 				throw new HttpError({ 
+					options: opts,
 					code: ERROR_CODE.HTTP_URL_EMPTY, 
 				});
 			}
@@ -143,7 +150,11 @@ class HttpShell {
 			};
 		} catch (e) {
 			// 强制.catch
-			throw new HttpError({ code: ERROR_CODE.HTTP_CODE_ILLEGAL, exception: e });
+			throw new HttpError({ 
+				options: opts,
+				code: ERROR_CODE.HTTP_CODE_ILLEGAL, 
+				exception: e 
+			});
 		}
 	}
 
@@ -202,9 +213,9 @@ class HttpShell {
 	}
 
 	async _disposeResponse(opts = {}) {
+		let { options, response, resolve, reject } = opts;
+
 		try {
-			let { options, response, resolve, reject } = opts;
-			
 			// 已经取消
 			if (!options.localData && !options.setOver) return;
 
@@ -255,7 +266,11 @@ class HttpShell {
 					}
 			}
 		} catch (e) {
-			throw new HttpError({ code: ERROR_CODE.HTTP_CODE_ILLEGAL, exception: e });
+			throw new HttpError({ 
+				options,
+				code: ERROR_CODE.HTTP_CODE_ILLEGAL, 
+				exception: e 
+			});
 		}
 	}
 }

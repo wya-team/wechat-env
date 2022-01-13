@@ -32,6 +32,7 @@ class HttpAdapter {
 				},
 				fail: (res) => {
 					reject(new HttpError({
+						options: opts,
 						code: ERROR_CODE.HTTP_STATUS_ERROR,
 						httpStatus: res.statusCode,
 						msg: res.errMsg
@@ -71,6 +72,7 @@ class HttpAdapter {
 		request && request.abort && request.abort();
 
 		options.setOver && options.setOver(new HttpError({
+			options,
 			code: ERROR_CODE.HTTP_CANCEL
 		}));
 	}

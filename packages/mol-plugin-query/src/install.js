@@ -79,6 +79,8 @@ const install = (Mol, opts) => {
 				this.$query = query;
 				console.log(error);
 			}
+			// 方便在wxml中使用
+			this.setData({ $query: this.$query });
 		}
 	});
 };

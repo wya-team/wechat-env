@@ -1,5 +1,4 @@
 import { Storage } from '@wya/mp-utils';
-import { HttpHelper } from '@wya/mp-http';
 
 // 缓存wxLogin的promise实例，避免重复发起
 let _wxLoginInstance;
@@ -94,7 +93,6 @@ class AuthorizeManager {
 	 * 清除授权
 	 */
 	clearAuthorize() {
-		HttpHelper.cancelAll();
 		this.updateToken(null);
 		Storage.remove(this.cacheKey);
 	}

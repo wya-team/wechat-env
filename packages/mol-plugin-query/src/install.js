@@ -71,7 +71,7 @@ const install = (Mol, opts) => {
 		/**
 		 * 用于解析页面query，并给页面注入$query
 		 */
-		async beforeCreate(query) {
+		async beforeLoad(query) {
 			try {
 				// 需要等待的逻辑都可添加到生命周期等待任务中
 				this.$query = await Mol.queryParser.parse(query);

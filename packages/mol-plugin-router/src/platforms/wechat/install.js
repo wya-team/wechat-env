@@ -5,7 +5,7 @@ const install = (Mol) => {
 		}
 	});
 	Mol.pageMixin({
-		beforeCreate() {
+		beforeLoad() {
 			Mol.proxy(this, '$mol', '$router');
 		}
 	});

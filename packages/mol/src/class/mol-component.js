@@ -29,6 +29,8 @@ export default class MolComponent extends Mol {
 		normalizeComponentOptions(options);
 
 		super(options);
+
+		this._isComponent = true;
 	
 		this._init(options);
 	}

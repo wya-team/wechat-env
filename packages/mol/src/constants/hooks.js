@@ -60,8 +60,7 @@ const PAGE_NATIVE_HOOKS = [
  * Mol.page额外钩子函数
  */
 const PAGE_CUSTOM_HOOKS = [
-	'beforeCreate',
-	'created'
+	'beforeLoad'
 ];
 
 /**

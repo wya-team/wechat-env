@@ -1,11 +1,11 @@
 import {
 	APP_HOOKS,
 	PAGE_HOOKS,
-	COMPONENT_HOOKS,
 	APP_WAIT_HOOKS,
 	PAGE_WAIT_HOOKS,
 	COMPONENT_WAIT_HOOKS,
-	COMPONENT_PAGE_WAIT_HOOKS
+	COMPONENT_PAGE_WAIT_HOOKS,
+	BUILT_IN_FIELDS
 } from '../constants';
 import Mol from '../class/mol';
 import MolApp from '../class/mol-app';
@@ -34,13 +34,34 @@ const callHook = (vm, hookName, args, isComponent = false) => {
 	}
 };
 
+const createInjector = (vm) => {
+	const injectors = vm.$mol.$options.injector;
+
+	return injectors && function (data) {
+		const length = injectors.length;
+		for (let i = 0; i < length; i++) {
+			injectors[i].call(this, data);
+		}
+	};
+};
+
 const createNativeHookFn = (hookName, waitHooks, isComponent) => {
 	return waitHooks.includes(hookName)
-		? async function (...args) {
-			// 保证预处理任务执行完成，再执行业务逻辑
-			await Mol.waitPreprocessing();
-			return callHook(this, hookName, args, isComponent);
-		}
+		? hookName === 'onLoad' || hookName === 'attached'
+			? async function (...args) {
+				// 保证预处理任务执行完成，再执行业务逻辑
+				await Mol.waitPreprocessing();
+
+				const injector = createInjector(this);
+				injector && initInjector(this, injector, Mol.provider.get());
+
+				return callHook(this, hookName, args, isComponent);
+			}
+			: async function (...args) {
+				// 保证预处理任务执行完成，再执行业务逻辑
+				await Mol.waitPreprocessing();
+				return callHook(this, hookName, args, isComponent);
+			}
 		: function (...args) {
 			// 因为有些钩子是需要返回值的，故需要return
 			return callHook(this, hookName, args, isComponent);
@@ -48,28 +69,37 @@ const createNativeHookFn = (hookName, waitHooks, isComponent) => {
 };
 
 /**
- * @param {*} molOptions this.$mol.$options
+ * @param {*} molVm this.$mol
  * @param {*} hooks 钩子数组
- * @param {*} isComponent 是否为组件options
  * @returns 用于传给原生构造方法的配置数据
  */
-const getOptionsForNative = (molOptions, hooks, waitHooks, isComponent) => {
+const getOptionsForNative = (molVm, hooks, waitHooks) => {
 	const opts = {};
+	const molOptions = molVm.$options;
+	const isComponent = molVm._isComponent;
 
 	Object.keys(molOptions).forEach(key => {
-		const isCompPageHooks = key === 'pageLifetimes';
-		if (key === 'lifetimes' || isCompPageHooks) {
+		if (isComponent && key === 'lifetimes' || key === 'pageLifetimes') {
 			!opts[key] && (opts[key] = {});
 
 			Object.keys(molOptions[key]).forEach(hookName => {
-				opts[key][hookName] = createNativeHookFn(hookName, waitHooks, isComponent);
+				opts[key][hookName] = createNativeHookFn(hookName, waitHooks, true);
 			});
 		} else if (hooks.includes(key)) {
-			opts[key] = createNativeHookFn(key, waitHooks, isComponent);
-		} else if (!isReservedField(key)) {
+			opts[key] = createNativeHookFn(key, waitHooks, false);
+		} else if (!isReservedField(key) && !BUILT_IN_FIELDS.includes(key)) {
 			opts[key] = molOptions[key];
 		}
 	});
+
+	// 如果存在injector，但是用户未定义相应钩子时，需要提供对应的钩子以供initInjector
+	if (molOptions.injector) {
+		if (molVm._isPage && !opts.onLoad) {
+			opts.onLoad = createNativeHookFn('onLoad', waitHooks, false);
+		} else if (molVm._isComponent && !opts.lifetimes.attached) {
+			opts.lifetimes.attached = createNativeHookFn('attached', waitHooks, true);
+		}
+	}
 
 	return opts;
 };
@@ -79,7 +109,7 @@ export const patchApp = (appOptions) => {
 	const molApp = new MolApp(appOptions);
 
 	appOptions = getOptionsForNative(
-		molApp.$options,
+		molApp,
 		APP_HOOKS,
 		APP_WAIT_HOOKS
 	);
@@ -108,7 +138,7 @@ export const patchPage = (pageOptions) => {
 	const molPage = new MolPage(pageOptions);
 
 	pageOptions = getOptionsForNative(
-		molPage.$options,
+		molPage,
 		PAGE_HOOKS,
 		PAGE_WAIT_HOOKS
 	);
@@ -118,10 +148,7 @@ export const patchPage = (pageOptions) => {
 		molPage.$native = this;
 		// mount $mol
 		this.$mol = molPage;
-		callHook(this, 'beforeCreate', args);
-		const { injector } = molPage.$options;
-		injector && initInjector(this, injector, Mol.provider.get());
-		callHook(this, 'created', args);
+		callHook(this, 'beforeLoad', args);
 		onLoad && onLoad.apply(this, args);
 	};
 
@@ -144,10 +171,9 @@ export const patchComponent = (compOptions) => {
 	const molComponent = new MolComponent(compOptions);
 
 	compOptions = getOptionsForNative(
-		molComponent.$options,
+		molComponent,
 		[],
-		[...COMPONENT_WAIT_HOOKS, ...COMPONENT_PAGE_WAIT_HOOKS],
-		true /* isComponent */
+		[...COMPONENT_WAIT_HOOKS, ...COMPONENT_PAGE_WAIT_HOOKS]
 	);
 
 	const { created, attached, detached } = compOptions.lifetimes;
@@ -162,8 +188,6 @@ export const patchComponent = (compOptions) => {
 
 	compOptions.lifetimes.attached = function (...args) {
 		callHook(this, 'beforeAttach', args, true);
-		const { injector } = molComponent.$options;
-		injector && initInjector(this, injector, Mol.provider.get());
 		attached && attached.apply(this, args);
 	};
 

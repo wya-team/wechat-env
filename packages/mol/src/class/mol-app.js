@@ -11,6 +11,8 @@ export default class MolApp extends Mol {
 	constructor(options = {}) {
 		super(options);
 
+		this._isApp = true;
+
 		this._init(options);
 	}
 

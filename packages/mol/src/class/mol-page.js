@@ -12,6 +12,8 @@ export default class MolPage extends Mol {
 	constructor(options) {
 		super(options);
 
+		this._isPage = true;
+
 		this._init(options);
 	}
 

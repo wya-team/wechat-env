@@ -27,6 +27,8 @@ const mergeHook = (base, target, key) => {
 	}
 };
 
+const mergeInjector = mergeHook;
+
 const mergeMethods = (base, methods, isComponent) => {
 	let method;
 
@@ -130,6 +132,9 @@ export const mergeOptions = (isComponent, hooks = [], ...optionsList) => {
 					? mergeMethods(mergedOptions, value, isComponent)
 					: mergePlainObject(mergedOptions, value, key);
 
+			} else if (key === 'injector') {
+				mergeInjector(mergedOptions, value, key);
+				
 			} else if (typeof value !== 'undefined') {
 				mergedOptions[key] = value;
 			}

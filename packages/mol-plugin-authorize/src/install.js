@@ -38,7 +38,7 @@ class AuthorizeManager {
 					const { code } = await this.wxLogin();
 					// 通过code向服务端换取tokenData
 					const data = await this.code2Token(code);
-					this.setTokenData(data);
+					this.setTokenData(data, true /* emitChange */);
 					resolve(data);
 				} catch (error) {
 					reject(error);
@@ -78,22 +78,28 @@ class AuthorizeManager {
 		return data;
 	}
 
-	setTokenData(data) {
-		this.updateToken(data);
+	/**
+	 * 外部也可调用，用于更新 tokenData
+	 * @param {*} data 
+	 * @param {*} emitChange 是否触发 onTokenChange 回调
+	 */
+	setTokenData(data, emitChange) {
+		this.updateToken(data, emitChange);
 		Storage.set(this.cacheKey, data);
 	}
 
-	updateToken(tokenData) {
+	updateToken(tokenData, emitChange = false) {
 		if (this._tokenData === tokenData) return;
 		this._tokenData = tokenData;
-		this.onTokenChange(tokenData);
+
+		emitChange && this.onTokenChange(tokenData);
 	}
 
 	/**
 	 * 清除授权
 	 */
 	clearAuthorize() {
-		this.updateToken(null);
+		this.updateToken(null, true);
 		Storage.remove(this.cacheKey);
 	}
 }

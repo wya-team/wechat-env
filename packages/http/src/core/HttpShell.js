@@ -193,7 +193,8 @@ class HttpShell {
 					return new HttpError({
 						code: ERROR_CODE.HTTP_RESPONSE_PARSING_FAILED,
 						exception: e,
-						data: temp
+						data: temp,
+						options: opts
 					});
 				})
 				.then((response) => {
@@ -229,6 +230,7 @@ class HttpShell {
 				throw new HttpError({
 					code: ERROR_CODE.HTTP_RESPONSE_REBUILD_FAILED,
 					exception: e,
+					options
 				});
 			}
 
@@ -248,6 +250,7 @@ class HttpShell {
 						let error = {
 							...new HttpError({
 								code: ERROR_CODE.HTTP_FORCE_DESTROY,
+								options
 							}),
 							...response
 						};

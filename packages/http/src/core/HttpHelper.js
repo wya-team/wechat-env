@@ -25,7 +25,7 @@ class HttpHelper {
 		cancel && cancel();
 	}
 
-	cancelAll(request) {
+	cancelAll() {
 		this.requests.forEach(({ cancel }) => cancel());
 
 		this.requests = [];

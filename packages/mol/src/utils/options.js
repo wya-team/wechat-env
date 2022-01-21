@@ -74,7 +74,7 @@ const mergePlainObject = (base, target, key) => {
  * https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/lifetimes.html
  * @param {*} options 
  */
-export const normalizeComponentLifecycles = (options) => {
+export const normalizeComponentHooks = (options) => {
 	const { lifetimes = {} } = options;
 	COMPONENT_HOOKS.forEach(hookName => {
 		const exposedHook = options[hookName];
@@ -99,7 +99,7 @@ export const normalizeProps = (options) => {
 
 export const normalizeComponentOptions = options => {
 	normalizeProps(options);
-	normalizeComponentLifecycles(options);
+	normalizeComponentHooks(options);    
 };
 
 /**

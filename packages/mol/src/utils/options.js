@@ -1,4 +1,7 @@
-import { isFunc } from './base';
+import {
+	isFunc,
+	isPlainObject
+} from './base';
 import {
 	APP_HOOKS,
 	COMPONENT_HOOKS,
@@ -90,10 +93,25 @@ export const normalizeComponentHooks = (options) => {
 export const normalizeProps = (options) => {
 	const { props = {}, properties = {} } = options;
 
-	options.properties = {
+	const _props = {
 		...props,
 		...properties
 	};
+	let types;
+
+	// array type -> type, optionalTypes
+	Object.keys(_props).forEach(propKey => {
+		const prop = _props[propKey];
+
+		if (isPlainObject(prop) && Array.isArray(prop.type)) {
+			types = prop.type;
+			if (types.length > 1) {
+				prop.optionalTypes = types.slice(1);
+			}
+			prop.type = types[0];
+		}
+	});
+	options.properties = _props;
 	delete options.props;
 };
 

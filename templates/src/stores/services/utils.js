@@ -1,6 +1,6 @@
 import { Storage } from '@wya/mp-utils';
 import { isEqualWith } from '../../utils/utils';
-import { net } from '../../framework/index';
+import { net } from '../../extends/index';
 
 export const serviceObj = {
 	param: {},
@@ -57,7 +57,7 @@ export const createService = (defaultOptions = {}) => {
 			const clearKey = `clear${strFn}`;
 			const loadingKey = `loading${strFn}`;
 
-			return Behavior({
+			return {
 				data: {
 					[key]: (store.res || {}).data || [],
 					[loadingKey]: false
@@ -106,7 +106,7 @@ export const createService = (defaultOptions = {}) => {
 						store = { ...serviceObj };
 					}
 				}
-			});
+			};
 		}
 	};
 };

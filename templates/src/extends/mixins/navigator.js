@@ -6,7 +6,14 @@ export const setupNavigatorMixin = (Mol) => {
 		 * 需在页面注册options中指定 navigator: 'XXX'，'XXX'对应store中名为 'XXX_ROUTE_CHANGE' 的mutation
 		 */
 		onUnload() {
-			this.navigator && wx.nextTick(() => this.$store.commit(`${navigator}_ROUTE_CHANGE`));
+			this.navigator 
+			&& wx.nextTick(() => {
+				this.$store.commit(`${
+					typeof this.navigator === 'function' 
+						? this.navigator() 
+						: this.navigator
+				}_ROUTE_CHANGE`);
+			});
 		}
 	});
 };

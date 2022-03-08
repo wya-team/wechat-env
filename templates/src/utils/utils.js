@@ -228,6 +228,21 @@ export const canIUse = (api, guide = true) => {
 	return ok;
 };
 
+/**
+ * 获取当前页面完整url
+ * @returns 
+ */
+export const getCurrentUrl = () => {
+	let { route, options = {} } = getCurrentPages().pop() || {};
+	if (!route) return '';
+	let query = Object.keys(options)
+		.reduce((pre, cur, index) => { 
+			pre += `${index == 0 ? '?' : '&'}${cur}=${options[cur]}`;
+			return pre; 
+		}, '');
+	return encodeURIComponent(`/${route}${query}`);
+};
+
 // 方便调用
 Utils.set({
 	formatTime,

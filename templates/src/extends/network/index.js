@@ -1,6 +1,7 @@
 import Mol from '@wya/mol';
 import createHttp from './http';
 import API_ROOT from '../../stores/apis/root';
+import { getCurrentUrl } from '../../utils';
 
 let app;
 const _getApp = () => {
@@ -35,6 +36,25 @@ const net = createHttp({
 			// 【BUSINESS】其它全局参数可以在此处添加
 			resolve({ ...location });
 		});
+	},
+	onFail({ response }) {
+		switch (response.status) {
+			case -1: // token无效，需静默授权
+				getApp().silentLogin();
+				break;
+
+			case -2: // 需要授权头像、昵称
+				// 业务处理
+				
+				break;
+
+			case -3: // 需要授权手机号/登录
+				getApp().$router.push(`/a-account/pages/login/channel?redirectUrl=${getCurrentUrl()}`);
+				break;
+
+			default:
+				break;
+		}
 	}
 });
 

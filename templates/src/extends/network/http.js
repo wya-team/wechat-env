@@ -57,7 +57,7 @@ const afterFn = ({ options, response }) => {
  */
 export default createOptions => {
 	let ajax;
-	const { isAuthorized, escapeLoginUrls = [] } = createOptions;
+	const { isAuthorized, escapeLoginUrls = [], onFail } = createOptions;
 
 	const authorize = async () => {
 		// 只需要一个授权实例去执行授权逻辑即可
@@ -88,11 +88,13 @@ export default createOptions => {
 		});
 	};
 
-	const otherFn = async ({ response, options }) => {
+	const otherFn = async (payload) => {
+		const { response, options } = payload;
 		let failCount = options.__failedCount__ || 0;
 		switch (response.status) {
 			// 登录信息失效，需要重新授权
 			case -1:
+				onFail && onFail(payload);
 				// 控制最大失败重发次数，防止进入无限循化
 				if (failCount < MAX_FAIL_RETRY_COUNT) {
 					await authorize();
@@ -103,7 +105,10 @@ export default createOptions => {
 					});
 				}
 				break;
+			
 			default:
+				// 其他失败由外部自行处理
+				onFail && onFail(payload);
 				break;
 		}
 	};

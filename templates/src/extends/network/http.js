@@ -66,27 +66,25 @@ export default createOptions => {
 			authorizeInstance = null;
 		});
 	};
-	const beforeFn = ({ options }) => {
-		return new Promise(async (resolve) => {
-			// 接口是需要授权的，且判断当前用户未授权，则需要先执行授权逻辑
-			!escapeLoginUrls.includes(options.url) && !isAuthorized() && await authorize();
+	const beforeFn = async ({ options }) => {
+		// 接口是需要授权的，且判断当前用户未授权，则需要先执行授权逻辑
+		!escapeLoginUrls.includes(options.url) && !isAuthorized() && await authorize();
 
-			const { param: getExtraParams, headers: getExtraHeaders } = createOptions;
-			// options优先级更高
-			resolve({
-				...options,
-				param: {
-					...(getExtraParams ? await getExtraParams(options) : {}),
-					...options.param,
-				},
-				headers: {
-					...(getExtraHeaders ? getExtraHeaders(options) : {}),
-					...options.headers
-				},
-				// 保存业务中传入的原始options，用于重新发起请求
-				__options__: options.__options__ || options,
-			});
-		});
+		const { param: getExtraParams, headers: getExtraHeaders } = createOptions;
+		// options优先级更高
+		return {
+			...options,
+			param: {
+				...(getExtraParams ? await getExtraParams(options) : {}),
+				...options.param,
+			},
+			headers: {
+				...(getExtraHeaders ? getExtraHeaders(options) : {}),
+				...options.headers
+			},
+			// 保存业务中传入的原始options，用于重新发起请求
+			__options__: options.__options__ || options,
+		};
 	};
 
 	const otherFn = async (payload) => {

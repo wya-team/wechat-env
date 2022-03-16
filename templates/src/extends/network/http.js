@@ -62,8 +62,9 @@ export default createOptions => {
 	const authorize = async () => {
 		// 只需要一个授权实例去执行授权逻辑即可
 		authorizeInstance = authorizeInstance || createOptions.authorize();
-		await authorizeInstance;
-		authorizeInstance = null;
+		await authorizeInstance.finally(() => {
+			authorizeInstance = null;
+		});
 	};
 	const beforeFn = ({ options }) => {
 		return new Promise(async (resolve) => {

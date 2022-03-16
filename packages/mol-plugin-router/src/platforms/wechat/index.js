@@ -18,6 +18,7 @@ class Router extends RouterCore {
 		this.__reLaunch__ = this.patchForward(wx.reLaunch);
 		this.__replace__ = this.patchForward(wx.redirectTo);
 		this.__push__ = this.patchForward(wx.navigateTo);
+		this.__back__ = this.patchBackward(wx.navigateBack);
 	}
 
 	switchTab(userOpts) {
@@ -37,7 +38,7 @@ class Router extends RouterCore {
 	}
 
 	back(userOpts) {
-		wx.navigateBack(userOpts);
+		this.__back__(userOpts);
 	}
 
 	errorCaptured(error, from, to) {

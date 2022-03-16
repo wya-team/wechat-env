@@ -19,6 +19,7 @@ export default class RouterCore {
 	constructor() {
 		this.currentRoute = null;
 		this.pendingRoute = null;
+		this.backingRoute = null;
 		this.errorCbs = [];
 	}
 
@@ -133,6 +134,32 @@ export default class RouterCore {
 				} else {
 					next();
 				}
+			});
+		};
+	}
+
+	patchBackward(backFn) {
+		return routerOpts => {
+			if (this.backingRoute) return;
+			
+			this.backingRoute = new Promise((resolve, reject) => {
+				backFn({
+					...routerOpts,
+					success: (...args) => {
+						const { success } = routerOpts;
+						success && success(...args);
+						resolve();
+						this.backingRoute = null;
+					},
+					fail: (...args) => {
+						const { fail } = routerOpts;
+						fail && fail(...args);
+						const error = args[0];
+						this.errorCaptured(error);
+						reject(error);
+						this.backingRoute = null;
+					}
+				});
 			});
 		};
 	}

@@ -1,18 +1,8 @@
 <template>
-	<view wx:if="{{ !!echarts }}" class="g-container">
+	<view class="g-container">
 		<mc-button class="v-home-main__userinfo" bind:tap="handleViewTap">
 			<text>前往子包（a-sub）</text>
 		</mc-button>
-		<view class="v-home-main__userinfo">
-			<text>echarts资源由子包(a-echarts)加载</text>
-			<text>echarts version: {{ echarts.version }}</text>
-			<mc-echarts 
-				wx:if="{{ echarts }}"
-				elementId="chart" 
-				options="{{ chartOptions }}" 
-				style="width: 40vw; height: 40vw"
-			/>
-		</view>
 		<view class="v-home-main__usermotto" bind:tap="handleChangeByCommit">
 			<text>{{ motto }}：</text>
 			<text>{{ user }}</text>
@@ -47,7 +37,6 @@ Mol.page({
 	},
 	data: {
 		motto: '你好，小程序',
-		echarts: '',
 		chartOptions: {
 			backgroundColor: "#ffffff",
 			color: ["#37A2DA", "#32C5E9", "#67E0E3", "#91F2DE", "#FFDB5C", "#FF9F7F"],
@@ -88,11 +77,8 @@ Mol.page({
 
 	onLoad() {
 		console.log('------page onLoad');
-		this.setData({
-			echarts: Mol.sourceManager.require('echarts')
-		});
 
-		this.data.echarts && wx.setNavigationBarTitle({
+		wx.setNavigationBarTitle({
 			title: '首页'
 		});
 	},
@@ -180,8 +166,7 @@ Mol.page({
 	"navigationBarTitleText": "",
 	"usingComponents": {
 		"tpl-component": "../../components/tpl/index",
-		"mc-button": "../../libs/mc/button/index",
-		"mc-echarts": "../../libs/mc/echarts/index"
+		"mc-button": "../../libs/mc/button/index"
 	}
 }
 </config>

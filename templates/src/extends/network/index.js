@@ -1,7 +1,7 @@
 import Mol from '@wya/mol';
 import createHttp from './http';
 import API_ROOT from '../../stores/apis/root';
-import { getCurrentUrl } from '../../utils';
+import { getCurrentUrl } from '../../utils/index';
 
 let app;
 const _getApp = () => {

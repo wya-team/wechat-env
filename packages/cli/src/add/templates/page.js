@@ -32,7 +32,7 @@ exports.page = (opts = {}) => {
 	contents += `	},\n`;
 	contents += `	onShow() {\n`;
 	contents += `	},\n`;
-	contents += `	onLoad(options) {\n`;
+	contents += `	onLoad() {\n`;
 	contents += `	},\n`;
 	contents += `});\n`;
 	contents += `</script>\n\n`;

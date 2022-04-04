@@ -13,14 +13,6 @@ export const initPreprocessingTask = (Mol) => {
 		
 		this._preprocessingTasks.push(task);
 		this._isTasksChanged = true;
-		// task要自行处理reject时的逻辑，保证一定会resolve后逻辑正常
-		// 因为不管是resolve还是reject到这里，Mol都会将该task移除，不然失败的任务会始终存在，
-		// 导致后面调用的 doPreprocessingTasks 都会返回reject结果，使后续的业务逻辑不再执行
-		task.finally(() => {
-			const index = this._preprocessingTasks.findIndex(it => it === task);
-			this._preprocessingTasks.splice(index, 1);
-			this._isTasksChanged = true;
-		});
 	};
 
 	/**
@@ -33,7 +25,18 @@ export const initPreprocessingTask = (Mol) => {
 			return;
 		}
 		if (this._isTasksChanged || !this._pendingPromise) {
+			this._preprocessingTasks.forEach(it => {
+				// 打标记，用于finally时清除
+				it.__processed__ = true;
+			});
 			this._pendingPromise = Promise.all(this._preprocessingTasks);
+			// 当前处理队列中的全部任务完成或者失败后才进行统一清除
+			Promise.allSettled(this._preprocessingTasks).then((results) => {
+				this._pendingPromise = null;
+				// 将已处理的任务清除（无论成功还是失败）
+				this._preprocessingTasks = this._preprocessingTasks.filter(it => !it.__processed__);
+				this._isTasksChanged = true;
+			});
 			this._isTasksChanged = false;
 		}
 		     

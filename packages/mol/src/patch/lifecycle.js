@@ -11,8 +11,11 @@ import Mol from '../class/mol';
 import MolApp from '../class/mol-app';
 import MolPage from '../class/mol-page';
 import MolComponent from '../class/mol-component';
-import { isReservedField } from '../utils';
+import { isReservedField, Scheduler } from '../utils';
 import { initInjector } from './injector';
+
+// 页面初始化任务，用于控制当app.onShow时页面的初始化在同一轮预处理任务的事件循环中
+let pageReadyTask = null;
 
 const callHook = (vm, hookName, args, isComponent = false) => {
 	const molOptions = vm.$mol.$options;
@@ -124,6 +127,12 @@ export const patchApp = (appOptions) => {
 	};
 
 	appOptions.onShow = function (...args) {
+		if (!pageReadyTask) {
+			// 创建页面初始化任务
+			pageReadyTask = new Scheduler();
+			Mol.addPreprocessingTask(pageReadyTask.task);
+		}
+		
 		// 在业务的onShow前触发 beforeShow 钩子
 		callHook(this, 'beforeShow', args);
 		onShow && onShow.apply(this, args);
@@ -143,13 +152,22 @@ export const patchPage = (pageOptions) => {
 		PAGE_WAIT_HOOKS
 	);
 
-	const { onLoad, onUnload } = pageOptions;
+	const { onLoad, onShow, onUnload } = pageOptions;
 	pageOptions.onLoad = function (...args) {
 		molPage.$native = this;
 		// mount $mol
 		this.$mol = molPage;
 		callHook(this, 'beforeLoad', args);
 		onLoad && onLoad.apply(this, args);
+	};
+
+	pageOptions.onShow = function (...args) {
+		if (pageReadyTask) {
+			pageReadyTask.complete();
+			pageReadyTask = null;
+		}
+		
+		onShow && onShow.apply(this, args);
 	};
 
 	pageOptions.onUnload = function (...args) {

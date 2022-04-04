@@ -1,7 +1,8 @@
 class Scheduler {
 	task;
 
-	constructor({ timeout = 5000 }) {
+	constructor(options = {}) {
+		const { timeout = 5000 } = options;
 		this.task = new Promise((resolve, reject) => {
 			this.complete = resolve;
 			this.fail = reject;

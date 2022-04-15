@@ -17,51 +17,51 @@
 }
 @mixin btnPseudo($activeBg, $disabledBg, $disabledColor) {
 	&:active {
-		background-color: $activeBg;
+		background: $activeBg;
 	}
 	&:disabled {
-		background-color: $disabledBg;
+		background: $disabledBg;
 		@if $disabledColor != '' { color: $disabledColor; }
 	}
 }
 @mixin fullBtn($bg, $activeBg, $disabledBg) {
 	@include btn(100%, 96rpx, 32rpx, $white, '');
 	@include btnPseudo($activeBg, $disabledBg, '');
-	background-color: $bg;
+	background: $bg;
 }
 @mixin largeBtn($bg, $activeBg, $disabledBg, $color, $disabledColor, $border) {
 	@include btn(80%, 96rpx, 32rpx, $color, 48rpx);
 	@include btnPseudo($activeBg, $disabledBg, $disabledColor);
 	@if $border != '' { border: $border; }
-	background-color: $bg;
+	background: $bg;
 }
 @mixin meduimBtn($bg, $activeBg, $disabledBg, $color, $disabledColor, $border) {
 	@include btn(45%, 72rpx, 28rpx, $color, 36rpx);
 	@include btnPseudo($activeBg, $disabledBg, $disabledColor);
 	@if $border != '' { border: $border; }
-	background-color: $bg;
+	background: $bg;
 }
 @mixin smallBtn($bg, $activeBg, $disabledBg, $color, $disabledColor, $border) {
 	@include btn(auto, 56rpx, 24rpx, $color, 28rpx);
 	@include btnPseudo($activeBg, $disabledBg, $disabledColor);
 	@if $border != '' { border: $border; }
-	background-color: $bg;
+	background: $bg;
 }
 @mixin smallerBtn($bg, $activeBg, $disabledBg, $color, $disabledColor, $border) {
 	@include btn(70rpx, 48rpx, 24rpx, $color, 24rpx);
 	@include btnPseudo($activeBg, $disabledBg, $disabledColor);
 	@if $border != '' { border: $border; }
-	background-color: $bg;
+	background: $bg;
 }
 @mixin rectangleBtn($bg, $activeBg, $disabledBg, $color, $disabledColor, $border) {
 	@include btn(auto, 64rpx, 28rpx, $color, 4rpx);
 	@include btnPseudo($activeBg, $disabledBg, $disabledColor);
 	@if $border != '' { border: $border; }
-	background-color: $bg;
+	background: $bg;
 }
 @mixin mediumCircleBtn($bg, $activeBg, $disabledBg, $color, $disabledColor, $border) {
 	@include btn(224rpx, 80rpx, 32rpx, $color, 40rpx);
 	@include btnPseudo($activeBg, $disabledBg, $disabledColor);
 	@if $border != '' { border: $border; }
-	background-color: $bg;
+	background: $bg;
 }

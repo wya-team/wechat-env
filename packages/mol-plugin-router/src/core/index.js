@@ -139,7 +139,7 @@ export default class RouterCore {
 	}
 
 	patchBackward(backFn) {
-		return routerOpts => {
+		return (routerOpts = {}) => {
 			if (this.backingRoute) return;
 			
 			this.backingRoute = new Promise((resolve, reject) => {

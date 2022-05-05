@@ -18,7 +18,7 @@ exports.item = (content, opts = {}) => {
 	contents += `import Mol from '@wya/mol';\n\n`;
 	
 	contents += `Mol.component({\n`;
-	contents += `	properties: {\n`;
+	contents += `	props: {\n`;
 	contents += `		it: {\n`;
 	contents += `			type: Object,\n`;
 	contents += `			value: {}\n`;
@@ -26,8 +26,7 @@ exports.item = (content, opts = {}) => {
 	contents += `	},\n`;
 	contents += `	data: {\n`;
 	contents += `	},\n`;
-	contents += `	lifetimes: {\n`;
-	contents += `		 attached() { },\n`;
+	contents += `	attached() {\n`;
 	contents += `	},\n`;
 	contents += `	methods: {\n`;
 	contents += `	},\n`;

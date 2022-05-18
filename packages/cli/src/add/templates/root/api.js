@@ -3,7 +3,6 @@ const { getNewContent, getStoreKey, camelCase } = require('../utils/helper');
 // 子包使用
 exports.rootApiInitial = (content, opts = {}) => {
 	let contents = '';
-	contents += `import { RegEx } from '@wya/mp-utils';\n`;
 	contents += `\nconst API = {`;
 	contents += `\n	// ...[modules]`;
 	contents += `\n};`;

@@ -28,17 +28,17 @@ module.exports = {
 	/**
 	 * 1. 第三方库加载的方式
 	 * 设计方式：redirect进入子包 -> 挂载getApp().$modules -> redirect到原前页
-	 * 
+	 *
 	 * 调用方式如： getApp().require('echarts')
 	 *
 	 * 2. 针对子包的第三方单独打包（配置即可）
 	 */
-	subpackages: [
-		{
-			name: 'a-echarts',
-			dependencies: [
-				'echarts/dist/echarts.min'
-			]
-		}
-	]
+	// subpackages: [
+	// 	{
+	// 		name: 'a-echarts',
+	// 		dependencies: [
+	// 			'echarts/dist/echarts.min'
+	// 		]
+	// 	}
+	// ]
 };

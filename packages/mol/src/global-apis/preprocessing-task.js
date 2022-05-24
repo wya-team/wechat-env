@@ -1,3 +1,5 @@
+import { allPromiseSettled } from '../utils';
+
 export const initPreprocessingTask = (Mol) => {
 	// 存放页面、组件的生命周期中需要等待的预处理任务（异步任务），建议仅将必要的业务层前置处理逻辑放进来，避免不必要的延后业务逻辑执行
 	Mol._preprocessingTasks = [];
@@ -31,7 +33,7 @@ export const initPreprocessingTask = (Mol) => {
 			});
 			this._pendingPromise = Promise.all(this._preprocessingTasks);
 			// 当前处理队列中的全部任务完成或者失败后才进行统一清除
-			Promise.allSettled(this._preprocessingTasks).then((results) => {
+			allPromiseSettled(this._preprocessingTasks).then(() => {
 				this._pendingPromise = null;
 				// 将已处理的任务清除（无论成功还是失败）
 				this._preprocessingTasks = this._preprocessingTasks.filter(it => !it.__processed__);

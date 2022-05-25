@@ -29,4 +29,6 @@ const allSettledPolyfill = (promises) => {
 	});
 };
 
-export const allPromiseSettled = Promise.allSettled || allSettledPolyfill;
+export const allPromiseSettled = (promises) => {
+	return Promise.allSettled ? Promise.allSettled(promises) : allSettledPolyfill(promises);
+};

@@ -11,6 +11,7 @@ setup();
 Mol.app({
 	$mc: { config: mcConfig },
 	userData: null,
+	shareAppOptions: null, // 全局用于分享小程序的配置
 	store: new Store(storeConfig),
 
 	onLaunch() {
@@ -84,7 +85,7 @@ Mol.app({
 		// 通过provider更新页面及组件内使用的config（移步./extends/mixins/injector.js)
 		Mol.provider.set({ userData: data });
 	},
-	
+
 
 	async clearLoginAuth() {
 		Mol.authorizeManager.clearAuthorize();
@@ -97,5 +98,9 @@ Mol.app({
 	taskWrap(task) {
 		Mol.addPreprocessingTask(task);
 		return task;
+	},
+	shareApp(payload) {
+		// 与 src/extends/middlewares/share.js 配合工作
+		this.shareAppOptions = payload;
 	},
 });

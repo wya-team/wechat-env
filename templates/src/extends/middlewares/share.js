@@ -31,6 +31,8 @@ export default (next) => userOptions => {
 			let path;
 			let promise;
 
+			const app = getApp();
+
 			const padPath = url => {
 				const parseResult = parseUrl(url);
 				return URL.merge({
@@ -42,14 +44,23 @@ export default (next) => userOptions => {
 				});
 			};
 
+			let userResult;
+			const { shareAppOptions } = app;
+
 			if (onShareAppMessage) {
-				const userResult = onShareAppMessage.call(this, opt) || {};
+				userResult = onShareAppMessage.call(this, opt) || {};
+			} else if (typeof shareAppOptions === 'object' && shareAppOptions !== null) {
+				// 通过 app.shareApp({ ... }) 进行分享的case
+				userResult = shareAppOptions;
+			}
+
+			if (userResult) {
 				title = userResult.title;
 				imageUrl = userResult.imageUrl;
 				path = userResult.path;
 				promise = userResult.promise;
 			}
-			
+
 			if (promise) {
 				let userPromise = promise;
 				promise = new Promise(async resolve => {
@@ -70,6 +81,9 @@ export default (next) => userOptions => {
 					});
 				});
 			}
+
+			// 每一次分享完成都进行清除
+			app.shareAppOptions = null;
 
 			return {
 				title,

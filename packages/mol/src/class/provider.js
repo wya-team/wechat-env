@@ -3,7 +3,6 @@ import { observe } from '../observer/index';
 export default class Provider {
 	constructor(data = {}) {
 		this.data = null;
-		this.set(data, true);
 	}
 
 	get(key) {
@@ -14,6 +13,9 @@ export default class Provider {
 		if (override) {
 			this.data = patchData;
 		} else {
+			if (!this.data) {
+				this.data = {};
+			}
 			Object.entries(patchData).forEach(([key, value]) => {
 				this.data[key] = value;
 			});

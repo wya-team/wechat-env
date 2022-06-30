@@ -84,6 +84,9 @@ export const reactive = (obj, key, val, shallow) => {
 			const value = getter ? getter.call(obj) : val;
 			// 将该依赖作为当前的watcher依赖收集起来
 			dep.depend();
+			if (childOb) {
+				childOb.dep.depend();
+			}
 			return value;
 		},
 		set(newValue) {

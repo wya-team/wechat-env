@@ -45,6 +45,18 @@ export class Observer {
 
 }
 
+const dependArray = (value) => {
+	let item;
+	const length = value.length;
+	for (let i = 0; i < length; i++) {
+		item = value[i];
+		item && item.__ob__ && item.__ob__.depend();
+		if (Array.isArray(item)) {
+			dependArray(item);
+		}
+	}
+};
+
 /**
  * 将一个object或者array变成可观察的
  * @param {*} value 
@@ -86,6 +98,9 @@ export const reactive = (obj, key, val, shallow) => {
 			dep.depend();
 			if (childOb) {
 				childOb.dep.depend();
+				if (Array.isArray(childOb)) {
+					dependArray(childOb);
+				}
 			}
 			return value;
 		},
@@ -103,5 +118,3 @@ export const reactive = (obj, key, val, shallow) => {
 		}
 	});
 };
-
-

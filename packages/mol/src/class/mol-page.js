@@ -1,5 +1,9 @@
 import Mol from './mol';
-import { mergePageOptions, resolveConstructorOptions } from '../utils';
+import {
+	mergePageOptions,
+	resolveConstructorOptions,
+	getValueDescriptor
+} from '../utils';
 
 export default class MolPage extends Mol {
 	// 父类，用于扩展，如插件可以给原型上添加某个方法
@@ -7,7 +11,12 @@ export default class MolPage extends Mol {
 
 	static type = 'page';
 
-	static options = Object.create(null)
+	static options = Object.create(null, {
+		data: getValueDescriptor({
+			// 页面参数
+			$query: {}
+		})
+	})
 
 	constructor(options) {
 		super(options);

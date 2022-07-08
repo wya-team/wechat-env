@@ -53,7 +53,7 @@ class QueryParser {
 					this._instancePool[sceneStr] = null;
 				} catch (error) {
 					console.log('error', error);
-					resolve(key ? undefined : {});
+					resolve(key ? undefined : query);
 					this._instancePool[sceneStr] = null;
 				}
 				return;

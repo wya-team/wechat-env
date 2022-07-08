@@ -27,18 +27,16 @@ class QueryParser {
 
 		let sceneStr = query[this._sceneKey];
 
-		const parseTask = new Promise(async (resolve) => {
+		const parseTask = (async () => {
 			if (query[key]) {
-				resolve(query[key]);
-				return;
+				return query[key];
 			}
 			if (sceneStr) {
 				sceneStr = decodeURIComponent(sceneStr);
 				const cacheTarget = this._cache[sceneStr];
 
 				if (cacheTarget) {
-					resolve(key ? cacheTarget[key] : { ...query, ...cacheTarget });
-					return;
+					return key ? cacheTarget[key] : { ...query, ...cacheTarget };
 				}
 				
 				try {
@@ -49,17 +47,16 @@ class QueryParser {
 					const res = await this._instancePool[sceneStr];
 					// 缓存
 					this._cache[sceneStr] = { ...query, ...res };
-					resolve(key ? res[key] : { ...this._cache[sceneStr] });
 					this._instancePool[sceneStr] = null;
+					return key ? res[key] : { ...this._cache[sceneStr] };
 				} catch (error) {
-					console.log('error', error);
-					resolve(key ? undefined : query);
+					console.error('QueryParser 解析错误：', error);
 					this._instancePool[sceneStr] = null;
+					return key ? undefined : query;
 				}
-				return;
 			}
-			resolve(query);
-		});
+			return query;
+		})();
 		this._molCtx.addPreprocessingTask(parseTask);
 		return parseTask;
 	}

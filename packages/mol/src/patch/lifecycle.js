@@ -13,9 +13,22 @@ import MolPage from '../class/mol-page';
 import MolComponent from '../class/mol-component';
 import { isReservedField, Scheduler } from '../utils';
 import { initInjector } from './injector';
+import {
+	initPageQuery, 
+	initComponentQuery,
+	updateQueryData
+} from './query';
 
 // 页面初始化任务，用于控制当app.onShow时页面的初始化在同一轮预处理任务的事件循环中
 let pageReadyTask = null;
+
+/**
+ * 更新当前激活的页面
+ * @param {*} page 
+ */
+const updateActivePage = (page) => {
+	Mol.activePage = page;
+};
 
 const callHook = (vm, hookName, args, isComponent = false) => {
 	const molOptions = vm.$mol.$options;
@@ -54,6 +67,21 @@ const createNativeHookFn = (hookName, waitHooks, isComponent) => {
 			? async function (...args) {
 				// 保证预处理任务执行完成，再执行业务逻辑
 				await Mol.waitPreprocessing();
+
+				// case 1：
+				// 如果是扫描小程序码等会触发app.onShow的场景时，
+				// 如果使用了 queryParser 插件，此时的 $query 是已经过 queryParser 解析的，
+				// 因为业务中会在 app.beforeShow 钩子中调用queryParser；
+				// case 2：
+				// 如果是页面间跳转，此时的 $query 依然是未被 queryParser 解析过的，理论上来说这算是一个bug
+				// 因为进入一个页面时的生命周期顺序是：组件 attached 是先于页面 onLoad 的
+				// 而解析的任务时是在页面的 beforeLoad 生命周期钩子中才被添加的
+				// 所以组件 attached 时的预处理任务池中并没有包含 query 解析任务
+				// 因此此时调用 updateQueryData，操作的还是未被解析的 query
+				// 但是由于实际业务场景中，在页面间跳转时，query 实际上并不需要解析，
+				// queryParser 也主要是服务于从外部进入小程序时携带非真实参数的场景
+				// 所以页面间跳转时的这个 case 目前来看可以不处理
+				updateQueryData(this);
 
 				const injector = createInjector(this);
 				injector && initInjector(this, injector, Mol.provider.get());
@@ -154,14 +182,26 @@ export const patchPage = (pageOptions) => {
 
 	const { onLoad, onShow, onUnload } = pageOptions;
 	pageOptions.onLoad = function (...args) {
+		updateActivePage(this);
+
 		molPage.$native = this;
 		// mount $mol
 		this.$mol = molPage;
+
+		// 初始化 $query
+		// 如果使用了 queryParser 插件，则此时的 $query 是还未被 queryParser 解析过的
+		// 因为 queryParser 是在 beforeLoad 中调用的
+		// 此时初始化 $query 是为了后续的钩子（如 beforeLoad）中都能获取到该属性
+		initPageQuery(this, args[0]);
+
 		callHook(this, 'beforeLoad', args);
 		onLoad && onLoad.apply(this, args);
 	};
 
 	pageOptions.onShow = function (...args) {
+		// 页面返回的等场景，只会触发 onShow，所以也需要在 onShow 中更新
+		updateActivePage(this);
+
 		if (pageReadyTask) {
 			pageReadyTask.complete();
 			pageReadyTask = null;
@@ -200,6 +240,11 @@ export const patchComponent = (compOptions) => {
 		molComponent.$native = this;
 		// mount $mol
 		this.$mol = molComponent;
+
+		// 初始化 this.$query，设置 this.$query 代理逻辑
+		initComponentQuery(this);
+
+		// 注意，beforeCreate 钩子中不能使用到 this.$query
 		callHook(this, 'beforeCreate', args, true /* isComponent */);
 		created && created.apply(this, args);
 	};

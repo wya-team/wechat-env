@@ -18,6 +18,10 @@ export default class MolComponent extends Mol {
 		}),
 		externalClasses: getValueDescriptor(['custom-class']),
 		properties: getValueDescriptor({ customStyle: String }),
+		data: getValueDescriptor({
+			// 页面参数
+			$query: {}
+		}),
 		methods: getValueDescriptor({
 			$emit(...args) {
 				this.triggerEvent(...args);

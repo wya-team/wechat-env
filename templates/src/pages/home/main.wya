@@ -18,6 +18,9 @@
 			<text>{{ user }}</text>
 		</view>
 		<tpl-component />
+		<mc-button class="v-home-main__userinfo" bind:tap="handleProvider">
+			更新provider数据 {{ config.configB }}
+		</mc-button>
 	</view>
 </template>
 
@@ -53,19 +56,19 @@ Mol.page({
 					{
 						value: 55,
 						name: '北京'
-					}, 
+					},
 					{
 						value: 20,
 						name: '武汉'
-					}, 
+					},
 					{
 						value: 10,
 						name: '杭州'
-					}, 
+					},
 					{
 						value: 20,
 						name: '广州'
-					}, 
+					},
 					{
 						value: 38,
 						name: '上海'
@@ -88,8 +91,10 @@ Mol.page({
 	},
 
 	injector(data) {
-		this.config = { ...data.config };
-		console.log(data, '----page injector');
+		// this.config = { ...data.config };
+		console.log(data.config, '----page injector');
+		this.setData({ config: data.config });
+		// console.log(data, '----page injector');
 	},
 
 	// 事件处理函数
@@ -131,6 +136,9 @@ Mol.page({
 				}
 			}
 		});
+	},
+	handleProvider() {
+		Mol.provider.data.config.configB = 'configB' + Date.now();
 	}
 });
 </script>

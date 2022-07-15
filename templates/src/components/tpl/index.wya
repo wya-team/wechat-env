@@ -1,5 +1,6 @@
 <template>
 	<view>我是组件</view>
+	这是组件内展示的 $query {{ $query.a }}
 </template>
 
 <script>
@@ -13,6 +14,10 @@ Mol.component({
 			type: Number,
 			value: 1
 		}
+	},
+	attached() {
+		console.log('组件 this.$query', this.$query);
+		console.log('组件 this.data.$query', this.data.$query);
 	},
 });
 </script>

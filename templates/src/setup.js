@@ -10,7 +10,7 @@ import sourceManager from '@wya/mol-plugin-source';
 import { ajax } from '@wya/mp-http';
 import API_ROOT from './stores/apis/root';
 import { USER_KEY, LOCATION_KEY } from './constants/index';
-import { 
+import {
 	shareMiddleware,
 	setupGlobalMixin
 } from './extends/index';
@@ -99,7 +99,7 @@ export default () => {
 				queryParser,
 				{
 					scene2Query: async () => {
-						return new Promise(resolve => {
+						return new Promise((resolve, reject) => {
 							// 【BUSINESS】模拟接口返回解析结果，具体业务开发时需要替换
 							setTimeout(() => {
 								resolve({ a: 1, b: 2 });

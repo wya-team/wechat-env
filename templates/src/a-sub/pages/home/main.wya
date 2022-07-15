@@ -17,6 +17,8 @@
 			<text>网络请求[request]: </text>
 			<text>{{ user }}</text>
 		</view>
+
+		<tpl-component />
 	</view>
 </template>
 
@@ -38,6 +40,8 @@ Mol.page({
 	},
 
 	onLoad() {
+		console.log('this.$query', this.$query);
+		console.log('this.data.$query', this.data.$query);
 	},
 
 	// 事件处理函数
@@ -109,6 +113,7 @@ Mol.page({
 {
 	"navigationBarTitleText": "首页",
 	"usingComponents": {
+		"tpl-component": "../../../components/tpl/index",
 		"mc-button": "../../../libs/mc/button/index"
 	}
 }

@@ -14,10 +14,6 @@ Mol.app({
 	shareAppOptions: null, // 全局用于分享小程序的配置
 	store: new Store(storeConfig),
 
-	onLaunch() {
-		console.log('-----App onLaunch');
-	},
-
 	async beforeShow(options) {
 		this.taskWrap((async () => {
 			try {
@@ -26,13 +22,13 @@ Mol.app({
 				this.$query = await Mol.queryParser.parse(options.query);
 				console.log('app.$query ->', this.$query);
 
-				await new Promise((resolve, reject) => {
-					setTimeout(reject, 2000);
-				});
+				// await new Promise((resolve, reject) => {
+				// 	setTimeout(reject, 2000);
+				// });
 
-				this.taskWrap(new Promise((resolve, reject) => {
-					setTimeout(resolve, 2000);
-				}));
+				// this.taskWrap(new Promise((resolve, reject) => {
+				// 	setTimeout(resolve, 2000);
+				// }));
 
 				Mol.authorizeManager.init();
 				const userData = Mol.authorizeManager.tokenData;

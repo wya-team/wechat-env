@@ -60,13 +60,9 @@
     }
   },
   "lint-staged": {
-    "{packages,src}/**/*.{js,jsx,wya}": [
-      "esw --fix",
-      "git add"
-    ],
+    "{packages,src}/**/*.{js,jsx,wya}": "eslint --fix",
     "*.md": [
-      "esw --ext '.md' --fix",
-      "git add"
+      "esw --ext '.md' --fix"
     ]
   }
 }

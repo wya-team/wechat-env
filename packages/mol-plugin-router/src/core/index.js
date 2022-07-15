@@ -16,7 +16,17 @@ import {
  * 需考虑非主动调用跳转方法进行跳转的一些场景（如直接进入小程序）
  */
 export default class RouterCore {
-	constructor() {
+	// currentRoute = null
+
+	// pendingRoute= null
+
+	// backingRoute = null
+
+	// tabPages = null
+
+	// errorCbs = []
+
+	constructor(options) {
 		this.currentRoute = null;
 		this.pendingRoute = null;
 		this.backingRoute = null;
@@ -60,11 +70,21 @@ export default class RouterCore {
 	}
 
 	/**
+	 * 支持平台适配层复写该方法，以对跳转方法进行转发等需求
+	 * @param {*} nativeNavigateFn 默认的原生跳转方法
+	 * @param {*} toRoute 目标路由信息
+	 * @returns 用于执行跳转的方法
+	 */
+	getNavigateFn(nativeNavigateFn, toRoute) {
+		return nativeNavigateFn;
+	}
+
+	/**
 	 * 对原生跳转方法进行封装
-	 * @param {*} navigateFn 平台原生跳转方法，如 wx.navigateTo
+	 * @param {*} nativeNavigateFn 平台原生跳转方法，如 wx.navigateTo
 	 * @returns 返回一个封装后的方法
 	 */
-	patchForward(navigateFn) {
+	patchForward(nativeNavigateFn) {
 		return routeOpts => {
 			return new Promise((resolve, reject) => {
 				const toRoute = createRoute(routeOpts);
@@ -91,7 +111,7 @@ export default class RouterCore {
 						this._abort(createNavigationRedirectedError(this.currentRoute, toRoute), reject);
 						// 如果返回的是跳转配置，则使用返回的跳转配置进行跳转
 						const type = isObj && result.type ? result.type : 'push';
-						// 注意：此处的跳转还是会走这些跳转检查逻辑，而非直接使用navigateFn进行跳转
+						// 注意：此处的跳转还是会走这些跳转检查逻辑，而非直接使用nativeNavigateFn进行跳转
 						const fn = this[type];
 						if (typeof fn === 'function') {
 							fn.call(this, result);
@@ -102,6 +122,7 @@ export default class RouterCore {
 					}
 
 					const { native } = toRoute;
+					const navigateFn = this.getNavigateFn(nativeNavigateFn, toRoute);
 
 					navigateFn({
 						...native,

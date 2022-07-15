@@ -16,7 +16,13 @@ import {
 } from './extends/index';
 import { onBeforeEach } from './router/index';
 
-const router = new Router();
+const router = new Router({
+	// 如需要在跳转时支持：跳转 tab 页面时自动使用 switchTab，
+	// 则可在此配置 tab 页面的路径，如 '/pages/home/index'
+	tabPages: [
+
+	]
+});
 
 router.beforeEach(onBeforeEach);
 

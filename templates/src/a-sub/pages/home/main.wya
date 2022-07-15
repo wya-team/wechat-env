@@ -46,9 +46,7 @@ Mol.page({
 
 	// 事件处理函数
 	handleViewTap() {
-		wx.redirectTo({
-			url: '/pages/home/main',
-		});
+		this.$router.replace('/pages/home/main');
 	},
 
 	// 事件处理函数

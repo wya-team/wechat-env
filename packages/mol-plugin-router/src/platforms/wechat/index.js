@@ -7,8 +7,11 @@ class Router extends RouterCore {
 
 	static platform = 'wechat'
 
-	constructor(options) {
+	constructor(options = {}) {
 		super(options);
+
+		// tab 页面路径数组
+		this.tabPages = options.tabPages || [];
 
 		this._init();
 	}
@@ -39,6 +42,14 @@ class Router extends RouterCore {
 
 	back(userOpts) {
 		this.__back__(userOpts);
+	}
+
+	getNavigateFn(nativeNavigateFn, toRoute) {
+		// tab 页面可以使用 reLaunch 进行跳转
+		if (this.tabPages.includes(toRoute.path) && nativeNavigateFn !== wx.reLaunch) {
+			return wx.switchTab;
+		}
+		return nativeNavigateFn;
 	}
 
 	errorCaptured(error, from, to) {

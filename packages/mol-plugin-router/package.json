@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/wya-team/wechat-env/issues"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@wya/mp-utils": "^2.0.0"
   }
 }

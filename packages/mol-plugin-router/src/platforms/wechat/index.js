@@ -47,6 +47,12 @@ class Router extends RouterCore {
 	getNavigateFn(nativeNavigateFn, toRoute) {
 		// tab 页面可以使用 reLaunch 进行跳转
 		if (this.tabPages.includes(toRoute.path) && nativeNavigateFn !== wx.reLaunch) {
+			if (process.env.NODE_ENV === 'development' && Object.keys(toRoute.query).length) {
+				console.warn(
+					`[mol-plugin-route] 正在使用 switchTab() 跳转 tab 页面（${toRoute.path}），`
+					+ `携带的参数${JSON.stringify(toRoute.query)}将会丢失。如需携带参数，可考虑使用 reLaunch()。`
+				);
+			}
 			return wx.switchTab;
 		}
 		return nativeNavigateFn;

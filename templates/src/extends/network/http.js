@@ -3,9 +3,9 @@
  */
 
 import createHttpClient from '@wya/mp-http';
- 
+
 // 接口返回 status 为 -1 时，最大重试次数
-const MAX_FAIL_RETRY_COUNT = 10;
+const MAX_FAIL_RETRY_COUNT = 2;
 
 let authorizeInstance = null;
 
@@ -20,9 +20,9 @@ const loadedFn = () => {
 
 const afterFn = ({ options, response }) => {
 	let {
-		successTip = true, 
-		errorTip = true, 
-		errorMsg = response.msg, 
+		successTip = true,
+		errorTip = true,
+		errorMsg = response.msg,
 		successMsg = response.msg,
 		method
 	} = options;
@@ -104,14 +104,14 @@ export default createOptions => {
 					});
 				}
 				break;
-			
+
 			default:
 				// 其他失败由外部自行处理
 				onFail && onFail(payload);
 				break;
 		}
 	};
-	
+
 	const http = createHttpClient({
 		onLoading: loadingFn,
 		onLoaded: loadedFn,
@@ -128,4 +128,3 @@ export default createOptions => {
 
 	return http;
 };
- 

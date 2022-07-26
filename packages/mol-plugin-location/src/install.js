@@ -33,6 +33,7 @@ const ONE_MINUTE_MS = 60 * 1000;
 class LocationManager {
 	constructor(options) {
 		this.cacheKey = options.cacheKey;
+		this.config = options.config || {}; // getLocation的配置
 		this.filter = options.filter || filter;
 		this.lazyLocation = this._getLazyLocationFromCache();
 		// 准确定位信息
@@ -64,7 +65,7 @@ class LocationManager {
 	 * 异步，需要await
 	 * @returns { latitude, longitude }
 	 */
-	getLocation({ timeout } = {}) {
+	getLocation({ timeout, ...obj } = {}) {
 		return new Promise((resolve, reject) => {
 			let timer;
 			const success = (result = {}) => {
@@ -82,7 +83,7 @@ class LocationManager {
 
 			timeout && (timer = setTimeout(fail, timeout));
 
-			wx.getLocation({ success, fail });
+			wx.getLocation({ ...this.config, ...obj, success, fail });
 		});
 	}
 
@@ -90,17 +91,17 @@ class LocationManager {
 	 * 获取准确地理位置
 	 * 1分钟内多次调用，使用缓存数据，不频繁获取定位（会增加设备耗电）
 	 */
-	getAccurate() {
+	getAccurate(locationConfig) {
 		if (this.locationUpdateAt && Date.now() - this.locationUpdateAt <= ONE_MINUTE_MS && this.location) {
 			return this.location;
 		}
-		return this.getLocation();
+		return this.getLocation(locationConfig);
 	}
 
 	/**
 	 * 获取lazyLlocation数据
 	 */
-	async getLazy(filter = false) {
+	async getLazy(filter = false, locationConfig) {
 		return new Promise(async resolve => {
 			let location;
 			try {
@@ -108,7 +109,7 @@ class LocationManager {
 				if (isLegal(cacheData)) {
 					location = cacheData;
 				} else {
-					location = await this.getLocation();
+					location = await this.getLocation(locationConfig);
 					this._updateLazy(location);
 				}
 			} catch (error) {
@@ -119,8 +120,8 @@ class LocationManager {
 		});
 	}
 
-	get({ accurate = false } = {}) {
-		return accurate ? this.getAccurate() : this.getLazy(true);
+	get({ accurate = false, ...obj } = {}) {
+		return accurate ? this.getAccurate(obj) : this.getLazy(true, obj);
 	}
 	
 	/**

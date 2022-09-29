@@ -66,24 +66,27 @@ class LocationManager {
 	 * @returns { latitude, longitude }
 	 */
 	getLocation({ timeout, ...obj } = {}) {
+		const { success: successCb, fail: failCb, ...rest } = { ...this.config, ...obj };
 		return new Promise((resolve, reject) => {
 			let timer;
 			const success = (result = {}) => {
 				timer && clearTimeout(timer);
 				const { latitude, longitude } = result;
 				this._updateAccurate({ latitude, longitude });
+				successCb && successCb(result);
 				resolve({ latitude, longitude });
 			};
 
-			const fail = () => {
+			const fail = (e) => {
 				console.log('定位获取失败');
 				timer && clearTimeout(timer);
+				failCb && failCb(e);
 				resolve({});
 			};
 
 			timeout && (timer = setTimeout(fail, timeout));
 
-			wx.getLocation({ ...this.config, ...obj, success, fail });
+			wx.getLocation({ ...rest, success, fail });
 		});
 	}
 

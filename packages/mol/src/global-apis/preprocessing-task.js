@@ -17,6 +17,15 @@ export const initPreprocessingTask = (Mol) => {
 		this._isTasksChanged = true;
 	};
 
+	Mol.clearPreprocessingTask = function (tasks) {
+		if (!Array.isArray(tasks)) {
+			tasks = [tasks];
+		}
+		Mol._preprocessingTasks = tasks.length > 0 ? Mol._preprocessingTasks.filter((task) => !tasks.includes(task)) : [];
+		Mol._pendingPromise = null;
+		Mol._isTasksChanged = false;
+	};
+
 	/**
 	 * 等待预处理执行完毕
 	 * @returns 

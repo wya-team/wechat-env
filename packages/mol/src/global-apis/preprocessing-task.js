@@ -17,6 +17,10 @@ export const initPreprocessingTask = (Mol) => {
 		this._isTasksChanged = true;
 	};
 
+	/**
+	 * 任务内 在reject前 跳转了其他页面，导致页面的onLoad没有被执行，跳转前可以清楚下当前的任务
+	 * @param {*} tasks 
+	 */
 	Mol.clearPreprocessingTask = function (tasks) {
 		if (!Array.isArray(tasks)) {
 			tasks = [tasks];

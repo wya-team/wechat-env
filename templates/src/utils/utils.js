@@ -53,7 +53,7 @@ export const decodeScene = (scene = '') => {
 };
 
 export const createSchedule = (opts = {}) => {
-	const { msg = '进程超时，请先检查网络', delay = 5 } = opts; 
+	const { msg = '进程超时，请先检查网络', timeout = 5 } = opts; 
 	let result = {};
 	let ready;
 	let timer;
@@ -66,7 +66,9 @@ export const createSchedule = (opts = {}) => {
 		/**
 		 * 超时登录这里使用reject
 		 */
-		result.timer = setTimeout(() => reject({ msg }), delay * 1000); // eslint-disable-line
+		if (timeout !== false) {
+			result.timer = setTimeout(() => reject({ msg }), timeout * 1000); // eslint-disable-line
+		} 
 	});
 	return result;
 };

@@ -11,7 +11,6 @@ setup();
 Mol.app({
 	$mc: { config: mcConfig },
 	userData: null,
-	shareAppOptions: null, // 全局用于分享小程序的配置
 	store: new Store(storeConfig),
 
 	async beforeShow(options) {
@@ -94,9 +93,5 @@ Mol.app({
 	taskWrap(task) {
 		Mol.addPreprocessingTask(task);
 		return task;
-	},
-	shareApp(payload) {
-		// 与 src/extends/middlewares/share.js 配合工作
-		this.shareAppOptions = payload;
-	},
+	}
 });

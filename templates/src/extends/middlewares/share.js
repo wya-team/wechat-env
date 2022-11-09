@@ -22,6 +22,24 @@ const parseUrl = url => {
 	return { path, query };
 };
 
+let shareAppOptions;
+wx.nextTick(() => {
+	let fn = () => {
+		if (getApp().shareApp) {
+			console.error(`getApp().shareApp 已被使用`);
+		}
+		getApp().shareApp = (e) => {
+			shareAppOptions = e;
+		};
+	};
+
+	try {
+		fn();
+	} catch (e) {
+		setTimeout(fn, 1000);
+	}
+});
+
 export default (next) => userOptions => {
 	const { share, onShareAppMessage, ...rest } = userOptions;
 	if (share || onShareAppMessage) {
@@ -45,7 +63,6 @@ export default (next) => userOptions => {
 			};
 
 			let userResult;
-			const { shareAppOptions } = app;
 
 			if (onShareAppMessage) {
 				userResult = onShareAppMessage.call(this, opt) || {};
@@ -83,7 +100,7 @@ export default (next) => userOptions => {
 			}
 
 			// 每一次分享完成都进行清除
-			app.shareAppOptions = null;
+			shareAppOptions = null;
 
 			return {
 				title,

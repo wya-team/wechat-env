@@ -64,7 +64,7 @@ export default (next) => userOptions => {
 
 			let userResult;
 
-			if (onShareAppMessage) {
+			if (onShareAppMessage && !shareAppOptions) {
 				userResult = onShareAppMessage.call(this, opt) || {};
 			} else if (typeof shareAppOptions === 'object' && shareAppOptions !== null) {
 				// 通过 app.shareApp({ ... }) 进行分享的case

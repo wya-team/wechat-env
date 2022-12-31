@@ -13,8 +13,16 @@ class QueryParser {
 
 	constructor(Mol, options) {
 		this._molCtx = Mol;
-		this._sceneKey = options.sceneKey || 'scene';
+		// 场景值 + 直播
+		this._sceneKey = options.sceneKey || ['scene', 'custom_params'];
 		this._scene2Query = options.scene2Query;
+
+		if (!Array.isArray(this._sceneKey)) this._sceneKey = [this._sceneKey];
+
+		this._sceneKey.forEach(i => {
+			this._cache[i] = this._cache[i] || {};
+			this._instancePool[i] = this._instancePool[i] || {};
+		});
 	}
 
 	parse(query, key) {
@@ -25,15 +33,17 @@ class QueryParser {
 			query = currentPage.options;
 		}
 
-		let sceneStr = query[this._sceneKey];
+		let sceneStr = this._sceneKey.map(i => query[i]);
 
 		const parseTask = (async () => {
 			if (query[key]) {
 				return query[key];
 			}
-			if (sceneStr) {
-				sceneStr = decodeURIComponent(sceneStr);
-				const cacheTarget = this._cache[sceneStr];
+			if (sceneStr.some(i => !!i)) {
+				sceneStr = sceneStr.map(i => i && decodeURIComponent(i));
+
+				const $key = sceneStr.join('##');
+				const cacheTarget = this._cache[$key];
 
 				if (cacheTarget) {
 					return key ? cacheTarget[key] : { ...query, ...cacheTarget };
@@ -41,17 +51,17 @@ class QueryParser {
 				
 				try {
 					// 保证唯一实例
-					if (!this._instancePool[sceneStr]) {
-						this._instancePool[sceneStr] = this._scene2Query(sceneStr);
+					if (!this._instancePool[$key]) {
+						this._instancePool[$key] = this._scene2Query(...sceneStr);
 					}
-					const res = await this._instancePool[sceneStr];
+					const res = await this._instancePool[$key];
 					// 缓存
-					this._cache[sceneStr] = { ...query, ...res };
-					this._instancePool[sceneStr] = null;
-					return key ? res[key] : { ...this._cache[sceneStr] };
+					this._cache[$key] = { ...query, ...res };
+					this._instancePool[$key] = null;
+					return key ? res[key] : { ...this._cache[$key] };
 				} catch (error) {
 					console.error('QueryParser 解析错误：', error);
-					this._instancePool[sceneStr] = null;
+					this._instancePool[$key] = null;
 					return key ? undefined : query;
 				}
 			}

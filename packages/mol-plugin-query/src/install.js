@@ -42,7 +42,8 @@ class QueryParser {
 			if (sceneStr.some(i => !!i)) {
 				sceneStr = sceneStr.map(i => i && decodeURIComponent(i));
 
-				const $key = sceneStr.join('##');
+				// 同时存在scene以外的变量，这里用JSON.stringify
+				const $key = JSON.stringify(query); // sceneStr.join('##');
 				const cacheTarget = this._cache[$key];
 
 				if (cacheTarget) {
